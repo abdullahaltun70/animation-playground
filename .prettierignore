@@ -1,0 +1,9 @@
+# Ignore artifacts:
+**/node_modules
+**/artifacts
+**/coverage
+**/dist
+public
+out
+.next
+vendor
