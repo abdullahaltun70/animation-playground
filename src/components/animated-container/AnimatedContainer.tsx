@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Heading } from '@radix-ui/themes';
+import {Heading, Text} from '@radix-ui/themes';
 import styles from './AnimatedContainer.module.scss';
 
 interface AnimatedContainerProps {
@@ -11,14 +11,14 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 }) => {
 	return (
 		<div className={styles.container}>
-			<Heading className={styles.title} size="3">
+			<Heading className={styles.title} >
 				Animation box
 			</Heading>
 
 			<div className={styles.animationBox}>
 				{children || (
-					<div className={`${styles.animatableElement} ${styles.idle}`}>
-						<span>Animate Me!</span>
+					<div className={styles.animatableElement}>
+						<Text>Animate Me!</Text>
 					</div>
 				)}
 			</div>

@@ -2,7 +2,8 @@
 
 import { Footer } from '@/components/footer/Footer';
 import React from 'react';
-import styles from './page.module.scss';
+import styles from './playground/page.module.scss';
+import '@/app/(main)/main.globals.scss'
 import { Header } from '@/components/header';
 
 export default function MainLayout({
