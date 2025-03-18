@@ -1,7 +1,9 @@
 // components/footer/Footer.tsx
 import React from 'react';
-import { Flex, Text, Link as RadixLink } from '@radix-ui/themes';
+
+import { Link as RadixLink, Text } from '@radix-ui/themes';
 import Link from 'next/link';
+
 import styles from './Footer.module.scss';
 
 export const Footer = () => {

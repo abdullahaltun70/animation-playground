@@ -1,8 +1,11 @@
 import React from 'react';
+
+import { Box, Flex } from '@radix-ui/themes';
+
 import { AnimatedContainer } from '@/components/animated-container';
 import { ConfigPanel } from '@/components/config-panel/ConfigPanel';
+
 import styles from './page.module.scss';
-import { Box, Button, Flex } from '@radix-ui/themes';
 
 export default function PlaygroundPage() {
 	return (

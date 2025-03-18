@@ -1,12 +1,16 @@
 'use client';
 
 import React from 'react';
+
+import { PersonIcon } from '@radix-ui/react-icons';
 import { Flex, Link as RadixLink } from '@radix-ui/themes';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import styles from './Header.module.scss';
-import { PersonIcon } from '@radix-ui/react-icons';
+
 import { ThemeToggle } from '@/components/theme-toggle';
+
+import styles from './Header.module.scss';
 
 export const Header = () => {
 	const pathname = usePathname();
@@ -19,7 +23,12 @@ export const Header = () => {
 					{/* Logo */}
 					<Link href="/" className={styles.logoContainer}>
 						<div className={styles.logo}>
-							<img src="/logo.png" alt="Radix UI Logo" />
+							<Image
+								src="/logo.png"
+								alt="Radix UI Logo"
+								width={'36'}
+								height={'36'}
+							/>
 							{/*<svg*/}
 							{/*	width="24"*/}
 							{/*	height="24"*/}

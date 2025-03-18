@@ -1,9 +1,12 @@
 // app/(main)/layout.tsx
 
-import { Footer } from '@/components/footer/Footer';
 import React from 'react';
+
+import { Footer } from '@/components/footer/Footer';
+
 import styles from './playground/page.module.scss';
-import '@/app/(main)/main.globals.scss'
+
+import '@/app/(main)/main.globals.scss';
 import { Header } from '@/components/header';
 
 export default function MainLayout({

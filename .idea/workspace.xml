@@ -4,30 +4,23 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="add initial components and layout for animation playground">
-      <change afterPath="$PROJECT_DIR$/.idea/watcherTasks.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(main)/playground/page.module.scss" afterDir="false" />
+    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="refactor: clean up imports and improve component structure in playground">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/eslint.config.mjs" beforeDir="false" afterPath="$PROJECT_DIR$/eslint.config.mjs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/page.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/playground/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/playground/page.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/playground/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/playground/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/animated-container/AnimatedContainer.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/animated-container/AnimatedContainer.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/animated-container/AnimatedContainer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/animated-container/AnimatedContainer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/config-panel/ConfigPanel.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/config-panel/ConfigPanel.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/config-panel/ConfigPanel.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/config-panel/ConfigPanel.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/footer/Footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/Footer.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/_colors.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/_mixins.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/_variables.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/styles/globals.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -67,26 +60,26 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;main&quot;,
-    &quot;js.linters.configure.manually.selectedeslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/eslint&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;editing.templates&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "main",
+    "js.linters.configure.manually.selectedeslint": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "/Users/abdullah.altun/Projects/animation-playground/node_modules/eslint",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "prettierjs.PrettierConfiguration.Package": "/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier",
+    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
+    "ts.external.directory.path": "/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/app/(main)/playground" />
@@ -123,7 +116,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742089956902</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="add layout and styling for animation playground components&#10;&#10;fix bug where ThemeToggle would appear after small delay">
+      <option name="closed" value="true" />
+      <created>1742283892313</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1742283892313</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -155,6 +156,8 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="added base components:&#10;- Header&#10;- Footer&#10;- Animated Container&#10;- Config Panel&#10;&#10;There are just placeholders. NO FUNCTIONALITY!" />
     <MESSAGE value="add initial components and layout for animation playground" />
-    <option name="LAST_COMMIT_MESSAGE" value="add initial components and layout for animation playground" />
+    <MESSAGE value="add layout and styling for animation playground components&#10;&#10;fix bug where ThemeToggle would appear after small delay" />
+    <MESSAGE value="refactor: clean up imports and improve component structure in playground" />
+    <option name="LAST_COMMIT_MESSAGE" value="refactor: clean up imports and improve component structure in playground" />
   </component>
 </project>

@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
 import { ThemeProvider } from 'next-themes';
 import { Theme } from '@radix-ui/themes';
+
 import '@radix-ui/themes/styles.css';
 import React from 'react';
 
