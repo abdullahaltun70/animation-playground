@@ -1,0 +1,38 @@
+/* src/components/AnimationTest.scss */
+@import 'animation-library-test-abdullah-altun/styles/globals';
+.animation-test {
+  padding: 20px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.animation-section {
+  margin: 30px 0;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.demo-box {
+  background-color: #f0f0f0;
+  border: 2px solid #2c3e50;
+  border-radius: 6px;
+  padding: 20px;
+  margin: 10px 0;
+  text-align: center;
+  width: 300px;
+}
+
+button {
+  background-color: #3498db;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+button:hover {
+  background-color: #2980b9;
+}

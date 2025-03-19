@@ -4,7 +4,7 @@ import React from 'react';
 import { Link as RadixLink, Text } from '@radix-ui/themes';
 import Link from 'next/link';
 
-import styles from './Footer.module.scss';
+import styles from './footer.module.scss';
 
 export const Footer = () => {
 	const currentYear = new Date().getFullYear();

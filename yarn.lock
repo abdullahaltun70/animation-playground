@@ -1633,6 +1633,11 @@ ajv@^6.12.4:
     json-schema-traverse "^0.4.1"
     uri-js "^4.2.2"
 
+animation-library-test-abdullah-altun@^1.0.13:
+  version "1.0.13"
+  resolved "https://registry.yarnpkg.com/animation-library-test-abdullah-altun/-/animation-library-test-abdullah-altun-1.0.13.tgz#759013c26b11d3a095bf454131b5fff734300148"
+  integrity sha512-QCwBdr7vaM9kzYwF1w1q1c+tWPP/RDczUZ07+pBv9K0Cv5R7vYkhfdRY7DXQKYGadK9sNgo/R97a94arICGVjw==
+
 ansi-styles@^4.1.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/ansi-styles/-/ansi-styles-4.3.0.tgz#edd803628ae71c04c85ae7a0906edad34b648937"

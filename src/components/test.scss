@@ -1,0 +1,38 @@
+.bouncing-ball {
+    width: 100px; /* Adjust size as needed */
+    height: 100px;
+    background-color: red; /* Color of the ball */
+    /*border-radius: 50%;*/
+    animation: slide 1s ease-out infinite;
+    position: absolute; /* To position it inside the spinner */
+    top: 50%;
+    left: 50%;
+}
+
+@keyframes slide {
+    0% {
+        transform: translateX(0px) scale(0.5);
+        opacity: 0;
+    }
+    100% {
+        transform: translateX(100px) scale(1);
+        opacity: 1;
+    }
+}
+
+
+.animation1 {
+    transform: translateX(60px);
+}
+
+.animation2 {
+    transform: translateY(60px);
+}
+
+.animation3 {
+    transform: scale(2);
+}
+
+.composed-animation {
+    transform: translateX(60px) translateY(60px) scale(2);
+}
