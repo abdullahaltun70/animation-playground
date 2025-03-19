@@ -10,7 +10,7 @@ import { usePathname } from 'next/navigation';
 
 import { ThemeToggle } from '@/components/theme-toggle';
 
-import styles from './header.module.scss';
+import styles from './Header.module.scss';
 
 export const Header = () => {
 	const pathname = usePathname();
