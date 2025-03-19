@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="style: update footer styling for fixed position at the bottom">
-      <change beforePath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" afterDir="false" />
-    </list>
+    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="style: update footer styling for fixed position at the bottom" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
