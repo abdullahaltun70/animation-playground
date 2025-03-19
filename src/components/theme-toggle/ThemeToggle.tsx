@@ -15,9 +15,9 @@ export const ThemeToggle = () => {
 				aria-label="Toggle Dark Mode"
 			>
 				{theme === 'dark' ? (
-					<SunIcon className="w-6 h-6 text-yellow-500" />
+					<SunIcon style={{ width: '24px', height: '24px' }} />
 				) : (
-					<MoonIcon className="w-6 h-6 text-gray-800" />
+					<MoonIcon style={{ width: '24px', height: '24px' }} />
 				)}
 			</IconButton>
 		</Tooltip>

@@ -47,9 +47,10 @@
 
 // Right side - Config Area
 .configAreaWrapper {
+	flex: 2;
 	padding: 2rem;
 	background-color: var(--slate-3);
-	right: 0;
+	//right: 0;
 
 	// Mobile layout (full width)
 	width: 100%;
@@ -73,5 +74,3 @@
 		transform: scale(1);
 	}
 }
-
-// You can add more animations here as needed

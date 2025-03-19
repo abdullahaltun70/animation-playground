@@ -4,7 +4,7 @@ import React from 'react';
 
 import { Button, Heading, Select, Slider, Theme, Text } from '@radix-ui/themes';
 
-import styles from './ConfigPanel.module.scss';
+import styles from './config-panel.module.scss';
 
 export function ConfigPanel() {
 	return (
