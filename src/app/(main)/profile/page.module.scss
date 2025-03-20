@@ -1,0 +1,30 @@
+.profileContainer {
+  max-width: 28rem; // max-w-md
+  margin-left: auto; // mx-auto
+  margin-right: auto; // mx-auto
+  margin-top: 2.5rem; // mt-10
+  padding: 1.5rem; // p-6
+  border: 1px solid #e2e8f0; // border
+  border-radius: 0.375rem; // rounded-md
+
+  h1 {
+    font-size: 1.5rem; // text-2xl
+    font-weight: 700; // font-bold
+    margin-bottom: 1rem; // mb-4
+  }
+
+  p {
+    margin-bottom: 1.5rem; // mb-6
+  }
+
+  button {
+    background-color: #ef4444; // bg-red-500
+    color: white; // text-white
+    padding: 0.5rem 1rem; // px-4 py-2
+    border-radius: 0.375rem; // rounded-md
+
+    &:hover {
+      background-color: #dc2626; // bg-red-600
+    }
+  }
+}
