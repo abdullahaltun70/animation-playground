@@ -1,0 +1,40 @@
+// src/app/(auth)/(auth).module.scss
+.authContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+.authCard {
+  width: 100%;
+  max-width: 420px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow: hidden;
+}
+
+.authHeader {
+  padding: 1.5rem;
+  text-align: center;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.logo {
+  text-decoration: none;
+  color: inherit;
+}
+
+.authContent {
+  padding: 1.5rem;
+}
+
+.authFooter {
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.875rem;
+  color: #6b7280;
+  border-top: 1px solid #e5e7eb;
+}
