@@ -1,13 +1,14 @@
+// src/components/header/Header.tsx
 'use client';
 
 import React from 'react';
 
-import { PersonIcon } from '@radix-ui/react-icons';
 import { Flex, Link as RadixLink } from '@radix-ui/themes';
 import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+import { UserAvatar } from '@/components/profile/UserAvatar';
 import { ThemeToggle } from '@/components/theme-toggle';
 
 import styles from './Header.module.scss';
@@ -25,7 +26,7 @@ export const Header = () => {
 						<div className={styles.logo}>
 							<Image
 								src="/logo.png"
-								alt="Radix UI Logo"
+								alt="Animation Playground Logo"
 								width={'36'}
 								height={'36'}
 							/>
@@ -55,14 +56,13 @@ export const Header = () => {
 				</Flex>
 
 				<div className={styles.rightSection}>
-					{/* Profile Button */}
-					<Link href="/profile" passHref legacyBehavior>
-						<RadixLink className={styles.profileButton}>
-							<PersonIcon width={24} height={24} />
-						</RadixLink>
+					{/* Profile Button with Avatar */}
+					<Link href="/profile" passHref>
+						<div className={styles.profileButton}>
+							<UserAvatar />
+						</div>
 					</Link>
 
-					{/*	<ThemeSwitcher />*/}
 					<ThemeToggle />
 				</div>
 			</div>

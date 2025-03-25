@@ -9,8 +9,8 @@ interface AnimatedContainerProps {
 }
 
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
-																		children,
-																	}) => {
+	children,
+}) => {
 	return (
 		<>
 			<Heading className={styles.title}>Animation box</Heading>

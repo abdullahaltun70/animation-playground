@@ -10,9 +10,6 @@ const nextConfig: NextConfig = {
 		// Ignore type check during build, already performed as part of the CI/CD pipeline
 		ignoreBuildErrors: true,
 	},
-	sassOptions: {
-		includePaths: [path.join(__dirname, 'src/styles')],
-	},
 };
 
 export default nextConfig;
