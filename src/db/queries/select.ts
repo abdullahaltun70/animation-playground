@@ -9,7 +9,7 @@ export async function getUserById(id: SelectUser['id']): Promise<
 		id: number;
 		firstName: string;
 		lastName: string;
-		role: string;
+		role: 'DESIGNER' | 'DEVELOPER' | null;
 		email: string;
 	}>
 > {
@@ -26,4 +26,8 @@ export async function getConfigById(id: SelectConfig['id']): Promise<
 	}>
 > {
 	return db.select().from(configsTable).where(eq(configsTable.id, id));
+}
+
+export async function getConfigsByUserId(userId: number) {
+	return db.select().from(configsTable).where(eq(configsTable.userId, userId));
 }

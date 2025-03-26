@@ -6,6 +6,7 @@ import {
 	serial,
 	text,
 	timestamp,
+	varchar,
 } from 'drizzle-orm/pg-core';
 
 export const ROLE_ENUM = pgEnum('role', ['DESIGNER', 'DEVELOPER']);
@@ -21,8 +22,10 @@ export const usersTable = pgTable('users_table', {
 });
 
 export const configsTable = pgTable('configs_table', {
-	id: serial('id').primaryKey(),
+	id: serial('id').primaryKey().notNull(),
 	configData: json('config_data'),
+	title: varchar('title', { length: 30 }).notNull(),
+	description: varchar('description', { length: 255 }),
 	userId: integer('user_id')
 		.notNull()
 		.references(() => usersTable.id, { onDelete: 'cascade' }),

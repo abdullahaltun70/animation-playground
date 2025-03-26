@@ -26,7 +26,11 @@ export function UserAvatar() {
 				if (user) {
 					setIsAuthenticated(true);
 
-					if (user.user_metadata) {
+					// Generate initials from email if no metadata is available
+					if (
+						user.user_metadata &&
+						Object.keys(user.user_metadata).length > 0
+					) {
 						// Get name from Google metadata
 						const fullName =
 							user.user_metadata.name || user.user_metadata.full_name || '';
@@ -40,16 +44,20 @@ export function UserAvatar() {
 						let userInitials = '';
 
 						if (names.length >= 2) {
-							// First letter of first name + First letter of last name
 							userInitials =
 								`${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
 						} else if (names.length === 1 && names[0]) {
-							// Just first letter if only one name
 							userInitials = names[0][0].toUpperCase();
 						}
 
 						setInitials(userInitials);
 						setImageUrl(picture);
+						console.log('userInitials', userInitials);
+					} else if (user.email) {
+						// For email login: use first two letters of email
+						const emailInitials = user.email.substring(0, 2).toUpperCase();
+						console.log('Email initials:', emailInitials);
+						setInitials(emailInitials);
 					}
 				} else {
 					setIsAuthenticated(false);
