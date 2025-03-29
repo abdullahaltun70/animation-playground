@@ -1,28 +1,29 @@
 // src/app/(auth)/layout.tsx
-import { ReactNode } from 'react';
+import React, { ReactNode } from 'react';
 
+import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import { Header } from '@/components/header';
-
-import styles from './auth.module.scss';
+import styles from './login.module.scss'; // Gebruik de layout specifieke styles
 
 export default function AuthLayout({ children }: { children: ReactNode }) {
 	return (
 		<div className={styles.authContainer}>
-			{/*<div className={styles.authCard}>*/}
-			{/*	<div className={styles.authHeader}>*/}
-			{/*		<Link href="/" className={styles.logo}>*/}
-			{/*			<h2>Animation Playground ✨</h2>*/}
-			{/*		</Link>*/}
-			{/*	</div>*/}
+			<div className={styles.authCard}>
+				<header className={styles.authHeader}>
+					<Link href={'/'} className={styles.logoLink}>
+						<h1 className={styles.headerTitle}>
+							<ArrowLeft size={20} /> Animation Playground ✨
+						</h1>
+					</Link>
+				</header>
 
-			<div className={styles.authContent}>{children}</div>
+				<main className={styles.authContent}>{children}</main>
 
-			{/*	<div className={styles.authFooter}>*/}
-			{/*		<p>© {new Date().getFullYear()} Framna</p>*/}
-			{/*	</div>*/}
-			{/*</div>*/}
+				<footer className={styles.authFooter}>
+					© {new Date().getFullYear()} Framna
+				</footer>
+			</div>
 		</div>
 	);
 }

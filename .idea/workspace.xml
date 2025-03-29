@@ -4,19 +4,42 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="Added: Supabase Auth with google and email working!&#10;&#10;AuthComponent instead of AuthUI from Supabase&#10;&#10;added: avatar for profile and fixed profile page">
-      <change afterPath="$PROJECT_DIR$/src/components/config-panel/UserConfigs.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling">
+      <change afterPath="$PROJECT_DIR$/src/app/(auth)/hooks/useAuth.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AlertComponent.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/GoogleButton.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/styles/AuthComponent.module.scss" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/db/queries/config.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/utils/actions/supabase/users.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/auth.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/confirm/route.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/actions.ts" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/page.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/GoogleOneTap.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/page.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/page.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/private/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/RegistrationForm.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/SignupForm.module.scss" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/page.tsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/profile/UserAvatar.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/UserAvatar.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/components/profile/UserAvatar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/UserAvatar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/queries/select.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/select.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/supabase/client.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/supabase/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/supabase/server.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/supabase/migrations/meta/_journal.json" beforeDir="false" afterPath="$PROJECT_DIR$/supabase/migrations/meta/_journal.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types.d.ts" afterDir="false" />
     </list>
@@ -32,6 +55,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -66,6 +90,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.config.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "supabase-integration",
@@ -78,7 +103,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "prettierjs.PrettierConfiguration.Package": "/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier",
-    "settings.editor.selected.configurable": "preferences.editor",
+    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
     "ts.external.directory.path": "/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -93,11 +118,11 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/(auth)/login/styles" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login/components" />
       <recent name="$PROJECT_DIR$/src/db" />
       <recent name="$PROJECT_DIR$/src/" />
-      <recent name="$PROJECT_DIR$/src/app/(main)/playground" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -120,7 +145,9 @@
       <workItem from="1741959580953" duration="26086000" />
       <workItem from="1742476544084" duration="5678000" />
       <workItem from="1742484245435" duration="3583000" />
-      <workItem from="1742844004846" duration="37151000" />
+      <workItem from="1742844004846" duration="39227000" />
+      <workItem from="1743064727875" duration="1367000" />
+      <workItem from="1743066114659" duration="37939000" />
     </task>
     <task id="LOCAL-00001" summary="add initial components and layout for animation playground">
       <option name="closed" value="true" />
@@ -170,7 +197,15 @@
       <option name="project" value="LOCAL" />
       <updated>1742914962743</updated>
     </task>
-    <option name="localTasksCounter" value="7" />
+    <task id="LOCAL-00007" summary="feat: enhance AuthComponent with Google and email authentication, add alert notifications, and improve form handling&#10;&#10;Added: insert working for configs!">
+      <option name="closed" value="true" />
+      <created>1743001506759</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743001506760</updated>
+    </task>
+    <option name="localTasksCounter" value="8" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -208,6 +243,8 @@
     <MESSAGE value="refactor: rename SCSS files to PascalCase and update imports in components" />
     <MESSAGE value="Added: Supabase integration with authentication&#10;&#10;Google and email auth working!&#10;&#10;TODO: Change Auth component for @tanstack-form. With this I have more control over the input fields and behaviour of the submit actions." />
     <MESSAGE value="Added: Supabase Auth with google and email working!&#10;&#10;AuthComponent instead of AuthUI from Supabase&#10;&#10;added: avatar for profile and fixed profile page" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added: Supabase Auth with google and email working!&#10;&#10;AuthComponent instead of AuthUI from Supabase&#10;&#10;added: avatar for profile and fixed profile page" />
+    <MESSAGE value="feat: enhance AuthComponent with Google and email authentication, add alert notifications, and improve form handling&#10;&#10;Added: insert working for configs!" />
+    <MESSAGE value="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling" />
   </component>
 </project>

@@ -52,11 +52,9 @@ export function UserAvatar() {
 
 						setInitials(userInitials);
 						setImageUrl(picture);
-						console.log('userInitials', userInitials);
 					} else if (user.email) {
 						// For email login: use first two letters of email
 						const emailInitials = user.email.substring(0, 2).toUpperCase();
-						console.log('Email initials:', emailInitials);
 						setInitials(emailInitials);
 					}
 				} else {
@@ -90,7 +88,7 @@ export function UserAvatar() {
 		return () => {
 			subscription.unsubscribe();
 		};
-	}, []);
+	}, [supabase.auth]);
 
 	if (isLoading) {
 		return <Avatar size="2" radius="full" fallback="" />;

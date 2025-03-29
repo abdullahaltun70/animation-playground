@@ -1,13 +1,12 @@
 // types.ts
 export interface Config {
-	id: string;
-	name: string;
+	id: number;
+	config_data: string;
+	title: string;
 	description: string;
-	code_snippet: string;
+	user_id: string;
 	created_at: string;
 	updated_at: string;
-	user_id: string;
-	is_public: boolean;
 }
 
 export type ConfigInsert = Omit<Config, 'id' | 'created_at' | 'updated_at'>;
