@@ -1,8 +1,8 @@
 // app/(main)/profile/page.tsx
 import { redirect } from 'next/navigation';
 
-import { getConfigsByUserId } from '@/db/queries/config';
-import type { Config } from '@/db/queries/config';
+import { getConfigsByUserId } from '@/db/queries/read';
+import type { Config } from '@/db/schema';
 import { createClient } from '@/utils/supabase/server';
 
 import ProfileClientPage from './ProfileClientPage';
@@ -40,8 +40,9 @@ export default async function ProfilePageServer() {
 
 		try {
 			// We moeten supabase hier doorgeven, wat nu een awaited supabase client is
-			const configs = await getConfigsByUserId(supabase, user.id);
-			initialConfigs = configs || [];
+			// const configs = await getConfigsByUserId(user.id);
+			// initialConfigs = configs || [];
+			initialConfigs = await getConfigsByUserId(user.id);
 		} catch (error) {
 			console.error('Error fetching initial configs:', error);
 			initialError =

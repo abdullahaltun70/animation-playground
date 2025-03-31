@@ -2,8 +2,8 @@ import { eq } from 'drizzle-orm';
 
 import { db } from '@/db';
 
-import { SelectUser, usersTable } from '../schema';
+import { configsTable } from '../schema';
 
-export async function deleteUser(id: SelectUser['id']) {
-	await db.delete(usersTable).where(eq(usersTable.id, id));
+async function deleteConfig(id: number) {
+	await db.delete(configsTable).where(eq(configsTable.id, id));
 }

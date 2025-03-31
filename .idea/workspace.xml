@@ -5,43 +5,20 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling">
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/hooks/useAuth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AlertComponent.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/GoogleButton.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/styles/AuthComponent.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/queries/config.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/actions/supabase/users.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/db/queries/create.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/next.config.ts" beforeDir="false" afterPath="$PROJECT_DIR$/next.config.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/auth.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/confirm/route.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/actions.ts" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/GoogleOneTap.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/page.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/private/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/RegistrationForm.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/SignupForm.module.scss" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/register/page.tsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/main.globals.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/header/Header.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/header/Header.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/header/Header.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/UserAvatar.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/UserAvatar.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/profile/UserAvatar.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/profile/UserAvatar.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/theme-toggle/ThemeToggle.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/supabase/client.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/supabase/client.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/utils/supabase/server.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/supabase/server.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/supabase/migrations/meta/_journal.json" beforeDir="false" afterPath="$PROJECT_DIR$/supabase/migrations/meta/_journal.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/delete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/delete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/insert.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/select.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/read.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/update.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -73,7 +50,7 @@
     <setting file="file://$PROJECT_DIR$/node_modules/@radix-ui/themes/src/components/theme-panel.tsx" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -103,7 +80,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "prettierjs.PrettierConfiguration.Package": "/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier",
-    "settings.editor.selected.configurable": "settings.javascript.linters.eslint",
+    "settings.editor.selected.configurable": "settings.sync",
     "ts.external.directory.path": "/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -118,17 +95,17 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/db" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login/styles" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login/components" />
-      <recent name="$PROJECT_DIR$/src/db" />
       <recent name="$PROJECT_DIR$/src/" />
     </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
@@ -147,7 +124,8 @@
       <workItem from="1742484245435" duration="3583000" />
       <workItem from="1742844004846" duration="39227000" />
       <workItem from="1743064727875" duration="1367000" />
-      <workItem from="1743066114659" duration="37939000" />
+      <workItem from="1743066114659" duration="38165000" />
+      <workItem from="1743428807786" duration="18084000" />
     </task>
     <task id="LOCAL-00001" summary="add initial components and layout for animation playground">
       <option name="closed" value="true" />
@@ -205,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1743001506760</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling">
+      <option name="closed" value="true" />
+      <created>1743214532608</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743214532611</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

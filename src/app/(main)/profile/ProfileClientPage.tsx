@@ -7,7 +7,7 @@ import Image from 'next/image';
 import { Toast } from 'radix-ui';
 
 import { SignOutButton } from '@/components/profile/SignOutButton';
-import type { Config } from '@/db/queries/config';
+import type { Config } from '@/db/schema';
 import { saveConfig } from '@/utils/actions/supabase/configs';
 
 import styles from './page.module.scss';
@@ -30,7 +30,7 @@ export default function ProfileClientPage({
 	initialError,
 }: ProfileClientPageProps) {
 	const [configs, setConfigs] = useState<Config[]>(initialConfigs);
-	const [errorConfigs, setErrorConfigs] = useState<string | null>(initialError);
+	const [errorConfigs] = useState<string | null>(initialError);
 	const [configTitle, setConfigTitle] = useState('');
 	const [configDesc, setConfigDesc] = useState('');
 	const [configDataString, setConfigDataString] = useState('');
@@ -39,7 +39,6 @@ export default function ProfileClientPage({
 
 	const [open, setOpen] = useState(false);
 
-	// Handler for form submission
 	async function handleSaveConfig(e: FormEvent) {
 		e.preventDefault();
 		setIsPending(true);
@@ -173,7 +172,7 @@ export default function ProfileClientPage({
 								<h3>{config.title}</h3>
 								{config.description && <p>{config.description}</p>}
 								<p className={styles.date}>
-									Created: {new Date(config.created_at).toLocaleDateString()}
+									Created: {new Date(config.createdAt).toDateString()}
 								</p>
 							</div>
 						))}
