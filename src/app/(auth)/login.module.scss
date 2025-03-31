@@ -1,0 +1,62 @@
+// src/app/(auth)/login.module.scss
+.authContainer {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	min-height: 100vh;
+	background-color: var(--color-background);
+	padding: 1rem; // Padding voor kleinere schermen
+}
+
+.authCard {
+	width: 100%;
+	max-width: 480px; // Iets breder zoals in origineel?
+	background-color: var(--card-bg); // Gebruik theme var
+	border: 1px solid var(--border-color); // Gebruik theme var
+	border-radius: 8px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+}
+
+.authHeader {
+	padding: 1.5rem 1.5rem 0; // Minder padding onderaan als divider volgt
+	text-align: center;
+	// border-bottom: 1px solid var(--border-color); // Verwijder als divider in content komt
+}
+
+.logoLink {
+	text-decoration: none;
+	color: inherit; // Erf kleur
+	display: inline-block; // Zodat margin/padding werkt indien nodig
+}
+
+.headerTitle {
+	font-size: 24px; // Maak het iets kleiner?
+	font-weight: bold;
+	color: var(--color-primary);
+	margin: 0 0 1.5rem 0; // Verwijder margin-bottom, gebruik padding op header
+	display: flex;
+	align-items: center;
+	gap: 0.5rem; // Ruimte tussen icoon en tekst
+	justify-content: center; // Centreer titel
+
+	&:hover {
+		color: var(--button-primary); // Gebruik theme var
+	}
+}
+
+.authContent {
+	padding: 1.5rem; // Consistentie padding
+	flex-grow: 1; // Zorgt dat content ruimte vult
+}
+
+.authFooter {
+	padding: 1rem 1.5rem;
+	text-align: center;
+	font-size: 0.875rem; // 14px
+	color: #999; // Match origineel of gebruik var(--color-secondary)
+	border-top: 1px solid var(--border-color); // Gebruik theme var
+	background-color: var(--card-bg); // Zelfde als kaart achtergrond
+}

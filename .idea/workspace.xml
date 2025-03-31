@@ -4,37 +4,21 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="refactor: rename SCSS files to PascalCase and update imports in components">
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/auth.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/layout.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/GoogleOneTap.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/page.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/login/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/private/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/register/RegistrationForm.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/register/SignupForm.module.scss" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(auth)/register/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/app/(main)/error/page.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/index.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/queries/delete.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/queries/insert.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/queries/select.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/queries/update.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/db/schema.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/actions/auth.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/supabase/client.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/supabase/middleware.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/utils/supabase/server.ts" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/types.d.ts" afterDir="false" />
+    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling">
+      <change afterPath="$PROJECT_DIR$/src/db/queries/create.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/auth/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/drizzle.config.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/auth/login/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/middleware.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/auth/register/page.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/confirm/route.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/config.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/delete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/delete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/insert.ts" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/select.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/read.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/update.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/schema.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/schema.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/types.d.ts" beforeDir="false" afterPath="$PROJECT_DIR$/types.d.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/yarn.lock" beforeDir="false" afterPath="$PROJECT_DIR$/yarn.lock" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -44,10 +28,11 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="supabase-integration" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
   &quot;lastFilter&quot;: {
@@ -65,7 +50,7 @@
     <setting file="file://$PROJECT_DIR$/node_modules/@radix-ui/themes/src/components/theme-panel.tsx" root0="SKIP_INSPECTION" />
   </component>
   <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="selectedTabId" value="ProjectErrors" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -82,6 +67,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.config.ts.executor": "Run",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "supabase-integration",
@@ -94,7 +80,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "yarn",
     "prettierjs.PrettierConfiguration.Package": "/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier",
-    "settings.editor.selected.configurable": "settings.javascript.prettier",
+    "settings.editor.selected.configurable": "settings.sync",
     "ts.external.directory.path": "/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib",
     "vue.rearranger.settings.migration": "true"
   },
@@ -110,16 +96,16 @@
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
       <recent name="$PROJECT_DIR$/src/db" />
+      <recent name="$PROJECT_DIR$/src/app/(auth)/login/styles" />
+      <recent name="$PROJECT_DIR$/src/app/(auth)/login" />
+      <recent name="$PROJECT_DIR$/src/app/(auth)/login/components" />
       <recent name="$PROJECT_DIR$/src/" />
-      <recent name="$PROJECT_DIR$/src/app/(main)/playground" />
-      <recent name="$PROJECT_DIR$/public" />
-      <recent name="$PROJECT_DIR$/src/app/(main)" />
     </key>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-js-predefined-d6986cc7102b-822845ee3bb5-JavaScript-WS-243.23654.157" />
+        <option value="bundled-js-predefined-d6986cc7102b-1632447f56bf-JavaScript-WS-243.26053.12" />
       </set>
     </attachedChunks>
   </component>
@@ -135,7 +121,11 @@
       <workItem from="1741950299096" duration="3176000" />
       <workItem from="1741959580953" duration="26086000" />
       <workItem from="1742476544084" duration="5678000" />
-      <workItem from="1742484245435" duration="2571000" />
+      <workItem from="1742484245435" duration="3583000" />
+      <workItem from="1742844004846" duration="39227000" />
+      <workItem from="1743064727875" duration="1367000" />
+      <workItem from="1743066114659" duration="38165000" />
+      <workItem from="1743428807786" duration="18084000" />
     </task>
     <task id="LOCAL-00001" summary="add initial components and layout for animation playground">
       <option name="closed" value="true" />
@@ -169,7 +159,39 @@
       <option name="project" value="LOCAL" />
       <updated>1742400082611</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added: Supabase integration with authentication&#10;&#10;Google and email auth working!&#10;&#10;TODO: Change Auth component for @tanstack-form. With this I have more control over the input fields and behaviour of the submit actions.">
+      <option name="closed" value="true" />
+      <created>1742489387861</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1742489387861</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Added: Supabase Auth with google and email working!&#10;&#10;AuthComponent instead of AuthUI from Supabase&#10;&#10;added: avatar for profile and fixed profile page">
+      <option name="closed" value="true" />
+      <created>1742914962743</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1742914962743</updated>
+    </task>
+    <task id="LOCAL-00007" summary="feat: enhance AuthComponent with Google and email authentication, add alert notifications, and improve form handling&#10;&#10;Added: insert working for configs!">
+      <option name="closed" value="true" />
+      <created>1743001506759</created>
+      <option name="number" value="00007" />
+      <option name="presentableId" value="LOCAL-00007" />
+      <option name="project" value="LOCAL" />
+      <updated>1743001506760</updated>
+    </task>
+    <task id="LOCAL-00008" summary="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling">
+      <option name="closed" value="true" />
+      <created>1743214532608</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1743214532611</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -205,6 +227,10 @@
     <MESSAGE value="refactor: clean up imports and improve component structure in playground" />
     <MESSAGE value="refactor: rename SCSS files to lowercase and improve structure in components" />
     <MESSAGE value="refactor: rename SCSS files to PascalCase and update imports in components" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: rename SCSS files to PascalCase and update imports in components" />
+    <MESSAGE value="Added: Supabase integration with authentication&#10;&#10;Google and email auth working!&#10;&#10;TODO: Change Auth component for @tanstack-form. With this I have more control over the input fields and behaviour of the submit actions." />
+    <MESSAGE value="Added: Supabase Auth with google and email working!&#10;&#10;AuthComponent instead of AuthUI from Supabase&#10;&#10;added: avatar for profile and fixed profile page" />
+    <MESSAGE value="feat: enhance AuthComponent with Google and email authentication, add alert notifications, and improve form handling&#10;&#10;Added: insert working for configs!" />
+    <MESSAGE value="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling" />
   </component>
 </project>

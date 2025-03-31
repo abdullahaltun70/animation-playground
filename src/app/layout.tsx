@@ -1,11 +1,12 @@
+import React from 'react';
+
+import { Theme } from '@radix-ui/themes';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
 import { ThemeProvider } from 'next-themes';
-import { Theme } from '@radix-ui/themes';
 
 import '@radix-ui/themes/styles.css';
-import React from 'react';
 
 const geistSans = Geist({
 	variable: '--font-geist-sans',
@@ -29,12 +30,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="en" suppressHydrationWarning>
-			<head>
-				<script src="https://accounts.google.com/gsi/client" async></script>
-			</head>
 			<body className={`${geistSans.variable} ${geistMono.variable}`}>
 				<ThemeProvider attribute={'class'} defaultTheme={'system'}>
-					<Theme appearance="inherit" radius="large">
+					<Theme appearance="inherit" radius="large" accentColor={'indigo'}>
 						{children}
 					</Theme>
 				</ThemeProvider>

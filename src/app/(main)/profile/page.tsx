@@ -1,81 +1,65 @@
-// // app/(main)/profile/page.tsx
-// import { redirect } from 'next/navigation';
-//
-// import { createClient } from '@/utils/supabase/server';
-//
-// import styles from './page.module.scss';
-//
-// export default async function Profile() {
-// 	const supabase = await createClient();
-//
-// 	const { data, error } = await supabase.auth.getUser();
-// 	if (error || !data?.user) {
-// 		redirect('/login');
-// 	}
-//
-// 	return <p>Hello {data.user.email}</p>;
-// }
-
-// src/app/profile/page.tsx
-'use client';
-
-import { useEffect, useState } from 'react';
-
+// app/(main)/profile/page.tsx
 import { redirect } from 'next/navigation';
 
-import { createClient } from '@/utils/supabase/client';
+import { getConfigsByUserId } from '@/db/queries/read';
+import type { Config } from '@/db/schema';
+import { createClient } from '@/utils/supabase/server';
 
-import styles from './page.module.scss';
+import ProfileClientPage from './ProfileClientPage';
 
-export default function ProfilePage() {
-	const [email, setEmail] = useState<string | null>(null);
-	const [loading, setLoading] = useState(true);
-	const supabase = createClient();
+interface UserInfo {
+	id: string;
+	email: string;
+	name: string;
+	avatar_url?: string;
+}
 
-	useEffect(() => {
-		const getUser = async () => {
-			const {
-				data: { user },
-				error,
-			} = await supabase.auth.getUser();
+export default async function ProfilePageServer() {
+	// Omdat createClient nu asynchroon is, moeten we het awaiten
+	const supabase = await createClient();
 
-			if (error || !user) {
-				redirect('/login');
-				return;
-			}
+	const {
+		data: { user },
+		error,
+	} = await supabase.auth.getUser();
 
-			setEmail(user.email!);
-			setLoading(false);
-		};
-
-		getUser();
-	}, []);
-
-	const handleSignOut = async () => {
-		await supabase.auth.signOut();
-		redirect('/');
-	};
-
-	if (loading) {
-		return <div>Loading...</div>;
+	if (error || !user) {
+		redirect('/login');
 	}
 
-	return (
-		// <div className="max-w-md mx-auto mt-10 p-6 border rounded-md">
-		// 	<h1 className="text-2xl font-bold mb-4">Profile</h1>
-		// 	<p className="mb-6">Email: {email}</p>
-		// 	<button
-		// 		onClick={handleSignOut}
-		// 		className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
-		// 	>
-		// 		Sign Out
-		// 	</button>
-		// </div>
+	try {
+		const userInfo: UserInfo = {
+			id: user.id,
+			email: user.email ?? '',
+			name: user.user_metadata?.name || 'N/A',
+			avatar_url: user.user_metadata?.avatar_url,
+		};
 
-		<div className={styles.profileContainer}>
-			<h1>Profile</h1>
-			<p>Email: {email}</p>
-			<button onClick={handleSignOut}>Sign Out</button>
-		</div>
-	);
+		let initialConfigs: Config[] = [];
+		let initialError: string | null = null;
+
+		try {
+			// We moeten supabase hier doorgeven, wat nu een awaited supabase client is
+			// const configs = await getConfigsByUserId(user.id);
+			// initialConfigs = configs || [];
+			initialConfigs = await getConfigsByUserId(user.id);
+		} catch (error) {
+			console.error('Error fetching initial configs:', error);
+			initialError =
+				error instanceof Error
+					? error.message
+					: 'Failed to load initial configs';
+		}
+
+		return (
+			<ProfileClientPage
+				userInfo={userInfo}
+				initialConfigs={initialConfigs}
+				initialError={initialError}
+			/>
+		);
+	} catch (error) {
+		console.error('Unexpected error in ProfilePageServer:', error);
+		redirect('/login');
+	}
 }
