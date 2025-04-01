@@ -34,6 +34,45 @@
 		}
 	}
 
+	.card {
+        border: 1px solid var(--border-color);
+        padding: 1rem;
+        margin-bottom: 1rem;
+
+		.contentArea {
+			flex: 1;
+		}
+
+		.actionIcons {
+			display: flex;
+			gap: 0.5rem;
+			color: var(--text-secondary);
+			position: absolute;
+			right: 0;
+			top: 0;
+
+			svg {
+				margin: 1rem;
+				cursor: pointer;
+				padding: 0.25rem;
+				transition: color 0.2s;
+
+				&:hover {
+					color: var(--text-primary);
+				}
+			}
+
+			h2 {
+				margin-bottom: 1rem;
+			}
+
+			p {
+				margin-bottom: 0;
+			}
+		}
+
+	}
+
 	.configList {
 		margin-top: 2rem;
 		border-top: 1px solid #eee;

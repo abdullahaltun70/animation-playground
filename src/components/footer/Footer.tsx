@@ -10,7 +10,7 @@ export const Footer = () => {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className={`${styles.footer} fade-in`}>
+		<footer className={styles.footer}>
 			<div className={styles.footerContent}>
 				{/* Copyright */}
 				<Text size="2">© {currentYear} Animation Playground</Text>

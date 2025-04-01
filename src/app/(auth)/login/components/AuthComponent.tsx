@@ -267,6 +267,7 @@ const AuthComponent: React.FC = () => {
 				setShowAlert={setShowAlert}
 				alertTitle={alertTitle}
 				alertMessage={alertMessage}
+				onConfirm={() => setShowAlert(false)}
 			/>
 		</>
 	);

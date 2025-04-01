@@ -5,6 +5,7 @@ import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
 import { createConfig } from '@/db/queries/create';
+import { deleteConfig } from '@/db/queries/delete';
 import { Config } from '@/db/schema';
 import { createClient } from '@/utils/supabase/server';
 
@@ -119,5 +120,42 @@ export async function saveConfig(
 		const errorMessage =
 			error instanceof Error ? error.message : 'An unknown error occurred.';
 		return { success: false, message: `Error saving config: ${errorMessage}` };
+	}
+}
+
+export async function removeConfig(
+	configId: string,
+): Promise<{ success: boolean; message: string }> {
+	const supabase = await createClient();
+
+	try {
+		const {
+			data: { user },
+			error: authError,
+		} = await supabase.auth.getUser();
+
+		if (authError || !user) {
+			return {
+				success: false,
+				message: 'Authentication required or session invalid.',
+			};
+		}
+
+		await deleteConfig(configId);
+		revalidatePath('/profile');
+
+		return {
+			success: true,
+			message: 'Configuration deleted successfully',
+		};
+	} catch (error) {
+		console.error('[Server Action] Error deleting config:', error);
+		return {
+			success: false,
+			message:
+				error instanceof Error
+					? error.message
+					: 'Failed to delete configuration',
+		};
 	}
 }
