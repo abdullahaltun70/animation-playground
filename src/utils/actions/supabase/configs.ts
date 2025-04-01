@@ -8,6 +8,28 @@ import { createConfig } from '@/db/queries/create';
 import { Config } from '@/db/schema';
 import { createClient } from '@/utils/supabase/server';
 
+/**
+ * **Server action that saves a new configuration to the database.**
+ *
+ * @param title - Configuration title (required, max 30 chars)
+ * @param description - Optional configuration description (max 255 chars)
+ * @param configData - Optional JSON configuration data (max 10000 chars)
+ *
+ * @returns Promise<{
+ *   success: boolean - Indicates if operation was successful
+ *   message: string - Status or error message
+ *   data?: Config[] - Array of created config(s) if successful
+ * }>
+ *
+ * @throws Will redirect to /login if no valid session exists
+ *
+ * @example
+ * const result = await saveConfig(
+ *   title: "My Config",
+ *   description: "Config description",
+ *   configData: JSON.stringify({ key: "value" })
+ * );
+ */
 export async function saveConfig(
 	title: string,
 	description: string | null,
@@ -71,7 +93,7 @@ export async function saveConfig(
 		);
 
 		if (newConfig) {
-			revalidatePath('/profile');
+			revalidatePath('/profile'); // removes cache for the profile page
 			return {
 				success: true,
 				message: 'Config saved successfully!',

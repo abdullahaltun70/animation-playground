@@ -15,7 +15,6 @@ interface UserInfo {
 }
 
 export default async function ProfilePageServer() {
-	// Omdat createClient nu asynchroon is, moeten we het awaiten
 	const supabase = await createClient();
 
 	const {
@@ -39,9 +38,6 @@ export default async function ProfilePageServer() {
 		let initialError: string | null = null;
 
 		try {
-			// We moeten supabase hier doorgeven, wat nu een awaited supabase client is
-			// const configs = await getConfigsByUserId(user.id);
-			// initialConfigs = configs || [];
 			initialConfigs = await getConfigsByUserId(user.id);
 		} catch (error) {
 			console.error('Error fetching initial configs:', error);

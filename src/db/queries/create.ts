@@ -3,6 +3,26 @@ import { db } from '@/db';
 import { configsTable } from '@/db/schema';
 import { Config } from '@/db/schema';
 
+/**
+ * Creates a new configuration record in the database.
+ *
+ * @param title - Configuration title
+ * @param description - Optional configuration description
+ * @param configData - Optional JSON configuration data
+ * @param userId - ID of user creating the config (UUID)
+ *
+ * @returns Promise<Config[]> - Array containing the newly created config
+ *
+ * @throws Error if insert operation fails or returns no data
+ *
+ * @example
+ * const newConfig = await createConfig(
+ *   "My Config",
+ *   "Description",
+ *   "<Animation props={prop} />",
+ *   "userId"
+ * );
+ */
 export async function createConfig(
 	title: string,
 	description: string | null,

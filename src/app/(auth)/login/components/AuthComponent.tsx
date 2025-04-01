@@ -3,7 +3,7 @@
 
 import React, { useEffect, useState } from 'react';
 
-import { Button, Flex, Link as RadixLink, Text } from '@radix-ui/themes'; // Gebruik Radix Text & Link
+import { Button, Flex, Link as RadixLink, Text } from '@radix-ui/themes';
 import { useForm } from 'react-hook-form';
 
 import {
@@ -16,14 +16,12 @@ import GoogleButton from '@/app/(auth)/login/components/GoogleButton';
 import AlertNotification from './AlertComponent';
 import styles from '../styles/AuthComponent.module.scss';
 
-// --- Type definities (ongewijzigd) ---
 enum AuthView {
 	SIGN_IN,
 	SIGN_UP,
 	FORGOT_PASSWORD,
 }
 
-// --- Hulpcomponenten (optioneel, voor leesbaarheid) ---
 interface AuthLinkProps {
 	onClick: (event: React.MouseEvent<HTMLAnchorElement>) => void;
 	children: React.ReactNode;
@@ -58,14 +56,14 @@ const AuthButton: React.FC<AuthButtonProps> = ({
 // --- Hoofdcomponent ---
 
 const AuthComponent: React.FC = () => {
-	// Gebruik de custom hook om state en handlers te krijgen
+	// Use custom hook to get state and actions
 	const {
 		loading,
 		error,
 		showAlert,
 		alertTitle,
 		alertMessage,
-		setError, // Krijg setError van de hook
+		setError,
 		setShowAlert,
 		handleGoogleSignIn,
 		handleSignIn,
@@ -79,23 +77,19 @@ const AuthComponent: React.FC = () => {
 	const signUpForm = useForm<SignUpFormData>();
 	const forgotPasswordForm = useForm<{ email: string }>();
 
-	// Nu resetten we de error state *van de hook*
+	// Reset error and form state on view change (and form reset)
 	useEffect(() => {
 		setError(null);
 		signInForm.reset();
 		signUpForm.reset();
 		forgotPasswordForm.reset();
-		// We hoeven geen loading/alert state te resetten, dat doet de hook zelf per actie
-	}, [view, setError, signInForm, signUpForm, forgotPasswordForm]); // Voeg setError toe aan dependencies
+	}, [view, setError, signInForm, signUpForm, forgotPasswordForm]);
 
-	// --- ASYNCHRONE WRAPPERS VOOR HANDLERS (om view te kunnen switchen) ---
-	// We maken kleine async wrappers zodat we de 'await' kunnen gebruiken
-	// en de return value van de hook handlers kunnen checken.
+	// --- ASYNCHRONE WRAPPERS FOR HANDLERS (to switch view) ---
 
 	const onSignUpSubmit = async (data: SignUpFormData) => {
 		const success = await handleSignUp(data);
 		if (success) {
-			// Optioneel: direct naar login na succesvolle registratie-aanvraag
 			setView(AuthView.SIGN_IN);
 		}
 	};
@@ -103,7 +97,6 @@ const AuthComponent: React.FC = () => {
 	const onPasswordResetSubmit = async (data: { email: string }) => {
 		const success = await handlePasswordReset(data);
 		if (success) {
-			// Ga terug naar login view *alleen* als de reset mail succesvol is verstuurd
 			setView(AuthView.SIGN_IN);
 		}
 	};
@@ -111,7 +104,7 @@ const AuthComponent: React.FC = () => {
 	const renderSignInForm = () => (
 		<>
 			<GoogleButton onClick={handleGoogleSignIn} loading={loading} />
-			<div className={styles.divider}>OR</div> {/* Duidelijkere divider */}
+			<div className={styles.divider}>OR</div>
 			<form
 				onSubmit={signInForm.handleSubmit(handleSignIn)}
 				className={styles.form}
@@ -171,7 +164,6 @@ const AuthComponent: React.FC = () => {
 					required
 					{...signUpForm.register('email', { required: 'Email is required' })}
 				/>
-				{/* Toon specifieke errors */}
 				{signUpForm.formState.errors.email && (
 					<Text size="2" color="red" className={styles.error}>
 						{signUpForm.formState.errors.email.message}
@@ -197,8 +189,6 @@ const AuthComponent: React.FC = () => {
 						{signUpForm.formState.errors.password.message}
 					</Text>
 				)}
-
-				{/* Algemene error */}
 
 				{error &&
 					!signUpForm.formState.errors.email &&
@@ -247,7 +237,6 @@ const AuthComponent: React.FC = () => {
 					</Text>
 				)}
 
-				{/* Algemene error van de hook */}
 				{error && !forgotPasswordForm.formState.errors.email && (
 					<Text size="2" color="red" className={styles.error}>
 						{error}
@@ -273,7 +262,6 @@ const AuthComponent: React.FC = () => {
 			{view === AuthView.SIGN_IN && renderSignInForm()}
 			{view === AuthView.SIGN_UP && renderSignUpForm()}
 			{view === AuthView.FORGOT_PASSWORD && renderForgotPasswordForm()}
-			{/* AlertNotification gebruikt nu direct state van de hook */}
 			<AlertNotification
 				showAlert={showAlert}
 				setShowAlert={setShowAlert}

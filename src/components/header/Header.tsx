@@ -1,9 +1,9 @@
 // src/components/header/Header.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react'; // Import useState, useEffect
+import React, { useEffect, useState } from 'react';
 
-import { ExitIcon, PersonIcon } from '@radix-ui/react-icons'; // Import ExitIcon
+import { ExitIcon, PersonIcon } from '@radix-ui/react-icons';
 import {
 	Button,
 	DropdownMenu,
@@ -13,24 +13,25 @@ import {
 } from '@radix-ui/themes';
 import Image from 'next/image';
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation'; // Import useRouter
+import { usePathname, useRouter } from 'next/navigation';
 
 import { UserAvatar } from '@/components/profile/UserAvatar';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { createClient } from '@/utils/supabase/client'; // Import supabase client
+import { createClient } from '@/utils/supabase/client';
 
 import styles from './Header.module.scss';
 
 export const Header = () => {
 	const pathname = usePathname();
-	const router = useRouter(); // Initialize router
-	const supabase = createClient(); // Initialize supabase
+	const router = useRouter();
+	const supabase = createClient();
 
 	const [isAuthenticated, setIsAuthenticated] = useState(false);
-	const [userEmail, setUserEmail] = useState<string | null>(null); // State for user email
-	const [isLoadingAuth, setIsLoadingAuth] = useState(true); // Loading state for auth check
+	const [userEmail, setUserEmail] = useState<string | null>(null);
+	const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
 	useEffect(() => {
+		// on change in auth, get the user metadata and update state
 		const checkAuth = async () => {
 			setIsLoadingAuth(true);
 			const {
@@ -44,14 +45,14 @@ export const Header = () => {
 
 		checkAuth();
 
-		// Listen for auth state changes
+		// Listen for auth state changes handled by onAuthStateChange
 		const {
 			data: { subscription },
 		} = supabase.auth.onAuthStateChange((_event, session) => {
 			const user = session?.user;
 			setIsAuthenticated(!!user);
 			setUserEmail(user?.email || null);
-			setIsLoadingAuth(false); // Update loading state on change too
+			setIsLoadingAuth(false);
 		});
 
 		// Cleanup subscription on unmount
@@ -62,10 +63,10 @@ export const Header = () => {
 
 	const handleSignOut = async () => {
 		await supabase.auth.signOut();
-		setIsAuthenticated(false); // Update state immediately for UI responsiveness
+		setIsAuthenticated(false);
 		setUserEmail(null);
-		router.push('/'); // Redirect to home page after sign out
-		router.refresh(); // Force refresh to clear potentially cached server data
+		router.push('/');
+		router.refresh();
 	};
 
 	return (

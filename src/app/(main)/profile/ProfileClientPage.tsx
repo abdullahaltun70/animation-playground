@@ -12,7 +12,6 @@ import { saveConfig } from '@/utils/actions/supabase/configs';
 
 import styles from './page.module.scss';
 
-// Client component props met expliciete types
 interface ProfileClientPageProps {
 	userInfo: {
 		id: string;
@@ -36,9 +35,20 @@ export default function ProfileClientPage({
 	const [configDataString, setConfigDataString] = useState('');
 	const [toastMessage, setToastMessage] = useState('');
 	const [isPending, setIsPending] = useState(false);
-
 	const [open, setOpen] = useState(false);
 
+	/**
+	 * Handles form submission to create a new configuration.
+	 *
+	 * @param e - Form submission event
+	 *
+	 * @example
+	 * <form onSubmit={handleSaveConfig}>
+	 *   // Form fields
+	 * </form>
+	 *
+	 * @throws Displays error message in toast notification
+	 */
 	async function handleSaveConfig(e: FormEvent) {
 		e.preventDefault();
 		setIsPending(true);
