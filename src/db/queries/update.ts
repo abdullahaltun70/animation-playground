@@ -4,9 +4,15 @@ import { db } from '@/db';
 
 import { configsTable } from '../schema';
 
-async function updateConfig(
+export async function updateConfig(
 	id: string,
 	data: Partial<typeof configsTable.$inferSelect>,
 ) {
-	await db.update(configsTable).set(data).where(eq(configsTable.id, id));
+	const [updatedRecord] = await db
+		.update(configsTable)
+		.set(data)
+		.where(eq(configsTable.id, id))
+		.returning();
+
+	return updatedRecord;
 }

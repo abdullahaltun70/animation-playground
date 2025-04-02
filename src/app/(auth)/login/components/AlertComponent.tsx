@@ -1,7 +1,7 @@
 // AlertNotification.tsx (Modified)
 import React from 'react';
 
-import { AlertDialog, Button, Flex } from '@radix-ui/themes';
+import { AlertDialog, Button, Dialog, Flex } from '@radix-ui/themes';
 
 interface AlertNotificationProps {
 	showAlert: boolean;
@@ -22,14 +22,14 @@ const AlertNotification: React.FC<AlertNotificationProps> = ({
 	confirmButtonText = 'Confirm',
 	cancelButtonText = 'Cancel',
 }) => (
-	<AlertDialog.Root open={showAlert} onOpenChange={setShowAlert}>
-		<AlertDialog.Content style={{ maxWidth: 450 }}>
+	<Dialog.Root open={showAlert} onOpenChange={setShowAlert}>
+		<Dialog.Content style={{ maxWidth: 450 }}>
 			{' '}
-			<AlertDialog.Title>{alertTitle}</AlertDialog.Title>
-			<AlertDialog.Description size="2">{alertMessage}</AlertDialog.Description>
+			<Dialog.Title>{alertTitle}</Dialog.Title>
+			<Dialog.Description size="2">{alertMessage}</Dialog.Description>
 			<Flex gap="3" mt="4" justify="end">
 				{/* Cancel Button */}
-				<AlertDialog.Cancel>
+				<Dialog.Close>
 					<Button
 						variant="soft"
 						color="gray"
@@ -37,9 +37,9 @@ const AlertNotification: React.FC<AlertNotificationProps> = ({
 					>
 						{cancelButtonText}
 					</Button>
-				</AlertDialog.Cancel>
+				</Dialog.Close>
 				{/* Confirm Button */}
-				<AlertDialog.Action>
+				<Dialog.Close>
 					<Button
 						variant="solid"
 						color="red"
@@ -49,10 +49,10 @@ const AlertNotification: React.FC<AlertNotificationProps> = ({
 					>
 						{confirmButtonText}
 					</Button>
-				</AlertDialog.Action>
+				</Dialog.Close>
 			</Flex>
-		</AlertDialog.Content>
-	</AlertDialog.Root>
+		</Dialog.Content>
+	</Dialog.Root>
 );
 
 export default AlertNotification;

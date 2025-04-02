@@ -4,19 +4,18 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="refactor: clean up AuthComponent and improve styling, enhance layout structure, and add detailed JSDoc comments">
-      <change afterPath="$PROJECT_DIR$/src/app/(main)/profile/components/EditConfig.tsx" afterDir="false" />
+    <list default="true" id="b03cdb65-fed5-45af-bb09-857720866496" name="Changes" comment="feat: implement config editing and deletion functionality in ProfileClientPage, enhance AlertNotification and EditConfigDialog components, and update styling&#10;&#10;Fixed: Config list updates after editing now!">
+      <change afterPath="$PROJECT_DIR$/src/app/(main)/profile/components/components.module.scss" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/AlertComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AlertComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(auth)/login/components/AuthComponent.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/(main)/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/layout.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/ProfileClientPage.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/components/EditConfig.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/components/EditConfigDialog.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/page.module.scss" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/app/globals.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/globals.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/app/page.module.css" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/page.module.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/Footer.module.scss" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/components/footer/Footer.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/components/footer/Footer.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/db/queries/delete.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/delete.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/app/layout.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/layout.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/components/profile/SignOutButton.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/app/(main)/profile/components/SignOutButton.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/db/queries/update.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/db/queries/update.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" beforeDir="false" afterPath="$PROJECT_DIR$/src/utils/actions/supabase/configs.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -63,42 +62,44 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Node.js.config.ts.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;update-delete-impl&quot;,
-    &quot;js.linters.configure.manually.selectedeslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.standard&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/eslint&quot;,
-    &quot;node.js.selected.package.standard&quot;: &quot;&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;yarn&quot;,
-    &quot;prettierjs.PrettierConfiguration.Package&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;settings.sync&quot;,
-    &quot;ts.external.directory.path&quot;: &quot;/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Node.js.config.ts.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "update-delete-impl",
+    "js.linters.configure.manually.selectedeslint": "true",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.standard": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "/Users/abdullah.altun/Projects/animation-playground/node_modules/eslint",
+    "node.js.selected.package.standard": "",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "yarn",
+    "prettierjs.PrettierConfiguration.Package": "/Users/abdullah.altun/Projects/animation-playground/node_modules/prettier",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "ts.external.directory.path": "/Users/abdullah.altun/Projects/animation-playground/node_modules/typescript/lib",
+    "vue.rearranger.settings.migration": "true"
   },
-  &quot;keyToStringList&quot;: {
-    &quot;DatabaseDriversLRU&quot;: [
-      &quot;postgresql&quot;
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
     ],
-    &quot;com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File&quot;: [
-      &quot;PLAIN_TEXT&quot;
+    "com.intellij.ide.scratch.ScratchImplUtil$2/New Scratch File": [
+      "TypeScript JSX",
+      "AiIgnore",
+      "PLAIN_TEXT"
     ]
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/src/app/(main)/profile/components" />
       <recent name="$PROJECT_DIR$/src/db" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login/styles" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login" />
       <recent name="$PROJECT_DIR$/src/app/(auth)/login/components" />
-      <recent name="$PROJECT_DIR$/src/" />
     </key>
   </component>
   <component name="SharedIndexes">
@@ -125,7 +126,8 @@
       <workItem from="1743064727875" duration="1367000" />
       <workItem from="1743066114659" duration="38165000" />
       <workItem from="1743428807786" duration="20214000" />
-      <workItem from="1743494286182" duration="17706000" />
+      <workItem from="1743494286182" duration="18816000" />
+      <workItem from="1743581193364" duration="24261000" />
     </task>
     <task id="LOCAL-00001" summary="add initial components and layout for animation playground">
       <option name="closed" value="true" />
@@ -249,6 +251,7 @@
     <MESSAGE value="feat: implement user authentication flow with Supabase, enhance UI components, and improve styling" />
     <MESSAGE value="refactor: implement config management with Drizzle, add validation, and refactor database queries&#10;Using Drizzle instead of Supabase for the db actions!&#10;&#10;TODO: update and delete actions === not_implemented_yet" />
     <MESSAGE value="refactor: clean up AuthComponent and improve styling, enhance layout structure, and add detailed JSDoc comments" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactor: clean up AuthComponent and improve styling, enhance layout structure, and add detailed JSDoc comments" />
+    <MESSAGE value="feat: implement config editing and deletion functionality in ProfileClientPage, enhance AlertNotification and EditConfigDialog components, and update styling&#10;&#10;Fixed: Config list updates after editing now!" />
+    <option name="LAST_COMMIT_MESSAGE" value="feat: implement config editing and deletion functionality in ProfileClientPage, enhance AlertNotification and EditConfigDialog components, and update styling&#10;&#10;Fixed: Config list updates after editing now!" />
   </component>
 </project>
