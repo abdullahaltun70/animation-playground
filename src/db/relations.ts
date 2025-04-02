@@ -1,13 +1,14 @@
-import { relations } from "drizzle-orm/relations";
-import { usersInAuth, configsTable } from "./schema";
+import { relations } from 'drizzle-orm/relations';
 
-export const configsTableRelations = relations(configsTable, ({one}) => ({
+import { configsTable, usersInAuth } from './schema';
+
+export const configsTableRelations = relations(configsTable, ({ one }) => ({
 	usersInAuth: one(usersInAuth, {
 		fields: [configsTable.userId],
-		references: [usersInAuth.id]
+		references: [usersInAuth.id],
 	}),
 }));
 
-export const usersInAuthRelations = relations(usersInAuth, ({many}) => ({
+export const usersInAuthRelations = relations(usersInAuth, ({ many }) => ({
 	configsTables: many(configsTable),
 }));

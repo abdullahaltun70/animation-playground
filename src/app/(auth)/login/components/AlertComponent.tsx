@@ -1,12 +1,16 @@
+// AlertNotification.tsx (Modified)
 import React from 'react';
 
-import { AlertDialog, Button, Flex } from '@radix-ui/themes';
+import { AlertDialog, Button, Dialog, Flex } from '@radix-ui/themes';
 
 interface AlertNotificationProps {
 	showAlert: boolean;
 	setShowAlert: (value: boolean) => void;
 	alertTitle: string;
 	alertMessage: string;
+	onConfirm: () => void;
+	confirmButtonText?: string;
+	cancelButtonText?: string;
 }
 
 const AlertNotification: React.FC<AlertNotificationProps> = ({
@@ -14,24 +18,41 @@ const AlertNotification: React.FC<AlertNotificationProps> = ({
 	setShowAlert,
 	alertTitle,
 	alertMessage,
+	onConfirm,
+	confirmButtonText = 'Confirm',
+	cancelButtonText = 'Cancel',
 }) => (
-	<AlertDialog.Root open={showAlert} onOpenChange={setShowAlert}>
-		<AlertDialog.Content maxWidth="450px">
-			<AlertDialog.Title>{alertTitle}</AlertDialog.Title>
-			<AlertDialog.Description size="2">{alertMessage}</AlertDialog.Description>
+	<Dialog.Root open={showAlert} onOpenChange={setShowAlert}>
+		<Dialog.Content style={{ maxWidth: 450 }}>
+			{' '}
+			<Dialog.Title>{alertTitle}</Dialog.Title>
+			<Dialog.Description size="2">{alertMessage}</Dialog.Description>
 			<Flex gap="3" mt="4" justify="end">
-				<AlertDialog.Action>
+				{/* Cancel Button */}
+				<Dialog.Close>
 					<Button
-						variant="solid"
-						color="indigo"
+						variant="soft"
+						color="gray"
 						onClick={() => setShowAlert(false)}
 					>
-						OK
+						{cancelButtonText}
 					</Button>
-				</AlertDialog.Action>
+				</Dialog.Close>
+				{/* Confirm Button */}
+				<Dialog.Close>
+					<Button
+						variant="solid"
+						color="red"
+						onClick={() => {
+							onConfirm();
+						}}
+					>
+						{confirmButtonText}
+					</Button>
+				</Dialog.Close>
 			</Flex>
-		</AlertDialog.Content>
-	</AlertDialog.Root>
+		</Dialog.Content>
+	</Dialog.Root>
 );
 
 export default AlertNotification;

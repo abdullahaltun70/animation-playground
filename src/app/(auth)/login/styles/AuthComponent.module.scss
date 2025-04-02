@@ -97,24 +97,24 @@
 .GoogleOneTap {
 	//fixed top-0 right-0 z-[100]
 	position: fixed;
-    top: 0;
-    right: 0;
-    z-index: 100;
-    background-color: #fff;
-    border: 1px solid var(--border-color);
-    border-radius: 4px;
-    padding: 1rem;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
-    display: none;
-    transition: transform 0.3s ease;
+	top: 0;
+	right: 0;
+	z-index: 100;
+	background-color: #fff;
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	padding: 1rem;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+	display: none;
+	transition: transform 0.3s ease;
 
-    &.show {
-        transform: translateY(0);
-    }
+	&.show {
+		transform: translateY(0);
+	}
 
-    h2 {
-        margin-bottom: 1rem;
-        font-size: 18px;
-        font-weight: 600;
-    }
+	h2 {
+		margin-bottom: 1rem;
+		font-size: 18px;
+		font-weight: 600;
+	}
 }

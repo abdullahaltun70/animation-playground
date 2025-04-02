@@ -1,7 +1,7 @@
 .container {
 	display: flex;
 	width: 100%;
-	min-height: calc(100vh - 60px); // Adjust based on your header height
+	min-height: calc(100vh - 60px); // Adjust based on header height
 	background-color: var(--slate-1);
 
 	// Mobile first - stack vertically on small screens

@@ -5,8 +5,10 @@ import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
 
-import styles from '@/app/(main)/profile/page.module.scss';
+// import styles from '@/app/(main)/profile/page.module.scss';
 import { createClient } from '@/utils/supabase/client';
+
+import styles from './components.module.scss';
 
 export function SignOutButton() {
 	const [isLoading, setIsLoading] = useState(false);

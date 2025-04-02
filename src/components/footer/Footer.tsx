@@ -10,18 +10,29 @@ export const Footer = () => {
 	const currentYear = new Date().getFullYear();
 
 	return (
-		<footer className={`${styles.footer} fade-in`}>
+		<footer className={styles.footer}>
 			<div className={styles.footerContent}>
-				{/* Remove the inner Flex with justify="between" and use the CSS for layout */}
 				{/* Copyright */}
 				<Text size="2">© {currentYear} Animation Playground</Text>
 
 				{/* Links */}
 				<div className={styles.footerLinks}>
-					<Link href="/terms" passHref legacyBehavior>
+					<Link
+						href="/#"
+						// TODO: make the terms page
+						// href="/terms"
+						passHref
+						legacyBehavior
+					>
 						<RadixLink size="2">Terms</RadixLink>
 					</Link>
-					<Link href="/privacy" passHref legacyBehavior>
+					<Link
+						href="/#"
+						// TODO: make the privacy page
+						// href="/privacy"
+						passHref
+						legacyBehavior
+					>
 						<RadixLink size="2">Privacy</RadixLink>
 					</Link>
 					<Link

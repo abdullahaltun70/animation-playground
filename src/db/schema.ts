@@ -8,7 +8,9 @@ import {
 	uuid,
 	timestamp,
 	pgEnum,
+	pgSchema,
 } from 'drizzle-orm/pg-core';
+import { authUsers } from 'drizzle-orm/supabase';
 
 export const role = pgEnum('role', ['DESIGNER', 'DEVELOPER']);
 
@@ -16,9 +18,9 @@ export const configsTable = pgTable(
 	'configs_table',
 	{
 		id: uuid().primaryKey().defaultRandom(),
-		configData: text('config_data'),
 		title: varchar({ length: 30 }).default('').notNull(),
 		description: varchar({ length: 255 }).default(''),
+		configData: text('config_data'),
 		userId: uuid('user_id')
 			.default(sql`auth.uid()`)
 			.notNull(),
@@ -33,7 +35,7 @@ export const configsTable = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [users.id],
+			foreignColumns: [authUsers.id],
 			name: 'configs_table_user_id_fkey',
 		}).onDelete('cascade'),
 		pgPolicy('Enable users to view their own data only', {
@@ -62,3 +64,9 @@ export const configsTable = pgTable(
 
 export type Config = typeof configsTable.$inferSelect;
 export type NewConfig = typeof configsTable.$inferInsert;
+
+export const authSchema = pgSchema('auth');
+
+export const usersInAuth = authSchema.table('users', {
+	id: uuid('id').primaryKey(),
+});

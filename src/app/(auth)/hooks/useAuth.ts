@@ -1,22 +1,21 @@
 // src/app/(auth)/hooks/useAuth.ts
-import { useCallback, useState } from 'react';
+import React, { useCallback, useState } from 'react';
 
 import { AuthError } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation'; // Router moet hier geïnitialiseerd worden
+import { useRouter } from 'next/navigation';
 
-import { createClient } from '@/utils/supabase/client'; // Gebruik de client-side Supabase instance
+import { createClient } from '@/utils/supabase/client';
 
-// Exporteer de form data types zodat de component ze kan gebruiken
 export interface SignInFormData {
 	email: string;
 	password: string;
 }
+
 export interface SignUpFormData {
 	email: string;
 	password: string;
 }
 
-// Definieer de return type van de hook voor duidelijkheid
 interface UseAuthReturn {
 	loading: boolean;
 	error: string | null;
@@ -27,10 +26,37 @@ interface UseAuthReturn {
 	setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
 	handleGoogleSignIn: () => Promise<void>;
 	handleSignIn: (data: SignInFormData) => Promise<void>;
-	handleSignUp: (data: SignUpFormData) => Promise<boolean>; // Geeft aan of succesvol (voor view switch)
-	handlePasswordReset: (data: { email: string }) => Promise<boolean>; // Geeft aan of succesvol
+	handleSignUp: (data: SignUpFormData) => Promise<boolean>;
+	handlePasswordReset: (data: { email: string }) => Promise<boolean>;
 }
 
+/**
+ * Custom hook for handling authentication operations with Supabase.
+ * Provides authentication state management and methods for sign-in, sign-up,
+ * password reset, and Google OAuth.
+ *
+ * @returns {UseAuthReturn} Object containing:
+ *  - loading: boolean - Current loading state of auth operations
+ *  - error: string | null - Current error message if any
+ *  - showAlert: boolean - Alert visibility state
+ *  - alertTitle: string - Title for alert messages
+ *  - alertMessage: string - Content for alert messages
+ *  - setError: Function - Error state setter
+ *  - setShowAlert: Function - Alert visibility setter
+ *  - handleGoogleSignIn: () => Promise<void> - Google OAuth handler
+ *  - handleSignIn: (data: SignInFormData) => Promise<void> - Email/password sign in
+ *  - handleSignUp: (data: SignUpFormData) => Promise<boolean> - New user registration
+ *  - handlePasswordReset: (data: { email: string }) => Promise<boolean> - Password reset
+ *
+ * @example
+ * const {
+ *   loading,
+ *   error,
+ *   handleSignIn
+ * } = useAuth();
+ *
+ * await handleSignIn({ email: 'user@example.com', password: '********' });
+ */
 export const useAuth = (): UseAuthReturn => {
 	const [error, setError] = useState<string | null>(null);
 	const [loading, setLoading] = useState<boolean>(false);
@@ -39,22 +65,20 @@ export const useAuth = (): UseAuthReturn => {
 	const [alertMessage, setAlertMessage] = useState<string>('');
 
 	const supabase = createClient();
-	const router = useRouter(); // Haal router op binnen de hook
+	const router = useRouter();
 
-	// --- Helper voor API calls ---
-	// Deze helper blijft intern in de hook
+	// Helper for API calls
 	const handleAuthAction = useCallback(
 		async (
-			action: () => Promise<{ error: AuthError | null }>, // Gebruik specifiek AuthError type
+			action: () => Promise<{ error: AuthError | null }>,
 			successCallback?: () => void,
 		): Promise<boolean> => {
-			// Geeft true terug bij succes, false bij error
 			setLoading(true);
 			setError(null);
 			try {
 				const { error: actionError } = await action();
+				// Error
 				if (actionError) {
-					// Vertaal Supabase errors eventueel naar gebruiksvriendelijkere meldingen
 					console.error('Supabase Auth Error:', actionError);
 					let friendlyMessage =
 						actionError.message || 'An unexpected error occurred.';
@@ -68,35 +92,29 @@ export const useAuth = (): UseAuthReturn => {
 						friendlyMessage = 'Please enter a valid email address.';
 					}
 					setError(friendlyMessage);
-					return false; // Geef aan dat het mislukt is
+					return false;
 				}
 				// Succes
 				if (successCallback) {
 					successCallback();
 				}
-				return true; // Geef aan dat het gelukt is
+				return true;
 			} catch (err: any) {
 				console.error('Generic Auth Error:', err);
 				setError(err.message || 'An unexpected error occurred.');
-				return false; // Geef aan dat het mislukt is
+				return false;
 			} finally {
 				setLoading(false);
 			}
 		},
-		[setLoading, setError], // Voeg state setters toe aan dependencies
+		[setLoading, setError],
 	);
 
 	// --- Auth Handlers ---
 	const handleGoogleSignIn = useCallback(async () => {
 		await handleAuthAction(async () =>
-			// De OAuth flow handelt de redirect af, geen success callback nodig hier.
 			supabase.auth.signInWithOAuth({
 				provider: 'google',
-				options: {
-					// Optioneel: specificeer waar de gebruiker heen moet na succesvolle Google login
-					// redirectTo: `${window.location.origin}/profile`
-					// Als je dit gebruikt, zorg dat de URL is toegestaan in je Supabase Auth settings!
-				},
 			}),
 		);
 	}, [handleAuthAction, supabase.auth]);
@@ -105,7 +123,7 @@ export const useAuth = (): UseAuthReturn => {
 		async (data: SignInFormData) => {
 			await handleAuthAction(
 				() => supabase.auth.signInWithPassword(data),
-				() => router.push('/profile'), // Redirect alleen bij succes
+				() => router.push('/profile'),
 			);
 		},
 		[handleAuthAction, supabase.auth, router],
@@ -121,7 +139,6 @@ export const useAuth = (): UseAuthReturn => {
 						'Verification email has been sent. Please check your inbox.',
 					);
 					setShowAlert(true);
-					// Geen view switch hier, laat de component dat beslissen op basis van return value
 				},
 			);
 		},
@@ -139,7 +156,7 @@ export const useAuth = (): UseAuthReturn => {
 			return await handleAuthAction(
 				() =>
 					supabase.auth.resetPasswordForEmail(data.email, {
-						// Optioneel: Specificeer de pagina waar de gebruiker het ww kan updaten
+						// TODO: make the update password page
 						// redirectTo: `${window.location.origin}/update-password`,
 					}),
 				() => {
@@ -149,7 +166,7 @@ export const useAuth = (): UseAuthReturn => {
 					);
 					setShowAlert(true);
 				},
-			); // Geef succes/falen door aan component
+			);
 		},
 		[
 			handleAuthAction,
@@ -160,14 +177,13 @@ export const useAuth = (): UseAuthReturn => {
 		],
 	);
 
-	// Return de state en de handlers die de component nodig heeft
 	return {
 		loading,
 		error,
 		showAlert,
 		alertTitle,
 		alertMessage,
-		setError, // Exporteer setError voor externe resets indien nodig
+		setError,
 		setShowAlert,
 		handleGoogleSignIn,
 		handleSignIn,
