@@ -77,14 +77,14 @@
 
 // Standaard Radix TextField/TextArea worden gebruikt, deze krijgen styling via Theme.
 // Deze classes zijn nu vooral voor structuur/spacing.
-.inputField,
-.textareaField {
-	width: 100%;
-	box-sizing: border-box;
-}
+//.inputField,
+//.textareaField {
+//	width: 100%;
+//	box-sizing: border-box;
+//}
 
 .textareaField {
-	min-height: 100px; // Behoud eventueel min-height
+	//min-height: 100px; // Behoud eventueel min-height
 	resize: vertical; // Behoud resize
 }
 
@@ -209,32 +209,13 @@
 	grid-template-columns: auto max-content;
 	column-gap: 15px;
 	align-items: center;
+	margin-top: 1rem;
+	margin-right: 2rem;
 
 	.dark & {
 		box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 	}
 
-	// Animaties
-	&[data-state='open'] {
-		animation: slideIn 150ms cubic-bezier(0.16, 1, 0.3, 1);
-	}
-
-	&[data-state='closed'] {
-		animation: hide 100ms ease-in forwards; // `forwards` houdt de eindstaat vast
-	}
-
-	&[data-swipe='move'] {
-		transform: translateX(var(--radix-toast-swipe-move-x));
-	}
-
-	&[data-swipe='cancel'] {
-		transform: translateX(0);
-		transition: transform 200ms ease-out;
-	}
-
-	&[data-swipe='end'] {
-		animation: swipeOut 100ms ease-out forwards; // `forwards` houdt de eindstaat vast
-	}
 }
 
 @keyframes hide {
