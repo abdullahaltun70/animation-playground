@@ -278,7 +278,7 @@ export default function ProfileClientPage({
 						</Form.Field>
 
 						<Form.Submit asChild name={'save-button'}>
-							<Button type="submit" disabled={isPendingSave} >
+							<Button type="submit" disabled={isPendingSave}>
 								{isPendingSave && <Spinner size="1" />}{' '}
 								{isPendingSave ? ' Saving...' : ' Save Config'}
 							</Button>
