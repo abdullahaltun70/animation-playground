@@ -1,7 +1,8 @@
 .container {
 	display: flex;
+	flex: 1;
 	width: 100%;
-	min-height: calc(100vh - 60px); // Adjust based on header height
+	min-height: calc(100dvh - 60px); // Adjust based on header height
 	background-color: var(--slate-1);
 
 	// Mobile first - stack vertically on small screens
@@ -25,32 +26,16 @@
 	}
 }
 
-.animationContainer {
-	flex: 1;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	background-color: var(--slate-2);
-	border-radius: 8px;
-	padding: 2rem;
-}
-
-.animationBox {
-	width: 200px;
-	height: 200px;
-	background-color: var(--slate-3);
-	border-radius: 8px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
 // Right side - Config Area
 .configAreaWrapper {
+	border-radius: 12px;
+	display: flex;
 	flex: 2;
+	flex-direction: column;
 	padding: 2rem;
-	background-color: var(--slate-3);
-	//right: 0;
+	//background-color: var(--hover-bg);
+
+
 
 	// Mobile layout (full width)
 	width: 100%;
@@ -59,18 +44,5 @@
 	@media (min-width: 768px) {
 		width: 400px;
 		max-width: 40%;
-	}
-}
-
-// Animation keyframes
-@keyframes bounce {
-	0% {
-		transform: scale(1);
-	}
-	50% {
-		transform: scale(1.2);
-	}
-	100% {
-		transform: scale(1);
 	}
 }

@@ -5,11 +5,11 @@ import { db } from '@/db';
 import { configsTable } from '../schema';
 
 export async function getAllConfigs() {
-	return await db.select().from(configsTable);
+	return db.select().from(configsTable);
 }
 
 export async function getConfigById(id: string) {
-	return await db.select().from(configsTable).where(eq(configsTable.id, id));
+	return db.select().from(configsTable).where(eq(configsTable.id, id));
 }
 
 export async function getConfigsByUserId(userId: string) {

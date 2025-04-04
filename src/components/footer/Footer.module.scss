@@ -3,9 +3,10 @@
 	width: 100%;
 	background: var(--background);
 	border-top: 1px solid var(--border-color);
-	position: fixed;
+	//position: fixed;
 	bottom: 0;
-	flex-shrink: 0; }
+	flex-shrink: 0;
+}
 
 .footerContent {
 	display: flex;

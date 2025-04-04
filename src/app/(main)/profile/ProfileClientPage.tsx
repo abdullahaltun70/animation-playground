@@ -64,6 +64,14 @@ export default function ProfileClientPage({
 	const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 	const [editingConfig, setEditingConfig] = useState<Config | null>(null);
 
+	/**
+	 * Handles saving a new config.
+	 *
+	 * @param e The form event.
+	 *
+	 * @returns A Promise that resolves to the result of the save operation.
+	 *
+	 */
 	async function handleSaveConfig(e: FormEvent) {
 		e.preventDefault();
 		setIsPendingSave(true);
@@ -95,11 +103,20 @@ export default function ProfileClientPage({
 		}
 	}
 
+	/**
+	 * Handles initiating the deletion of a config.
+	 *
+	 * @param configId The ID of the config to be deleted.
+	 *
+	 */
 	function handleDeleteInitiate(configId: string) {
 		setConfigToDeleteId(configId);
 		setShowDeleteConfirm(true);
 	}
 
+	/**
+	 * Handles confirming the deletion of a config.
+	 */
 	async function handleConfirmDelete() {
 		if (!configToDeleteId) return;
 		setIsDeleting(true);
@@ -128,6 +145,9 @@ export default function ProfileClientPage({
 		}
 	}
 
+	/**
+	 * Handles opening the edit modal for the selected config.
+	 */
 	function handleEditInitiate(config: Config) {
 		setEditingConfig(config);
 		setIsEditModalOpen(true); // Open de modal
