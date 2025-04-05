@@ -35,9 +35,8 @@ export const Header = () => {
 		const checkAuth = async () => {
 			setIsLoadingAuth(true);
 			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			const user = session?.user;
+				data: { user },
+			} = await supabase.auth.getUser();
 			setIsAuthenticated(!!user);
 			setUserEmail(user?.email || null);
 			setIsLoadingAuth(false);
