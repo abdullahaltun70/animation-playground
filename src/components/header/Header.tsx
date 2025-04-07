@@ -131,20 +131,18 @@ export const Header = () => {
 												</Text>
 											</DropdownMenu.Label>
 										)}
-										<Link href="/profile" passHref legacyBehavior>
-											<DropdownMenu.Item asChild>
-												<a>
-													{' '}
-													{/* Use 'a' tag inside for correct rendering */}
-													<PersonIcon
-														width="16"
-														height="16"
-														style={{ marginRight: '8px' }}
-													/>
-													Profile
-												</a>
-											</DropdownMenu.Item>
-										</Link>
+										<DropdownMenu.Item asChild>
+											<RadixLink href="/profile">
+												{' '}
+												{/* Use 'a' tag inside for correct rendering */}
+												<PersonIcon
+													width="16"
+													height="16"
+													style={{ marginRight: '8px' }}
+												/>
+												Profile
+											</RadixLink>
+										</DropdownMenu.Item>
 										<DropdownMenu.Separator />
 										<DropdownMenu.Item color="red" onSelect={handleSignOut}>
 											<ExitIcon

@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { Suspense } from 'react';
 
 import PlaygroundPage from '@/app/(main)/playground/page';
 
@@ -10,7 +10,9 @@ export default function Home() {
 	return (
 		<div className={styles.main}>
 			<main className={styles.content}>
-				<PlaygroundPage />
+				<Suspense fallback={'Loading...'}>
+					<PlaygroundPage />
+				</Suspense>
 			</main>
 		</div>
 	);
