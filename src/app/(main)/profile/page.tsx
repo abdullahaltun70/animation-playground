@@ -5,11 +5,11 @@ import React, { useEffect, useState } from 'react';
 import { CopyIcon } from '@radix-ui/react-icons';
 import { Box, Button, Dialog, Flex, Heading, Text } from '@radix-ui/themes';
 
+import AlertNotification from '@/app/(auth)/login/components/AlertComponent';
 import { ConfigCard } from '@/components/config-card/ConfigCard';
 import { ConfigModel } from '@/types/animations';
-import { createClient } from '@/utils/supabase/client';
 
-import styles from './page.module.scss';
+import styles from './Profile.module.scss';
 
 export default function ProfilePage() {
 	const [configs, setConfigs] = useState<ConfigModel[]>([]);
@@ -18,6 +18,10 @@ export default function ProfilePage() {
 	const [shareDialogOpen, setShareDialogOpen] = useState(false);
 	const [shareUrl, setShareUrl] = useState('');
 	const [copySuccess, setCopySuccess] = useState(false);
+
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
 
 	// Fetch user's saved configurations
 	useEffect(() => {
@@ -29,18 +33,6 @@ export default function ProfilePage() {
 		setError(null);
 
 		try {
-			// Check if user is authenticated
-			const supabase = createClient();
-			const {
-				data: { user },
-			} = await supabase.auth.getUser();
-
-			if (!user) {
-				setError('You must be logged in to view your configurations');
-				setLoading(false);
-				return;
-			}
-
 			// Include credentials to ensure cookies are sent with the request
 			const response = await fetch('/api/configs', {
 				credentials: 'include',
@@ -64,9 +56,20 @@ export default function ProfilePage() {
 		}
 	};
 
-	const handleDelete = async (id: string) => {
+	// Handler to prepare deletion and show confirmation
+	const handleDeleteRequest = (id: string) => {
+		setConfigToDeleteId(id);
+		setShowDeleteConfirm(true);
+	};
+
+	// Function to actually delete the config after confirmation
+	const handleConfirmDelete = async () => {
+		if (!configToDeleteId) return;
+
+		setIsDeleting(true);
+
 		try {
-			const response = await fetch(`/api/configs/${id}`, {
+			const response = await fetch(`/api/configs/${configToDeleteId}`, {
 				method: 'DELETE',
 				credentials: 'include', // Include credentials for authentication
 			});
@@ -76,10 +79,14 @@ export default function ProfilePage() {
 			}
 
 			// Remove the deleted config from the state
-			setConfigs(configs.filter((config) => config.id !== id));
+			setConfigs(configs.filter((config) => config.id !== configToDeleteId));
+			setShowDeleteConfirm(false);
 		} catch (err: any) {
-			console.error('Error deleting configuration:', err);
+			console.error('Error deleting config:', err);
 			setError(err.message);
+		} finally {
+			setIsDeleting(false);
+			setConfigToDeleteId(null);
 		}
 	};
 
@@ -140,7 +147,7 @@ export default function ProfilePage() {
 						<ConfigCard
 							key={config.id}
 							config={config}
-							onDeleteAction={handleDelete}
+							onDeleteAction={handleDeleteRequest}
 							onShareAction={handleShare}
 						/>
 					))}
@@ -186,6 +193,14 @@ export default function ProfilePage() {
 					</Flex>
 				</Dialog.Content>
 			</Dialog.Root>
+			<AlertNotification
+				showAlert={showDeleteConfirm}
+				setShowAlert={setShowDeleteConfirm}
+				alertTitle="Confirm Deletion"
+				alertMessage={`Are you sure you want to delete the configuration: ${configs.find((c) => c.id === configToDeleteId)?.title ?? ''} ? This action cannot be undone.`}
+				onConfirm={handleConfirmDelete}
+				confirmButtonText={isDeleting ? 'Deleting...' : 'Delete'}
+			/>
 		</div>
 	);
 }

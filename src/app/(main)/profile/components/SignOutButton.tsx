@@ -3,12 +3,13 @@
 
 import { useState } from 'react';
 
+import { Button } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 
-// import styles from '@/app/(main)/profile/page.module.scss';
+// import styles from '@/app/(main)/profile/Playground.module.scss';
 import { createClient } from '@/utils/supabase/client';
 
-import styles from './components.module.scss';
+import styles from '../styles/components.module.scss';
 
 export function SignOutButton() {
 	const [isLoading, setIsLoading] = useState(false);
@@ -28,12 +29,12 @@ export function SignOutButton() {
 	};
 
 	return (
-		<button
+		<Button
 			onClick={handleSignOut}
 			disabled={isLoading}
 			className={styles.signOutButton}
 		>
 			{isLoading ? 'Signing out...' : 'Sign Out'}
-		</button>
+		</Button>
 	);
 }

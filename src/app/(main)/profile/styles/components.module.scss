@@ -1,8 +1,7 @@
 // src/components/profile/components.module.scss
 
-// Importeer basis knopstijl als je die globaal hebt of definieer hier opnieuw
 .baseButton {
-	// Kopieer de .baseButton stijl van page.module.scss hier
+	// Kopieer de .baseButton stijl van Playground.module.scss hier
 	// of importeer een globaal bestand indien beschikbaar
 	padding: 0.7rem 1.5rem;
 	border: none;
@@ -48,5 +47,16 @@
 	&:focus-visible {
 		// Rode focus ring
 		box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.4);
+	}
+}
+
+
+// Avatar styling
+.userAvatar {
+	cursor: pointer;
+	transition: transform 0.2s ease;
+
+	&:hover {
+		transform: scale(1.1);
 	}
 }

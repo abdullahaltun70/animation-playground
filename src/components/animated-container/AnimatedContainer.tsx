@@ -51,10 +51,11 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 		}
 	};
 
-	// Apply animation configuration via CSS variables
+	// Apply CSS custom properties and force re-render when config changes
 	useEffect(() => {
 		if (elementRef.current) {
-			// Set CSS variables for the animation
+			// Convert duration, delay and other parameters to CSS custom properties
+			// Duration for all animation types
 			elementRef.current.style.setProperty(
 				'--fade-duration',
 				`${config.duration}s`,
@@ -76,6 +77,7 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 				`${config.duration}s`,
 			);
 
+			// Delay for all animation types
 			elementRef.current.style.setProperty('--fade-delay', `${config.delay}s`);
 			elementRef.current.style.setProperty('--slide-delay', `${config.delay}s`);
 			elementRef.current.style.setProperty('--scale-delay', `${config.delay}s`);
@@ -88,6 +90,7 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 				`${config.delay}s`,
 			);
 
+			// Easing for all animation types
 			elementRef.current.style.setProperty('--fade-easing', config.easing);
 			elementRef.current.style.setProperty('--slide-easing', config.easing);
 			elementRef.current.style.setProperty('--scale-easing', config.easing);
@@ -140,6 +143,20 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 	const handleReplay = () => {
 		setKey((prevKey) => prevKey + 1);
 	};
+
+	// Force re-render to restart animation when config changes
+	useEffect(() => {
+		handleReplay();
+	}, [
+		config.type,
+		config.duration,
+		config.delay,
+		config.easing,
+		config.opacity, // Fade specifiek, maar veilig om altijd mee te nemen
+		config.distance, // Slide & Bounce specifiek
+		config.scale, // Scale specifiek
+		config.degrees, // Rotate specifiek
+	]);
 
 	return (
 		<>

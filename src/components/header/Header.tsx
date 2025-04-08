@@ -15,7 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { UserAvatar } from '@/components/profile/UserAvatar';
+import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { createClient } from '@/utils/supabase/client';
 

@@ -1,11 +1,12 @@
 // app/(main)/layout.tsx
 
-import React from 'react';
+import React, { Suspense } from 'react';
 
+import Loading from '@/app/(main)/playground/loading';
 import { Footer } from '@/components/footer/Footer';
 import { Header } from '@/components/header';
 
-import styles from './playground/page.module.scss';
+import styles from './playground/styles/Playground.module.scss';
 
 export default function MainLayout({
 	children,
@@ -17,7 +18,9 @@ export default function MainLayout({
 			<header>
 				<Header />
 			</header>
-			<main className={styles.main}>{children}</main>
+			<Suspense fallback={<Loading />}>
+				<main className={styles.main}>{children}</main>
+			</Suspense>
 			<footer>
 				<Footer />
 			</footer>

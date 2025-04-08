@@ -28,7 +28,7 @@ export const ThemeToggle = () => {
 	const ThemeIcon = () => {
 		if (theme === 'light') return <SunIcon width="18" height="18" />;
 		if (theme === 'dark') return <MoonIcon width="18" height="18" />;
-		// For 'system', show the resolved theme icon or a generic one
+		// For 'system', show the DesktopIcon
 		// resolvedTheme gives 'light' or 'dark' based on system pref
 		if (resolvedTheme === 'light') return <SunIcon width="18" height="18" />;
 		if (resolvedTheme === 'dark') return <MoonIcon width="18" height="18" />;

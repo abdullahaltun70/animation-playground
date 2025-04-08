@@ -12,16 +12,19 @@ interface ConfigCardProps {
 	config: ConfigModel;
 	onDeleteAction?: (id: string) => void;
 	onShareAction?: (id: string) => void;
+	setShowDeleteConfirm?: (value: boolean) => void;
 }
 
 export function ConfigCard({
 	config,
 	onDeleteAction,
 	onShareAction,
+	setShowDeleteConfirm,
 }: ConfigCardProps) {
 	const handleDelete = () => {
 		if (onDeleteAction) {
 			onDeleteAction(config.id);
+			setShowDeleteConfirm?.(true);
 		}
 	};
 

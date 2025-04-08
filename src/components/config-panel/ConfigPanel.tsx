@@ -51,7 +51,6 @@ export function ConfigPanel({
 		},
 	);
 
-	// Update local state when initialConfig changes
 	useEffect(() => {
 		if (initialConfig) {
 			setConfig(initialConfig);
@@ -115,7 +114,7 @@ export function ConfigPanel({
 		<div className={styles.configPanel}>
 			<h2 className={styles.title}>Animation Configuration</h2>
 
-			{/* Configuration Name and Description */}
+			{/* Configuration Name */}
 			<div className={styles.field}>
 				<Text weight="bold">Configuration Name</Text>
 				<TextField.Root
@@ -125,6 +124,7 @@ export function ConfigPanel({
 				/>
 			</div>
 
+			{/* Configuration Description */}
 			<div className={styles.field}>
 				<Text weight="bold">Description</Text>
 				<TextField.Root
@@ -177,6 +177,7 @@ export function ConfigPanel({
 				</Select.Root>
 			</div>
 
+			{/* Duration and Delay */}
 			<Heading size={'3'}>Animation Parameters</Heading>
 			<Theme>
 				<div className={styles.field}>

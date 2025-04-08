@@ -1,7 +1,6 @@
-// AlertNotification.tsx (Modified)
 import React from 'react';
 
-import { AlertDialog, Button, Dialog, Flex } from '@radix-ui/themes';
+import { Button, Dialog, Flex } from '@radix-ui/themes';
 
 interface AlertNotificationProps {
 	showAlert: boolean;
