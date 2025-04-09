@@ -86,7 +86,11 @@ export function generateReactComponent(config: AnimationConfig): string {
 
 	let component = `import React from 'react';\n\n`;
 	component += `// Animation component generated from ${config.name || 'Animation Playground'}\n`;
-	component += `export const AnimatedElement = ({ children }) => {\n`;
+	component += `export const AnimatedElement${config.type.charAt(0).toUpperCase() + config.type.slice(1)} = ({ \n`;
+	component += `    children, \n`;
+	component += `}: {\n`;
+	component += `    children: React.ReactNode; \n`;
+	component += `}) => {\n`;
 	component += `  const style = {\n`;
 	component += `    animation: '`;
 

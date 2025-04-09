@@ -10,6 +10,7 @@ import {
 	Theme,
 	Text,
 	TextField,
+	Flex,
 } from '@radix-ui/themes';
 
 import {
@@ -136,45 +137,49 @@ export function ConfigPanel({
 
 			{/* Animation Type Selection */}
 			<div className={styles.field}>
-				<Text weight="bold">Animation Type</Text>
-				<Select.Root
-					value={config.type}
-					onValueChange={(value) =>
-						handleChange('type', value as AnimationType)
-					}
-				>
-					<Select.Trigger />
-					<Select.Content>
-						<Select.Item value="fade">Fade</Select.Item>
-						<Select.Item value="slide">Slide</Select.Item>
-						<Select.Item value="scale">Scale</Select.Item>
-						<Select.Item value="rotate">Rotate</Select.Item>
-						<Select.Item value="bounce">Bounce</Select.Item>
-					</Select.Content>
-				</Select.Root>
+				<Flex gap="1" direction={'column'}>
+					<Text weight="bold">Animation Type</Text>
+					<Select.Root
+						value={config.type}
+						onValueChange={(value) =>
+							handleChange('type', value as AnimationType)
+						}
+					>
+						<Select.Trigger />
+						<Select.Content>
+							<Select.Item value="fade">Fade</Select.Item>
+							<Select.Item value="slide">Slide</Select.Item>
+							<Select.Item value="scale">Scale</Select.Item>
+							<Select.Item value="rotate">Rotate</Select.Item>
+							<Select.Item value="bounce">Bounce</Select.Item>
+						</Select.Content>
+					</Select.Root>
+				</Flex>
 			</div>
 
 			{/* Easing Function Selection */}
 			<div className={styles.field}>
-				<Text weight="bold">Easing Function</Text>
-				<Select.Root
-					value={config.easing}
-					onValueChange={(value) =>
-						handleChange('easing', value as EasingFunction)
-					}
-				>
-					<Select.Trigger />
-					<Select.Content>
-						<Select.Item value="ease">Ease</Select.Item>
-						<Select.Item value="ease-in">Ease In</Select.Item>
-						<Select.Item value="ease-out">Ease Out</Select.Item>
-						<Select.Item value="ease-in-out">Ease In Out</Select.Item>
-						<Select.Item value="linear">Linear</Select.Item>
-						<Select.Item value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">
-							Elastic
-						</Select.Item>
-					</Select.Content>
-				</Select.Root>
+				<Flex gap="1" direction={'column'}>
+					<Text weight="bold">Easing Function</Text>
+					<Select.Root
+						value={config.easing}
+						onValueChange={(value) =>
+							handleChange('easing', value as EasingFunction)
+						}
+					>
+						<Select.Trigger />
+						<Select.Content>
+							<Select.Item value="ease">Ease</Select.Item>
+							<Select.Item value="ease-in">Ease In</Select.Item>
+							<Select.Item value="ease-out">Ease Out</Select.Item>
+							<Select.Item value="ease-in-out">Ease In Out</Select.Item>
+							<Select.Item value="linear">Linear</Select.Item>
+							<Select.Item value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+								Elastic
+							</Select.Item>
+						</Select.Content>
+					</Select.Root>
+				</Flex>
 			</div>
 
 			{/* Duration and Delay */}

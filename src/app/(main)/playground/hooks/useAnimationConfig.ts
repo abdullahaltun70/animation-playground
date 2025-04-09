@@ -45,7 +45,9 @@ export function useAnimationConfig() {
 			})
 				.then((response) => {
 					if (!response.ok) {
-						throw new Error('Failed to load configuration');
+						throw new Error(
+							'Failed to load configuration: ' + response.statusText,
+						);
 					}
 					return response.json();
 				})
@@ -138,7 +140,7 @@ export function useAnimationConfig() {
 
 			if (!response.ok) {
 				throw new Error(
-					`Failed to ${configId ? 'update' : 'save'} configuration`,
+					`Failed to ${configId ? 'update' : 'save'} configuration: ${response.statusText}`,
 				);
 			}
 

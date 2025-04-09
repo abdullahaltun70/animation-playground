@@ -1,12 +1,11 @@
-import { eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { db } from '@/db';
-import { configsTable } from '@/db/schema';
+import { createConfig } from '@/db/queries/create';
+import { getConfigsByUserId } from '@/db/queries/read';
 import { createClient } from '@/utils/supabase/server';
 
 // GET /api/configs - Get all configurations for the current user
-export async function GET(request: NextRequest) {
+export async function GET() {
 	try {
 		// Create Supabase client and properly await it
 		const supabase = await createClient();
@@ -20,16 +19,13 @@ export async function GET(request: NextRequest) {
 
 		const userId = user.id;
 
-		const configs = await db
-			.select()
-			.from(configsTable)
-			.where(eq(configsTable.userId, userId));
+		const configs = await getConfigsByUserId(userId);
 
 		return NextResponse.json(configs);
 	} catch (error) {
 		console.error('Error fetching configurations:', error);
 		return NextResponse.json(
-			{ error: 'Failed to fetch configurations' },
+			{ error: `Failed to fetch configurations: ${error}` },
 			{ status: 500 },
 		);
 	}
@@ -51,7 +47,7 @@ export async function POST(request: NextRequest) {
 		const userId = user.id;
 		const body = await request.json();
 
-		// Validate required fields
+		// Validate title and configData before inserting
 		if (!body.title || !body.configData) {
 			return NextResponse.json(
 				{ error: 'Title and configuration data are required' },
@@ -59,23 +55,18 @@ export async function POST(request: NextRequest) {
 			);
 		}
 
-		const newConfig = {
-			title: body.title,
-			description: body.description || '',
-			configData: body.configData,
+		const [insertedConfig] = await createConfig(
+			body.title,
+			body.description,
+			body.configData,
 			userId,
-		};
-
-		const [insertedConfig] = await db
-			.insert(configsTable)
-			.values(newConfig)
-			.returning();
+		);
 
 		return NextResponse.json(insertedConfig, { status: 201 });
 	} catch (error) {
 		console.error('Error creating configuration:', error);
 		return NextResponse.json(
-			{ error: 'Failed to create configuration' },
+			{ error: `Failed to create configuration: ${error}` },
 			{ status: 500 },
 		);
 	}
