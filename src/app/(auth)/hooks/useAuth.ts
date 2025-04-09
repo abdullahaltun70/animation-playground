@@ -1,4 +1,3 @@
-// src/app/(auth)/hooks/useAuth.ts
 import React, { useCallback, useState } from 'react';
 
 import { AuthError } from '@supabase/supabase-js';

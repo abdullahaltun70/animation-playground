@@ -29,7 +29,7 @@ import {
 	updateConfigAction,
 } from '@/utils/actions/supabase/configs';
 
-import styles from './page.module.scss';
+import styles from './Profile.module.scss';
 
 interface ProfileClientPageProps {
 	userInfo: {

@@ -7,7 +7,7 @@ import { Avatar } from '@radix-ui/themes';
 
 import { createClient } from '@/utils/supabase/client';
 
-import styles from './UserAvatar.module.scss';
+import styles from '../../../../components/profile/UserAvatar.module.scss';
 
 export function UserAvatar() {
 	const [initials, setInitials] = useState('');

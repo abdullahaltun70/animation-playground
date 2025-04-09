@@ -1,8 +1,8 @@
-// src/app/(auth)/login/AuthComponent.tsx (of hernoem page.tsx direct)
 'use client';
 
 import React, { useEffect, useState } from 'react';
 
+import * as Form from '@radix-ui/react-form';
 import { Button, Flex, Link as RadixLink, Text } from '@radix-ui/themes';
 import { useForm } from 'react-hook-form';
 
@@ -14,7 +14,7 @@ import {
 import GoogleButton from '@/app/(auth)/login/components/GoogleButton';
 
 import AlertNotification from './AlertComponent';
-import styles from '../styles/AuthComponent.module.scss';
+import styles from '../styles/components.module.scss';
 
 enum AuthView {
 	SIGN_IN,
@@ -45,15 +45,13 @@ const AuthButton: React.FC<AuthButtonProps> = ({
 	<Button
 		disabled={loading}
 		{...props}
-		className={styles.button}
+		className={styles.submitButton}
 		type={'submit'}
 		color={'indigo'}
 	>
 		{loading ? 'Processing...' : children}
 	</Button>
 );
-
-// --- Hoofdcomponent ---
 
 const AuthComponent: React.FC = () => {
 	// Use custom hook to get state and actions
@@ -85,7 +83,7 @@ const AuthComponent: React.FC = () => {
 		forgotPasswordForm.reset();
 	}, [view, setError, signInForm, signUpForm, forgotPasswordForm]);
 
-	// --- ASYNCHRONE WRAPPERS FOR HANDLERS (to switch view) ---
+	// ASYNCHRONE WRAPPERS FOR HANDLERS (to switch view)
 
 	const onSignUpSubmit = async (data: SignUpFormData) => {
 		const success = await handleSignUp(data);
@@ -105,38 +103,57 @@ const AuthComponent: React.FC = () => {
 		<>
 			<GoogleButton onClick={handleGoogleSignIn} loading={loading} />
 			<div className={styles.divider}>OR</div>
-			<form
+			<Form.Root
 				onSubmit={signInForm.handleSubmit(handleSignIn)}
-				className={styles.form}
+				className={styles.formRoot}
 			>
-				<label className={styles.label}>Email address</label>
-				<input
-					className={styles.input}
-					type="email"
-					placeholder="Your email address"
-					required
-					{...signInForm.register('email', { required: true })}
-				/>
+				<Form.Field name="email" className={styles.formField}>
+					<Form.Label className={styles.formLabel}>Email address</Form.Label>
+					<Form.Control asChild>
+						<input
+							className={styles.formInput}
+							type="email"
+							placeholder="Your email address"
+							required
+							{...signInForm.register('email', { required: true })}
+						/>
+					</Form.Control>
+					<Form.Message match="valueMissing" className={styles.errorMessage}>
+						Email is required
+					</Form.Message>
+					<Form.Message match="typeMismatch" className={styles.errorMessage}>
+						Please enter a valid email
+					</Form.Message>
+				</Form.Field>
 
-				<label className={styles.label}>Your Password</label>
-				<input
-					className={styles.input}
-					type="password"
-					placeholder="Your password"
-					required
-					{...signInForm.register('password', { required: true })}
-				/>
+				<Form.Field name="password" className={styles.formField}>
+					<Form.Label className={styles.formLabel}>Your Password</Form.Label>
+					<Form.Control asChild>
+						<input
+							className={styles.formInput}
+							type="password"
+							placeholder="Your password"
+							required
+							{...signInForm.register('password', { required: true })}
+						/>
+					</Form.Control>
+					<Form.Message match="valueMissing" className={styles.errorMessage}>
+						Password is required
+					</Form.Message>
+				</Form.Field>
 
 				{error && (
-					<Text size="2" color="red" className={styles.error}>
+					<Text size="2" color="red" className={styles.errorMessage}>
 						{error}
 					</Text>
 				)}
 
-				<AuthButton type="submit" loading={loading}>
-					Sign in
-				</AuthButton>
-			</form>
+				<Form.Submit asChild>
+					<AuthButton type="submit" loading={loading}>
+						Sign in
+					</AuthButton>
+				</Form.Submit>
+			</Form.Root>
 			<Flex direction="column" gap="2" align="center" mt="4">
 				<AuthLink onClick={() => setView(AuthView.FORGOT_PASSWORD)}>
 					Forgot your password?
@@ -152,40 +169,63 @@ const AuthComponent: React.FC = () => {
 		<>
 			<GoogleButton onClick={handleGoogleSignIn} loading={loading} />
 			<div className={styles.divider}>OR</div>
-			<form
+			<Form.Root
 				onSubmit={signUpForm.handleSubmit(onSignUpSubmit)}
-				className={styles.form}
+				className={styles.formRoot}
 			>
-				<label className={styles.label}>Email address</label>
-				<input
-					className={styles.input}
-					type="email"
-					placeholder="Your email address"
-					required
-					{...signUpForm.register('email', { required: 'Email is required' })}
-				/>
+				<Form.Field name="email" className={styles.formField}>
+					<Form.Label className={styles.formLabel}>Email address</Form.Label>
+					<Form.Control asChild>
+						<input
+							className={styles.formInput}
+							type="email"
+							placeholder="Your email address"
+							required
+							{...signUpForm.register('email', {
+								required: 'Email is required',
+							})}
+						/>
+					</Form.Control>
+					<Form.Message match="valueMissing" className={styles.errorMessage}>
+						Email is required
+					</Form.Message>
+					<Form.Message match="typeMismatch" className={styles.errorMessage}>
+						Please enter a valid email
+					</Form.Message>
+				</Form.Field>
+
 				{signUpForm.formState.errors.email && (
-					<Text size="2" color="red" className={styles.error}>
+					<Text size="2" color="red" className={styles.errorMessage}>
 						{signUpForm.formState.errors.email.message}
 					</Text>
 				)}
 
-				<label className={styles.label}>Create a Password</label>
-				<input
-					className={styles.input}
-					type="password"
-					placeholder="Your password"
-					required
-					{...signUpForm.register('password', {
-						required: 'Password is required',
-						minLength: {
-							value: 6,
-							message: 'Password must be at least 6 characters',
-						},
-					})}
-				/>
+				<Form.Field name="password" className={styles.formField}>
+					<Form.Label className={styles.formLabel}>
+						Create a Password
+					</Form.Label>
+					<Form.Control asChild>
+						<input
+							className={styles.formInput}
+							type="password"
+							placeholder="Your password"
+							required
+							{...signUpForm.register('password', {
+								required: 'Password is required',
+								minLength: {
+									value: 6,
+									message: 'Password must be at least 6 characters',
+								},
+							})}
+						/>
+					</Form.Control>
+					<Form.Message match="valueMissing" className={styles.errorMessage}>
+						Password is required
+					</Form.Message>
+				</Form.Field>
+
 				{signUpForm.formState.errors.password && (
-					<Text size="2" color="red" className={styles.error}>
+					<Text size="2" color="red" className={styles.errorMessage}>
 						{signUpForm.formState.errors.password.message}
 					</Text>
 				)}
@@ -193,15 +233,17 @@ const AuthComponent: React.FC = () => {
 				{error &&
 					!signUpForm.formState.errors.email &&
 					!signUpForm.formState.errors.password && (
-						<Text size="2" color="red" className={styles.error}>
+						<Text size="2" color="red" className={styles.errorMessage}>
 							{error}
 						</Text>
 					)}
 
-				<AuthButton type="submit" loading={loading}>
-					Sign up
-				</AuthButton>
-			</form>
+				<Form.Submit asChild>
+					<AuthButton type="submit" loading={loading}>
+						Sign up
+					</AuthButton>
+				</Form.Submit>
+			</Form.Root>
 
 			<Flex direction="column" gap="2" align="center" mt="4">
 				<AuthLink onClick={() => setView(AuthView.SIGN_IN)}>
@@ -217,36 +259,49 @@ const AuthComponent: React.FC = () => {
 				Enter your email address and we&#39;ll send you instructions to reset
 				your password.
 			</Text>
-			<form
+			<Form.Root
 				onSubmit={forgotPasswordForm.handleSubmit(onPasswordResetSubmit)}
-				className={styles.form}
+				className={styles.formRoot}
 			>
-				<label className={styles.label}>Email address</label>
-				<input
-					className={styles.input}
-					type="email"
-					placeholder="Your email address"
-					required
-					{...forgotPasswordForm.register('email', {
-						required: 'Email is required',
-					})}
-				/>
+				<Form.Field name="email" className={styles.formField}>
+					<Form.Label className={styles.formLabel}>Email address</Form.Label>
+					<Form.Control asChild>
+						<input
+							className={styles.formInput}
+							type="email"
+							placeholder="Your email address"
+							required
+							{...forgotPasswordForm.register('email', {
+								required: 'Email is required',
+							})}
+						/>
+					</Form.Control>
+					<Form.Message match="valueMissing" className={styles.errorMessage}>
+						Email is required
+					</Form.Message>
+					<Form.Message match="typeMismatch" className={styles.errorMessage}>
+						Please enter a valid email
+					</Form.Message>
+				</Form.Field>
+
 				{forgotPasswordForm.formState.errors.email && (
-					<Text size="2" color="red" className={styles.error}>
+					<Text size="2" color="red" className={styles.errorMessage}>
 						{forgotPasswordForm.formState.errors.email.message}
 					</Text>
 				)}
 
 				{error && !forgotPasswordForm.formState.errors.email && (
-					<Text size="2" color="red" className={styles.error}>
+					<Text size="2" color="red" className={styles.errorMessage}>
 						{error}
 					</Text>
 				)}
 
-				<AuthButton type="submit" loading={loading}>
-					Send reset instructions
-				</AuthButton>
-			</form>
+				<Form.Submit asChild>
+					<AuthButton type="submit" loading={loading}>
+						Send reset instructions
+					</AuthButton>
+				</Form.Submit>
+			</Form.Root>
 
 			<Flex direction="column" gap="2" align="center" mt="4">
 				<AuthLink onClick={() => setView(AuthView.SIGN_IN)}>
@@ -256,7 +311,6 @@ const AuthComponent: React.FC = () => {
 		</>
 	);
 
-	// --- Main Render ---
 	return (
 		<>
 			{view === AuthView.SIGN_IN && renderSignInForm()}

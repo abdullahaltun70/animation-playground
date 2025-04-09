@@ -1,61 +1,206 @@
-// app/(main)/profile/page.tsx
-import { redirect } from 'next/navigation';
+'use client';
 
-import { getConfigsByUserId } from '@/db/queries/read';
-import type { Config } from '@/db/schema';
-import { createClient } from '@/utils/supabase/server';
+import React, { useEffect, useState } from 'react';
 
-import ProfileClientPage from './ProfileClientPage';
+import { CopyIcon } from '@radix-ui/react-icons';
+import { Box, Button, Dialog, Flex, Heading, Text } from '@radix-ui/themes';
 
-interface UserInfo {
-	id: string;
-	email: string;
-	name: string;
-	avatar_url?: string;
-}
+import AlertNotification from '@/app/(auth)/login/components/AlertComponent';
+import { ConfigCard } from '@/components/config-card/ConfigCard';
+import { ConfigModel } from '@/types/animations';
 
-export default async function ProfilePageServer() {
-	const supabase = await createClient();
+import styles from './Profile.module.scss';
 
-	const {
-		data: { user },
-		error,
-	} = await supabase.auth.getUser();
+export default function ProfilePage() {
+	const [configs, setConfigs] = useState<ConfigModel[]>([]);
+	const [loading, setLoading] = useState(true);
+	const [error, setError] = useState<string | null>(null);
+	const [shareDialogOpen, setShareDialogOpen] = useState(false);
+	const [shareUrl, setShareUrl] = useState('');
+	const [copySuccess, setCopySuccess] = useState(false);
 
-	if (error || !user) {
-		redirect('/login');
-	}
+	const [isDeleting, setIsDeleting] = useState(false);
+	const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+	const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
 
-	try {
-		const userInfo: UserInfo = {
-			id: user.id,
-			email: user.email ?? '',
-			name: user.user_metadata?.name || 'N/A',
-			avatar_url: user.user_metadata?.avatar_url,
-		};
+	// Fetch user's saved configurations
+	useEffect(() => {
+		fetchConfigs();
+	}, []);
 
-		let initialConfigs: Config[] = [];
-		let initialError: string | null = null;
+	const fetchConfigs = async () => {
+		setLoading(true);
+		setError(null);
 
 		try {
-			initialConfigs = await getConfigsByUserId(user.id);
-		} catch (error) {
-			console.error('Error fetching initial configs:', error);
-			initialError =
-				error instanceof Error
-					? error.message
-					: 'Failed to load initial configs';
-		}
+			// Include credentials to ensure cookies are sent with the request
+			const response = await fetch('/api/configs', {
+				credentials: 'include',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
 
-		return (
-			<ProfileClientPage
-				userInfo={userInfo}
-				initialConfigs={initialConfigs}
-				initialError={initialError}
+			if (!response.ok) {
+				throw new Error('Failed to fetch configurations');
+			}
+
+			const data = await response.json();
+			console.log('Configs fetched successfully: ', data);
+			setConfigs(data);
+		} catch (err: any) {
+			console.error('Error fetching configurations:', err);
+			setError(err.message);
+		} finally {
+			setLoading(false);
+		}
+	};
+
+	// Handler to prepare deletion and show confirmation
+	const handleDeleteRequest = (id: string) => {
+		setConfigToDeleteId(id);
+		setShowDeleteConfirm(true);
+	};
+
+	// Function to actually delete the config after confirmation
+	const handleConfirmDelete = async () => {
+		if (!configToDeleteId) return;
+
+		setIsDeleting(true);
+
+		try {
+			const response = await fetch(`/api/configs/${configToDeleteId}`, {
+				method: 'DELETE',
+				credentials: 'include', // Include credentials for authentication
+			});
+
+			if (!response.ok) {
+				throw new Error('Failed to delete configuration');
+			}
+
+			// Remove the deleted config from the state
+			setConfigs(configs.filter((config) => config.id !== configToDeleteId));
+			setShowDeleteConfirm(false);
+		} catch (err: any) {
+			console.error('Error deleting config:', err);
+			setError(err.message);
+		} finally {
+			setIsDeleting(false);
+			setConfigToDeleteId(null);
+		}
+	};
+
+	const handleShare = (id: string) => {
+		// Generate shareable URL
+		const url = new URL(window.location.origin);
+		url.pathname = '/playground';
+		url.searchParams.set('id', id);
+
+		setShareUrl(url.toString());
+		setShareDialogOpen(true);
+	};
+
+	const handleCopyUrl = () => {
+		navigator.clipboard
+			.writeText(shareUrl)
+			.then(() => {
+				setCopySuccess(true);
+				setTimeout(() => setCopySuccess(false), 2000);
+			})
+			.catch((err) => {
+				console.error('Failed to copy URL:', err);
+				setError('Failed to copy URL to clipboard');
+			});
+	};
+
+	const handleRetry = () => {
+		fetchConfigs();
+	};
+
+	return (
+		<div className={styles.profileContainer}>
+			<Heading size="6" mb="4">
+				My Animation Configurations
+			</Heading>
+
+			{error && (
+				<Box className={styles.errorMessage} mb="4">
+					{error}
+					<Button onClick={handleRetry}>Retry</Button>
+				</Box>
+			)}
+
+			{loading ? (
+				<Box className={styles.loadingIndicator}>
+					Loading your configurations...
+				</Box>
+			) : configs.length === 0 ? (
+				<Box className={styles.emptyState}>
+					<Text size="3">You don&#39;t have any saved configurations yet.</Text>
+					<Button mt="3" onClick={() => (window.location.href = '/playground')}>
+						Create Your First Animation
+					</Button>
+				</Box>
+			) : (
+				<Flex direction="column" gap="3">
+					{configs.map((config) => (
+						<ConfigCard
+							key={config.id}
+							config={config}
+							onDeleteAction={handleDeleteRequest}
+							onShareAction={handleShare}
+						/>
+					))}
+				</Flex>
+			)}
+
+			{/* Share Dialog */}
+			<Dialog.Root open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
+				<Dialog.Content>
+					<Dialog.Title>Share Animation Configuration</Dialog.Title>
+					<Dialog.Description>
+						Anyone with this link can view and edit this animation
+						configuration.
+					</Dialog.Description>
+
+					<Flex gap="3" mt="4">
+						<input
+							type="text"
+							value={shareUrl}
+							readOnly
+							className={styles.shareInput}
+						/>
+						<Button
+							onClick={handleCopyUrl}
+							style={{
+								cursor: 'pointer',
+							}}
+						>
+							<CopyIcon /> Copy
+						</Button>
+					</Flex>
+
+					{copySuccess && (
+						<Text color="green" mt="2">
+							URL copied to clipboard!
+						</Text>
+					)}
+
+					<Flex gap="3" mt="4" justify="end">
+						<Dialog.Close>
+							<Button variant="soft">Close</Button>
+						</Dialog.Close>
+					</Flex>
+				</Dialog.Content>
+			</Dialog.Root>
+			<AlertNotification
+				showAlert={showDeleteConfirm}
+				setShowAlert={setShowDeleteConfirm}
+				alertTitle="Confirm Deletion"
+				alertMessage={`Are you sure you want to delete the configuration: ${configs.find((c) => c.id === configToDeleteId)?.title ?? ''} ? This action cannot be undone.`}
+				onConfirm={handleConfirmDelete}
+				confirmButtonText={isDeleting ? 'Deleting...' : 'Delete'}
 			/>
-		);
-	} catch (error) {
-		console.error('Unexpected error in ProfilePageServer:', error);
-		redirect('/login');
-	}
+		</div>
+	);
 }

@@ -1,6 +1,10 @@
-// page.module.scss
+// Playground.module.scss
 
 .profileContainer {
+	//display: flex;
+	//flex-direction: column;
+	//flex:1;
+	height: 100%;
 	max-width: 750px;
 	margin: 3rem auto;
 	padding: 2rem 2.5rem;
@@ -215,7 +219,6 @@
 	.dark & {
 		box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
 	}
-
 }
 
 @keyframes hide {
@@ -261,4 +264,9 @@
 	color: var(--text-secondary);
 	font-size: 0.9rem;
 	line-height: 1.4;
+}
+
+
+.emptyState {
+	display: flex;
 }

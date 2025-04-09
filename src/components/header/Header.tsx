@@ -15,7 +15,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
-import { UserAvatar } from '@/components/profile/UserAvatar';
+import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
 import { ThemeToggle } from '@/components/theme-toggle';
 import { createClient } from '@/utils/supabase/client';
 
@@ -35,9 +35,8 @@ export const Header = () => {
 		const checkAuth = async () => {
 			setIsLoadingAuth(true);
 			const {
-				data: { session },
-			} = await supabase.auth.getSession();
-			const user = session?.user;
+				data: { user },
+			} = await supabase.auth.getUser();
 			setIsAuthenticated(!!user);
 			setUserEmail(user?.email || null);
 			setIsLoadingAuth(false);
@@ -132,20 +131,18 @@ export const Header = () => {
 												</Text>
 											</DropdownMenu.Label>
 										)}
-										<Link href="/profile" passHref legacyBehavior>
-											<DropdownMenu.Item asChild>
-												<a>
-													{' '}
-													{/* Use 'a' tag inside for correct rendering */}
-													<PersonIcon
-														width="16"
-														height="16"
-														style={{ marginRight: '8px' }}
-													/>
-													Profile
-												</a>
-											</DropdownMenu.Item>
-										</Link>
+										<DropdownMenu.Item asChild>
+											<RadixLink href="/profile">
+												{' '}
+												{/* Use 'a' tag inside for correct rendering */}
+												<PersonIcon
+													width="16"
+													height="16"
+													style={{ marginRight: '8px' }}
+												/>
+												Profile
+											</RadixLink>
+										</DropdownMenu.Item>
 										<DropdownMenu.Separator />
 										<DropdownMenu.Item color="red" onSelect={handleSignOut}>
 											<ExitIcon

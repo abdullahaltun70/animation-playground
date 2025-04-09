@@ -3,7 +3,7 @@ import React from 'react';
 import { Button } from '@radix-ui/themes';
 import Image from 'next/image';
 
-import styles from '../styles/AuthComponent.module.scss';
+import styles from '../styles/components.module.scss';
 
 interface AuthButtonProps
 	extends React.ButtonHTMLAttributes<HTMLButtonElement> {

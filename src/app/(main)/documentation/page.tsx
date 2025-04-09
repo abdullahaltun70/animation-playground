@@ -5,7 +5,6 @@ export default function Documentation() {
 	return (
 		<div className={styles.container}>
 			<h1>Documentatie</h1>
-			<div className={styles.docs}>{/* Documentatie inhoud */}</div>
 		</div>
 	);
 }

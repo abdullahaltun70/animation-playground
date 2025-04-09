@@ -1,3 +1,5 @@
+@use 'animation-library-test-abdullah-altun/styles/globals.scss';
+
 :root {
 	--background: #ffffff;
 	--card-bg: #f8f9fa;
@@ -79,3 +81,4 @@ a {
 }
 
 /* Basis dark mode stijlen worden door :root gedefinieerd */
+
