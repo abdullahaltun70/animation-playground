@@ -87,8 +87,13 @@ const AuthComponent: React.FC = () => {
 
 	const onSignUpSubmit = async (data: SignUpFormData) => {
 		const success = await handleSignUp(data);
-		if (success) {
-			setView(AuthView.SIGN_IN);
+		try {
+			if (success) {
+				setView(AuthView.SIGN_IN);
+			}
+		} catch (err: any) {
+			console.log(`On Submit error: ${err.message}`);
+			setError(err.message);
 		}
 	};
 
