@@ -35,16 +35,37 @@ export async function updateSession(request: NextRequest) {
 
 	// IMPORTANT: DO NOT REMOVE auth.getUser()
 
-	const {
-		data: { user },
-	} = await supabase.auth.getUser();
+	// Check for Bearer token in Authorization header for API requests
+	const authHeader = request.headers.get('Authorization');
+	let user = null;
+
+	if (authHeader && authHeader.startsWith('Bearer ')) {
+		const token = authHeader.substring(7);
+		const { data, error } = await supabase.auth.getUser(token);
+		if (!error) {
+			user = data.user;
+		}
+	} else {
+		// Use the standard cookie-based auth
+		const { data } = await supabase.auth.getUser();
+		user = data.user;
+	}
+
+	// Check if this is an API route
+	const isApiRoute = request.nextUrl.pathname.startsWith('/api/');
 
 	if (
 		!user &&
 		!request.nextUrl.pathname.startsWith('/login') &&
-		!request.nextUrl.pathname.startsWith('/auth')
+		!request.nextUrl.pathname.startsWith('/auth') &&
+		!(isApiRoute && request.nextUrl.pathname.startsWith('/api/auth'))
 	) {
-		// no user, potentially respond by redirecting the user to the login page
+		// For API routes, return 401 instead of redirecting
+		if (isApiRoute) {
+			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+		}
+
+		// For browser routes, redirect to login
 		const url = request.nextUrl.clone();
 		url.pathname = '/login';
 		return NextResponse.redirect(url);

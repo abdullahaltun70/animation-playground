@@ -47,7 +47,15 @@ export default function ProfilePage() {
 
 			const data = await response.json();
 			console.log('Configs fetched successfully: ', data);
-			setConfigs(data);
+
+			// Extract the configs array from the response
+			if (data.configs && Array.isArray(data.configs)) {
+				setConfigs(data.configs);
+			} else {
+				// If the response structure is different than expected
+				console.error('Unexpected response structure:', data);
+				setConfigs(Array.isArray(data) ? data : []);
+			}
 		} catch (err: any) {
 			console.error('Error fetching configurations:', err);
 			setError(err.message);
