@@ -32,7 +32,7 @@ interface AlertState {
  * @returns True if the email format is valid, false otherwise
  */
 const isValidEmail = (email: string): boolean => {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Regular expression for validating email addresses, translates to: https://regexr.com/37699
+	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 	return emailRegex.test(email);
 };
 
@@ -144,7 +144,6 @@ export const useAuth = (): UseAuthReturn => {
 				}
 				return true;
 			} catch (err: Error | unknown) {
-				// Handle unexpected errors without logging to console
 				console.error(
 					`Handle Auth Action Error: ${err instanceof Error ? err.message : String(err)}`,
 				);
@@ -170,6 +169,12 @@ export const useAuth = (): UseAuthReturn => {
 	);
 
 	// --- Auth Handlers ---
+
+	/**
+	 * Google OAuth handler
+	 * @returns {Promise<void>} - Promise that resolves when the Google OAuth process is complete
+	 * @async signIgnInWithOAuth - Google OAuth handler
+	 */
 	const handleGoogleSignIn = useCallback(async () => {
 		await handleAuthAction(async () =>
 			supabase.auth.signInWithOAuth({
@@ -178,6 +183,12 @@ export const useAuth = (): UseAuthReturn => {
 		);
 	}, [handleAuthAction, supabase.auth]);
 
+	/**
+	 * Email/password sign in handler
+	 * @param data - Email and password data
+	 * @returns {Promise<void>} - Promise that resolves when the sign-in process is complete
+	 * @async handleSignIn - Email/password sign in handler
+	 */
 	const handleSignIn = useCallback(
 		async (data: SignInFormData) => {
 			await validateAndExecute(data, async () =>
@@ -190,6 +201,12 @@ export const useAuth = (): UseAuthReturn => {
 		[validateAndExecute, handleAuthAction, supabase.auth, router],
 	);
 
+	/**
+	 * New user registration handler
+	 * @param data - Email and password
+	 * @returns {Promise<boolean>} - Promise that resolves when the registration process is complete
+	 * @async handleSignUp - New user registration handler
+	 */
 	const handleSignUp = useCallback(
 		async (data: SignUpFormData) => {
 			return await validateAndExecute(data, async () =>
@@ -207,6 +224,12 @@ export const useAuth = (): UseAuthReturn => {
 		[validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage],
 	);
 
+	/**
+	 * Password reset handler
+	 * @param data - Email for password reset
+	 * @returns {Promise<boolean>} - Promise that resolves when the password reset process is complete
+	 * @async handlePasswordReset - Password reset handler
+	 */
 	const handlePasswordReset = useCallback(
 		async (data: PasswordResetData) => {
 			return await validateAndExecute(data, async () =>
@@ -228,8 +251,12 @@ export const useAuth = (): UseAuthReturn => {
 		[validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage],
 	);
 
-	// For backward compatibility with existing interface
-	// For backward compatibility with existing interface
+	/**
+	 * Set the alert visibility state
+	 * @param value - New visibility state
+	 * @param callback - Optional callback function to modify the visibility state
+	 * @returns {void} - Updates the alert visibility state
+	 */
 	const setShowAlert = useCallback(
 		(value: React.SetStateAction<boolean>) => {
 			setAlert((prev) => ({
