@@ -221,33 +221,9 @@
 	}
 }
 
-@keyframes hide {
-	from {
-		opacity: 1;
-	}
-	to {
-		opacity: 0;
-	}
-}
-
-// Deze slideIn werkt voor binnenkomen vanaf rechts
-@keyframes slideIn {
-	from {
-		transform: translateX(calc(100% + var(--toast-viewport-padding)));
-	}
-	to {
-		transform: translateX(0);
-	}
-}
-
-// Deze swipeOut werkt voor wegvegen naar rechts
-@keyframes swipeOut {
-	from {
-		transform: translateX(var(--radix-toast-swipe-end-x));
-	}
-	to {
-		transform: translateX(calc(100% + var(--toast-viewport-padding)));
-	}
+.authMessage {
+	padding: 2rem;
+	text-align: center;
 }
 
 .ToastTitle {

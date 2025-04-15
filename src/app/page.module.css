@@ -78,6 +78,7 @@
 a.primary {
 	color: var(--background);
 	gap: 8px;
+	cursor: pointer;
 }
 
 a.secondary {

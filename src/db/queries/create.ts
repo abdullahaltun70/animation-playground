@@ -9,6 +9,7 @@ import { Config } from '@/db/schema';
  * @param title - Configuration title
  * @param description - Optional configuration description
  * @param configData - Optional JSON configuration data
+ * @param isPublic - Whether the config is public or private (boolean)
  * @param userId - ID of user creating the config (UUID)
  *
  * @returns Promise<Config[]> - Array containing the newly created config
@@ -27,6 +28,7 @@ export async function createConfig(
 	title: string,
 	description: string | null,
 	configData: string | null,
+	isPublic: boolean,
 	userId: string,
 ): Promise<Config[]> {
 	try {
@@ -36,6 +38,7 @@ export async function createConfig(
 				title: title,
 				description: description,
 				configData: configData,
+				isPublic: isPublic,
 				userId: userId,
 			})
 			.returning();

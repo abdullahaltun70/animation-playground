@@ -5,11 +5,11 @@ import { db } from '@/db';
 import { configsTable } from '../schema';
 
 export async function getAllConfigs() {
-	return db.select().from(configsTable);
+	return db.select().from(configsTable).orderBy(desc(configsTable.updatedAt));
 }
 
 export async function getConfigById(id: string) {
-	return db.select().from(configsTable).where(eq(configsTable.id, id));
+	return db.select().from(configsTable).where(eq(configsTable.id, id)).limit(1);
 }
 
 export async function getConfigsByUserId(userId: string) {

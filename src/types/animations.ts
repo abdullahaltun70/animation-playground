@@ -13,6 +13,7 @@ export interface AnimationConfig {
 	};
 	name?: string;
 	description?: string;
+	isPublic?: boolean;
 }
 
 export type AnimationType = 'fade' | 'slide' | 'scale' | 'rotate' | 'bounce';
@@ -34,6 +35,7 @@ export interface ConfigModel {
 	userId: string;
 	createdAt: string;
 	updatedAt?: string;
+	isPublic?: boolean;
 }
 
 // API response types

@@ -1,8 +1,9 @@
 'use client';
 
-import React from 'react';
+import { useState } from 'react';
 
-import { Box, Flex } from '@radix-ui/themes';
+import { InfoCircledIcon } from '@radix-ui/react-icons';
+import { Box, Flex, Card, Text, Button } from '@radix-ui/themes';
 
 import { AnimationPreview } from '@/app/(main)/playground/components/AnimationPreview';
 import { ErrorNotification } from '@/app/(main)/playground/components/ErrorNotification';
@@ -24,6 +25,8 @@ export default function PlaygroundPage() {
 		error,
 		setError,
 		configId,
+		isReadOnly,
+		copyConfig,
 		saveConfig,
 		resetConfig,
 	} = useAnimationConfig();
@@ -43,14 +46,57 @@ export default function PlaygroundPage() {
 		handleCopyCode,
 	} = useShareExport(configId);
 
+	const [isCopying, setIsCopying] = useState(false);
+	const [copyCompleted, setCopyCompleted] = useState(false);
+
+	const handleCopyConfig = async () => {
+		setIsCopying(true);
+		try {
+			const success = await copyConfig();
+			if (success) {
+				setCopyCompleted(true);
+				setTimeout(() => setCopyCompleted(false), 3000);
+			}
+		} finally {
+			setIsCopying(false);
+		}
+	};
+
 	return (
-		// <Suspense fallback={<Loading />}>
 		<div className={styles.pageContainer}>
 			{error && (
 				<ErrorNotification message={error} onDismiss={() => setError(null)} />
 			)}
 
 			{loading && <LoadingIndicator />}
+
+			{/* Read only banner if the user is viewing someone else's configuration */}
+			{isReadOnly && (
+				<Card className={styles.readOnlyBanner}>
+					<Flex align="center" gap="2">
+						<InfoCircledIcon />
+						<Text>
+							You are viewing someone else&#39;s animation configuration. Make a
+							copy to edit it.
+						</Text>
+						<Button
+							onClick={handleCopyConfig}
+							disabled={isCopying}
+							className={styles.copyButton}
+						>
+							{isCopying ? 'Creating copy...' : 'Make a copy'}
+						</Button>
+					</Flex>
+				</Card>
+			)}
+
+			{copyCompleted && (
+				<Card className={styles.copySuccessCard}>
+					<Text color="green">
+						Configuration copied successfully! You can now edit it.
+					</Text>
+				</Card>
+			)}
 
 			<Flex className={styles.container}>
 				{/* Left side - Animation Preview Area */}
@@ -65,9 +111,11 @@ export default function PlaygroundPage() {
 				<Box className={styles.configAreaWrapper}>
 					<ConfigPanel
 						initialConfig={animationConfig}
-						onConfigChange={setAnimationConfig}
-						onSave={saveConfig}
+						onConfigChange={isReadOnly ? undefined : setAnimationConfig}
+						onSave={isReadOnly ? handleCopyConfig : saveConfig}
 						onReset={resetConfig}
+						isReadOnly={isReadOnly}
+						saveButtonText={isReadOnly ? 'Save as my configuration' : 'Save'}
 					/>
 				</Box>
 			</Flex>
@@ -92,6 +140,5 @@ export default function PlaygroundPage() {
 				animationConfig={animationConfig}
 			/>
 		</div>
-		// </Suspense>
 	);
 }

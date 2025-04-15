@@ -32,8 +32,12 @@
 	margin-top: 2rem;
 	gap: 1rem;
 
+	.copyButton {
+		cursor: copy;
+	}
 	.button {
 		flex: 1;
+		cursor: pointer;
 
 		&:last-child {
 			background-color: var(--primary-color);

@@ -68,6 +68,16 @@
 	right: 0;
 }
 
+.copyButton {
+	cursor: copy;
+}
+
+.copySuccessCard {
+	margin: 0 0 16px 0;
+	padding: 12px;
+	background: var(--green-3);
+}
+
 .codeBlock {
 	background-color: var(--card-bg);
 	color: var(--text-primary);
@@ -102,41 +112,8 @@
 	border-radius: 8px;
 }
 
-@keyframes slideInLeft {
-	from {
-		transform: translateX(-200px);
-	}
-	to {
-		transform: translateX(0);
-	}
-}
-
-@keyframes scaleIn {
-	from {
-		transform: scale(0.1);
-	}
-	to {
-		transform: scale(1);
-	}
-}
-
-@keyframes bounceIn {
-	0% {
-		transform: translateY(0);
-	}
-	50% {
-		transform: translateY(-200px);
-	}
-	100% {
-		transform: translateY(0);
-	}
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
+.readOnlyBanner {
+	margin: 0 0 16px 0;
+	padding: 12px;
+	background: var(--blue-3);
 }

@@ -1,24 +1,33 @@
 import { sql } from 'drizzle-orm';
 import {
-	boolean,
+	pgTable,
 	foreignKey,
 	pgPolicy,
-	pgSchema,
-	pgTable,
+	integer,
 	text,
-	timestamp,
-	uuid,
 	varchar,
+	uuid,
+	timestamp,
+	boolean,
+	pgEnum,
 } from 'drizzle-orm/pg-core';
-import { authUsers } from 'drizzle-orm/supabase';
+
+export const role = pgEnum('role', ['DESIGNER', 'DEVELOPER']);
 
 export const configsTable = pgTable(
 	'configs_table',
 	{
-		id: uuid().primaryKey().defaultRandom(),
+		id: integer().primaryKey().generatedByDefaultAsIdentity({
+			name: 'configs_table_id_seq',
+			startWith: 1,
+			increment: 1,
+			minValue: 1,
+			maxValue: 2147483647,
+			cache: 1,
+		}),
+		configData: text('config_data'),
 		title: varchar({ length: 30 }).default('').notNull(),
 		description: varchar({ length: 255 }).default(''),
-		configData: text('config_data'),
 		userId: uuid('user_id')
 			.default(sql`auth.uid()`)
 			.notNull(),
@@ -34,14 +43,14 @@ export const configsTable = pgTable(
 	(table) => [
 		foreignKey({
 			columns: [table.userId],
-			foreignColumns: [authUsers.id],
+			foreignColumns: [users.id],
 			name: 'configs_table_user_id_fkey',
 		}).onDelete('cascade'),
-		pgPolicy('Enable users to view their own data only', {
+		pgPolicy('Enable read access for all users', {
 			as: 'permissive',
 			for: 'select',
-			to: ['authenticated'],
-			using: sql`(( SELECT auth.uid() AS uid) = user_id)`,
+			to: ['public'],
+			using: sql`true`,
 		}),
 		pgPolicy('Enable insert for users based on user_id', {
 			as: 'permissive',
@@ -60,12 +69,3 @@ export const configsTable = pgTable(
 		}),
 	],
 );
-
-export type Config = typeof configsTable.$inferSelect;
-export type NewConfig = typeof configsTable.$inferInsert;
-
-export const authSchema = pgSchema('auth');
-
-export const usersInAuth = authSchema.table('users', {
-	id: uuid('id').primaryKey(),
-});

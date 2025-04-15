@@ -6,7 +6,6 @@ import { useState } from 'react';
 import { Button } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 
-// import styles from '@/app/(main)/profile/Playground.module.scss';
 import { createClient } from '@/utils/supabase/client';
 
 import styles from '../styles/components.module.scss';

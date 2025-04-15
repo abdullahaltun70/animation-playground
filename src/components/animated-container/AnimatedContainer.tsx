@@ -152,10 +152,10 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
 		config.duration,
 		config.delay,
 		config.easing,
-		config.opacity, // Fade specifiek, maar veilig om altijd mee te nemen
-		config.distance, // Slide & Bounce specifiek
-		config.scale, // Scale specifiek
-		config.degrees, // Rotate specifiek
+		config.opacity,
+		config.distance, // Slide & Bounce
+		config.scale, // Scale
+		config.degrees, // Rotate
 	]);
 
 	return (

@@ -2,10 +2,14 @@ import { and, eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
 import { db } from '@/db';
-import { getConfigsByUserIdAndConfigId } from '@/db/queries/read';
+import { deleteConfig } from '@/db/queries/delete';
+import {
+	getConfigById,
+	getConfigsByUserIdAndConfigId,
+} from '@/db/queries/read';
 import { updateConfig } from '@/db/queries/update';
 import { configsTable } from '@/db/schema';
-import { createClient } from '@/utils/supabase/server';
+import { authenticateUser } from '@/utils/supabase/authenticateUser';
 
 // GET /api/configs/[id] - Get a specific configuration
 export async function GET(
@@ -13,33 +17,33 @@ export async function GET(
 	{ params }: { params: { id: Promise<string> } },
 ) {
 	try {
-		const supabase = await createClient();
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
+		const authResult = await authenticateUser(request);
 		const configId = await params.id;
 
-		if (!user) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-		}
+		const config = await getConfigById(configId);
 
-		const userId = user.id;
-
-		const [config] = await db
-			.select()
-			.from(configsTable)
-			.where(
-				and(eq(configsTable.id, configId), eq(configsTable.userId, userId)),
-			);
-
-		if (!config) {
+		if (!config || config.length === 0) {
 			return NextResponse.json(
 				{ error: 'Configuration not found' },
 				{ status: 404 },
 			);
 		}
 
-		return NextResponse.json(config);
+		// Check if this is the owner of the config
+		let isReadOnly = true;
+
+		if (authResult.user) {
+			isReadOnly = config[0].userId !== authResult.user.id;
+		}
+
+		// Return the configuration with permission info
+		return NextResponse.json(
+			{
+				...config[0],
+				isReadOnly,
+			},
+			{ status: 200 },
+		);
 	} catch (error: any) {
 		console.error('Error fetching configuration:', error);
 		console.error('Error fetching configuration:', error.stack);
@@ -56,17 +60,16 @@ export async function PUT(
 	{ params }: { params: { id: Promise<string> } },
 ) {
 	try {
-		const supabase = await createClient();
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-		const configId = await params.id;
+		const authResult = await authenticateUser(request);
 
-		if (!user) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+		if (authResult.error) {
+			return authResult.error;
 		}
 
+		const { user } = authResult;
 		const userId = user.id;
+		const configId = await params.id;
+
 		const body = await request.json();
 
 		// Validate required fields
@@ -77,7 +80,7 @@ export async function PUT(
 			);
 		}
 
-		// Check if the configuration exists and belongs to the user
+		// Checks if the configuration exists and belongs to the user
 		const existingConfig = await getConfigsByUserIdAndConfigId(
 			userId,
 			configId,
@@ -90,16 +93,29 @@ export async function PUT(
 			);
 		}
 
-		const updatedConfig = {
-			title: body.title,
-			description: body.description || '',
-			configData: body.configData,
-			updatedAt: new Date().toISOString(),
-		};
+		const updateData: Partial<{
+			title: string;
+			description: string | null;
+			configData: string | null;
+			isPublic: boolean;
+		}> = {};
 
-		const res = await updateConfig(configId, updatedConfig);
+		updateData.title = body.title;
+		if (body.description !== undefined)
+			updateData.description = body.description;
+		updateData.configData = body.configData;
 
-		return NextResponse.json(res);
+		if (typeof body.isPublic === 'boolean') updateData.isPublic = body.isPublic;
+
+		if (Object.keys(updateData).length === 0) {
+			return NextResponse.json(
+				{ message: 'No fields provided for update' },
+				{ status: 400 },
+			);
+		}
+
+		const updatedConfig = await updateConfig(configId, userId, updateData);
+		return NextResponse.json(updatedConfig);
 	} catch (error) {
 		console.error('Error updating configuration:', error);
 		return NextResponse.json(
@@ -115,44 +131,35 @@ export async function DELETE(
 	{ params }: { params: { id: Promise<string> } },
 ) {
 	try {
-		const supabase = await createClient();
-		const {
-			data: { user },
-		} = await supabase.auth.getUser();
-		const configId = await params.id;
+		const authResult = await authenticateUser(request);
 
-		if (!user) {
-			return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+		if (authResult.error) {
+			return authResult.error;
 		}
 
+		const { user } = authResult;
 		const userId = user.id;
+		const configId = await params.id;
 
-		// Check if the configuration exists and belongs to the user
-		const [existingConfig] = await db
-			.select()
-			.from(configsTable)
-			.where(
-				and(eq(configsTable.id, configId), eq(configsTable.userId, userId)),
-			);
+		const existingConfig = await getConfigsByUserIdAndConfigId(
+			userId,
+			configId,
+		);
 
 		if (!existingConfig) {
 			return NextResponse.json(
-				{ error: 'Configuration not found' },
+				{ error: `Configuration not found: ${configId}` },
 				{ status: 404 },
 			);
 		}
 
-		await db
-			.delete(configsTable)
-			.where(
-				and(eq(configsTable.id, configId), eq(configsTable.userId, userId)),
-			);
+		await deleteConfig(configId, userId);
 
 		return NextResponse.json({ success: true });
 	} catch (error) {
 		console.error('Error deleting configuration:', error);
 		return NextResponse.json(
-			{ error: 'Failed to delete configuration' },
+			{ error: `Failed to delete configuration: ${error}` },
 			{ status: 500 },
 		);
 	}
