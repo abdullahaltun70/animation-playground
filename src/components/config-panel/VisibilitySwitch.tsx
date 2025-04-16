@@ -4,55 +4,75 @@ import React from 'react';
 import { EyeOpenIcon, LockClosedIcon } from '@radix-ui/react-icons';
 import { Flex, SegmentedControl, Text } from '@radix-ui/themes';
 
+import styles from './VisibilitySwitch.module.scss';
+
 interface VisibilitySwitchProps {
-	/** The current visibility state (true for Public, false for Private) */
 	isPublic: boolean;
-	/** Callback function when the visibility changes */
 	onChange: (isPublic: boolean) => void;
-	/** Whether the switch should be disabled */
 	disabled?: boolean;
 }
 
+/**
+ * A segmented control component for toggling visibility between public and private states.
+ * Uses Radix UI components with themed icons and consistent styling.
+ * @param isPublic - Boolean flag indicating if the current state is public
+ * @param onChange - Callback function triggered when visibility state changes
+ * @param disabled - Optional flag to disable the control
+ */
 export function VisibilitySwitch({
 	isPublic,
 	onChange,
 	disabled = false,
 }: VisibilitySwitchProps) {
-	// Determine the value for the SegmentedControl based on the isPublic prop
 	const currentValue = isPublic ? 'public' : 'private';
 
-	// Handler for when the SegmentedControl value changes
 	const handleValueChange = (value: string) => {
-		// Convert the string value back to a boolean and call the onChange prop
 		onChange(value === 'public');
 	};
 
 	return (
-		// Use SegmentedControl.Root to wrap the options
+		// Using SegmentedControl for clear choice presentation
 		<SegmentedControl.Root
 			value={currentValue}
 			onValueChange={handleValueChange}
 			disabled={disabled}
-			radius="full" // Makes the ends fully rounded like a pill
-			// Optional: Prevent stretching if needed
+			radius="full" // Keep the familiar rounded pill shape
+			// We'll stick with the default `variant="surface"` as it provides clear active state
+			// variant="surface"
+			// Keep the control compact horizontally
 			style={{ width: 'fit-content' }}
+			className={styles.visibilitySwitchRoot}
 		>
 			{/* Private Option */}
-			<SegmentedControl.Item value="private">
-				<Flex gap="2" align="center">
-					{' '}
-					{/* Use Flex to layout icon and text */}
-					<LockClosedIcon width="16" height="16" />
+			<SegmentedControl.Item
+				value="private"
+				className={styles.privateOptionStyle}
+			>
+				<Flex gap="2" align="center" title="Set visibility to Private">
+					<LockClosedIcon
+						width="16"
+						height="16"
+						// Subtle Enhancement: Use a neutral gray for the lock icon always.
+						// This provides a consistent visual cue for 'private/secure'.
+						// `var(--gray-11)` offers good visibility in both light/dark modes.
+						color="var(--red-11)"
+					/>
+					{/* Using standard Text size for consistency */}
 					<Text size="2">Private</Text>
 				</Flex>
 			</SegmentedControl.Item>
 
 			{/* Public Option */}
 			<SegmentedControl.Item value="public">
-				<Flex gap="2" align="center">
-					{' '}
-					{/* Use Flex to layout icon and text */}
-					<EyeOpenIcon width="16" height="16" />
+				<Flex gap="2" align="center" title="Set visibility to Public">
+					<EyeOpenIcon
+						width="16"
+						height="16"
+						// Subtle Enhancement: Use the theme's primary accent color for the eye icon always.
+						// This visually associates 'public/visible' with the theme's highlight color.
+						// `var(--accent-9)` is the main interactive shade used for backgrounds/borders.
+						color="var(--accent-9)"
+					/>
 					<Text size="2">Public</Text>
 				</Flex>
 			</SegmentedControl.Item>
