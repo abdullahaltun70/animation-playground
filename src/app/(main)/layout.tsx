@@ -6,7 +6,7 @@ import Loading from '@/app/(main)/playground/loading';
 import { Footer } from '@/components/footer/Footer';
 import { Header } from '@/components/header';
 
-import styles from './playground/styles/Playground.module.scss';
+import styles from './page.module.scss';
 
 export default function MainLayout({
 	children,
@@ -14,16 +14,16 @@ export default function MainLayout({
 	children: React.ReactNode;
 }) {
 	return (
-		<>
-			<header>
+		<div className={styles.mainLayout}>
+			<header className={styles.header} style={{ flexShrink: 0 }}>
 				<Header />
 			</header>
 			<Suspense fallback={<Loading />}>
 				<main className={styles.main}>{children}</main>
 			</Suspense>
-			<footer>
+			<footer className={styles.footer}>
 				<Footer />
 			</footer>
-		</>
+		</div>
 	);
 }
