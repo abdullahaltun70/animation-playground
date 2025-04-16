@@ -2,7 +2,6 @@
 import React from 'react';
 
 import { Link as RadixLink, Text } from '@radix-ui/themes';
-import Link from 'next/link';
 
 import styles from './Footer.module.scss';
 
@@ -17,33 +16,20 @@ export const Footer = () => {
 
 				{/* Links */}
 				<div className={styles.footerLinks}>
-					<Link
-						href="/#"
-						// TODO: make the terms page
-						// href="/terms"
-						passHref
-						legacyBehavior
-					>
-						<RadixLink size="2">Terms</RadixLink>
-					</Link>
-					<Link
-						href="/#"
-						// TODO: make the privacy page
-						// href="/privacy"
-						passHref
-						legacyBehavior
-					>
-						<RadixLink size="2">Privacy</RadixLink>
-					</Link>
-					<Link
+					<RadixLink href="/terms" size={'2'}>
+						Terms
+					</RadixLink>
+					<RadixLink href="/privacy" size={'2'}>
+						Privacy
+					</RadixLink>
+					<RadixLink
 						href="https://github.com/abdullahaltun70/animation-playground"
-						passHref
-						legacyBehavior
+						size="2"
+						target="_blank"
+						rel="noopener noreferrer"
 					>
-						<RadixLink size="2" target="_blank" rel="noopener noreferrer">
-							GitHub
-						</RadixLink>
-					</Link>
+						GitHub
+					</RadixLink>
 				</div>
 			</div>
 		</footer>
