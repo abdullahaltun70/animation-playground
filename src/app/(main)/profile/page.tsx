@@ -40,58 +40,6 @@ export default function ProfilePage() {
 	const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
 	const [authorName, setAuthorName] = useState('');
 
-	// Check if user is authenticated before loading any data
-	useEffect(() => {
-		const checkAuth = async () => {
-			try {
-				setCheckingAuth(true);
-				const supabase = createClient();
-				const {
-					data: { user },
-				} = await supabase.auth.getUser();
-				setAuthorName(user?.user_metadata.name);
-
-				if (!user) {
-					// If no session, redirect to login
-					console.log('No authentication session found, redirecting to login');
-					router.push('/login?redirectTo=/profile');
-					return;
-				}
-
-				setIsAuthenticated(true);
-				// Once authenticated, fetch the data
-				fetchAllConfigs();
-				fetchUserConfigs();
-			} catch (err) {
-				console.error('Error checking authentication:', err);
-				setError('Authentication error. Please try logging in again.');
-			} finally {
-				setCheckingAuth(false);
-			}
-		};
-
-		checkAuth();
-	}, [router]);
-
-	// Set up auth state change listener
-	useEffect(() => {
-		const supabase = createClient();
-
-		const {
-			data: { subscription },
-		} = supabase.auth.onAuthStateChange((event, session) => {
-			if (event === 'SIGNED_OUT' || !session) {
-				// If signed out during the session, redirect to login
-				router.push('/login?redirectTo=/profile');
-			}
-		});
-
-		// Clean up subscription
-		return () => {
-			subscription.unsubscribe();
-		};
-	}, [router]);
-
 	const fetchAllConfigs = async () => {
 		setLoading(true);
 		setError(null);
@@ -240,6 +188,58 @@ export default function ProfilePage() {
 		fetchUserConfigs();
 	};
 
+	// Check if user is authenticated before loading any data
+	useEffect(() => {
+		const checkAuth = async () => {
+			try {
+				setCheckingAuth(true);
+				const supabase = createClient();
+				const {
+					data: { user },
+				} = await supabase.auth.getUser();
+				setAuthorName(user?.user_metadata.name);
+
+				if (!user) {
+					// If no session, redirect to login
+					console.log('No authentication session found, redirecting to login');
+					router.push('/login?redirectTo=/profile');
+					return;
+				}
+
+				setIsAuthenticated(true);
+				// Once authenticated, fetch the data
+				fetchAllConfigs();
+				fetchUserConfigs();
+			} catch (err) {
+				console.error('Error checking authentication:', err);
+				setError('Authentication error. Please try logging in again.');
+			} finally {
+				setCheckingAuth(false);
+			}
+		};
+
+		checkAuth();
+	}, [router]);
+
+	// Set up auth state change listener
+	useEffect(() => {
+		const supabase = createClient();
+
+		const {
+			data: { subscription },
+		} = supabase.auth.onAuthStateChange((event, session) => {
+			if (event === 'SIGNED_OUT' || !session) {
+				// If signed out during the session, redirect to login
+				router.push('/login?redirectTo=/profile');
+			}
+		});
+
+		// Clean up subscription
+		return () => {
+			subscription.unsubscribe();
+		};
+	}, [router]);
+
 	// Show loading state when checking authentication
 	if (checkingAuth) {
 		return <Box className={styles.authMessage}>Checking authentication...</Box>;
@@ -290,10 +290,7 @@ export default function ProfilePage() {
 								<Text size="3">
 									You don&#39;t have any saved configurations yet.
 								</Text>
-								<Button
-									mt="3"
-									onClick={() => (window.location.href = '/playground')}
-								>
+								<Button mt="3" onClick={() => router.push('/playground')}>
 									Create Your First Animation
 								</Button>
 							</Box>

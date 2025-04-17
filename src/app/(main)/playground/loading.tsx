@@ -1,31 +1,45 @@
-import React from 'react';
+'use client';
 
 import { Box, Flex } from '@radix-ui/themes';
 
-import styles from '@/app/(main)/playground/styles/Playground.module.scss';
+import styles from './styles/loading.module.scss';
 
-const Loading = () => {
+export default function Loading() {
 	return (
 		<Flex className={styles.container}>
-			{/* Left side - Animation Preview Area */}
-			<Box className={styles.animationArea}>
-				{/* Skeleton for AnimatedContainer */}
-				<Box className={styles.skeleton} />
+			{/* ---------- LEFT : animation preview ---------- */}
+			<Box className={styles.previewArea}>
+				<Box className={`${styles.skeleton} ${styles.preview}`} />
 
-				{/* Action buttons */}
-				<Flex className={styles.actionButtons} gap="2">
-					<Box className={styles.skeletonButton} />
-					<Box className={styles.skeletonButton} />
+				{/* action buttons (share / export) */}
+				<Flex gap="2" className={styles.actionButtons}>
+					<Box className={`${styles.skeleton} ${styles.actionBtn}`} />
+					<Box className={`${styles.skeleton} ${styles.actionBtn}`} />
 				</Flex>
 			</Box>
 
-			{/* Right side - Config Panel */}
-			<Box className={styles.configAreaWrapper}>
-				{/* Skeleton for ConfigPanel */}
-				<Box className={styles.skeletonPanel} />
+			{/* ---------- RIGHT : config‑panel ---------- */}
+			<Box className={styles.panelWrapper}>
+				<Box className={`${styles.skeleton} ${styles.panelHeader}`} />
+
+				{/* input skeletons */}
+				<Box className={`${styles.skeleton} ${styles.input}`} />
+				<Box className={`${styles.skeleton} ${styles.input}`} />
+
+				{/* select boxes */}
+				<Box className={`${styles.skeleton} ${styles.select}`} />
+				<Box className={`${styles.skeleton} ${styles.select}`} />
+
+				{/* slider / range rows */}
+				<Box className={`${styles.skeleton} ${styles.slider}`} />
+				<Box className={`${styles.skeleton} ${styles.slider}`} />
+
+				{/* final buttons */}
+				<Flex gap="2" mt="auto">
+					<Box className={`${styles.skeleton} ${styles.btn}`} />
+					<Box className={`${styles.skeleton} ${styles.btnPrimary}`} />
+				</Flex>
 			</Box>
 		</Flex>
 	);
-};
-
-export default Loading;
+}

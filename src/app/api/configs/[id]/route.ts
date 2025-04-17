@@ -1,14 +1,11 @@
-import { and, eq } from 'drizzle-orm';
 import { NextRequest, NextResponse } from 'next/server';
 
-import { db } from '@/db';
 import { deleteConfig } from '@/db/queries/delete';
 import {
 	getConfigById,
 	getConfigsByUserIdAndConfigId,
 } from '@/db/queries/read';
 import { updateConfig } from '@/db/queries/update';
-import { configsTable } from '@/db/schema';
 import { authenticateUser } from '@/utils/supabase/authenticateUser';
 
 // GET /api/configs/[id] - Get a specific configuration
@@ -22,7 +19,7 @@ export async function GET(
 
 		const config = await getConfigById(configId);
 
-		if (!config || config.length === 0) {
+		if (!Array.isArray(config) || config.length === 0) {
 			return NextResponse.json(
 				{ error: 'Configuration not found' },
 				{ status: 404 },

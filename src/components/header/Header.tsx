@@ -151,24 +151,20 @@ export const Header = () => {
 										</DropdownMenu.Item>
 									</>
 								) : (
-									<RadixLink href="/login">
-										<DropdownMenu.Item asChild>
-											<a>
-												{' '}
-												{/* Use 'a' tag inside */}
-												<ExitIcon
-													width="16"
-													height="16"
-													style={{
-														transform: 'scaleX(-1)',
-														marginRight: '8px',
-													}}
-												/>{' '}
-												{/* Reversed icon for Sign In */}
-												Sign In
-											</a>
-										</DropdownMenu.Item>
-									</RadixLink>
+									<DropdownMenu.Item asChild>
+										<RadixLink href="/login">
+											<ExitIcon
+												width="16"
+												height="16"
+												style={{
+													transform: 'scaleX(-1)',
+													marginRight: '8px',
+												}}
+											/>
+											{/* Reversed icon for Sign In */}
+											Sign In
+										</RadixLink>
+									</DropdownMenu.Item>
 								)}
 							</DropdownMenu.Content>
 						</DropdownMenu.Root>
