@@ -29,19 +29,14 @@
 .configButtons {
 	display: flex;
 	justify-content: space-between;
-	margin-top: 2rem;
 	gap: 1rem;
 
 	.copyButton {
+		flex:1;
 		cursor: copy;
 	}
 	.button {
-		flex: 1;
+		flex:1;
 		cursor: pointer;
-
-		&:last-child {
-			background-color: var(--primary-color);
-			color: white;
-		}
 	}
 }

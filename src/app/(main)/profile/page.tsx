@@ -3,22 +3,14 @@
 import React, { useEffect, useState } from 'react';
 
 import { CopyIcon } from '@radix-ui/react-icons';
-import {
-	Box,
-	Button,
-	Dialog,
-	Flex,
-	Heading,
-	Tabs,
-	Text,
-} from '@radix-ui/themes';
+import { Box, Button, Dialog, Flex, Tabs, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 
 import AlertNotification from '@/app/(auth)/login/components/AlertComponent';
-import { ConfigCard } from '@/components/config-card/ConfigCard';
 import { ConfigModel } from '@/types/animations';
 import { createClient } from '@/utils/supabase/client';
 
+import ConfigList from './components/ConfigList';
 import styles from './Profile.module.scss';
 
 // TODO: REFACTOR THIS COMPONENT AND IMPLEMENT THE
@@ -270,89 +262,40 @@ export default function ProfilePage() {
 
 				<Box pt="3">
 					<Tabs.Content value="my-configs">
-						<Heading size="6" mb="4">
-							My Animation Configurations
-						</Heading>
-
-						{error && (
-							<Box className={styles.errorMessage} mb="4">
-								{error}
-								<Button onClick={handleRetry}>Retry</Button>
-							</Box>
-						)}
-
-						{loading ? (
-							<Box className={styles.loadingIndicator}>
-								Loading your configurations...
-							</Box>
-						) : userConfigs.length === 0 ? (
-							<Box className={styles.emptyState}>
-								<Text size="3">
-									You don&#39;t have any saved configurations yet.
-								</Text>
-								<Button mt="3" onClick={() => router.push('/playground')}>
+						<ConfigList
+							configs={userConfigs}
+							loading={loading}
+							error={error}
+							emptyStateMessage="You don’t have any saved configurations yet."
+							loadingLabel="Loading your configurations…"
+							onRetry={handleRetry}
+							onDeleteAction={handleDeleteRequest}
+							onShareAction={handleShare}
+							authorName={authorName}
+							emptyStateAction={
+								<Button onClick={() => router.push('/playground')}>
 									Create Your First Animation
 								</Button>
-							</Box>
-						) : (
-							<Flex direction="column" gap="3">
-								{userConfigs.map((config) => (
-									<ConfigCard
-										key={config.id}
-										config={config}
-										onDeleteAction={handleDeleteRequest}
-										onShareAction={handleShare}
-										authorName={authorName}
-									/>
-								))}
-							</Flex>
-						)}
+							}
+						/>
 					</Tabs.Content>
 
 					<Tabs.Content value="all-configs">
-						<Heading size="6" mb="4">
-							All Animation Configurations
-						</Heading>
-
-						{error && (
-							<Box className={styles.errorMessage} mb="4">
-								{error}
-								<Button onClick={handleRetry}>Retry</Button>
-							</Box>
-						)}
-
-						{loading ? (
-							<Box className={styles.loadingIndicator}>
-								Loading All configurations...
-							</Box>
-						) : allConfigs.length === 0 ? (
-							<Box className={styles.emptyState}>
-								<Text size="3">
-									{`
-									No One has saved any configurations yet 😢
-									Please create your first configuration to start sharing! 
-									`}
-								</Text>
-								<Button
-									mt="3"
-									onClick={() => (window.location.href = '/playground')}
-								>
+						<ConfigList
+							configs={allConfigs}
+							loading={loading}
+							error={error}
+							emptyStateMessage="No configurations found yet 😢 — be the first to share!"
+							loadingLabel="Loading all configurations…"
+							onRetry={handleRetry}
+							onShareAction={handleShare}
+							authorName={authorName}
+							emptyStateAction={
+								<Button onClick={() => router.push('/playground')}>
 									Create Your First Animation
 								</Button>
-							</Box>
-						) : (
-							<Flex direction="column" gap="3">
-								{allConfigs.map((config) => (
-									<ConfigCard
-										key={config.id}
-										config={config}
-										onDeleteAction={handleDeleteRequest}
-										onShareAction={handleShare}
-										authorName={authorName}
-									/>
-								))}
-							</Flex>
-						)}
+							}
+						/>
 					</Tabs.Content>
 				</Box>
 			</Tabs.Root>

@@ -28,11 +28,11 @@ export function AnimationPreview({
 			{/* Action buttons */}
 			<Flex className={styles.actionButtons} gap="2">
 				{configId && (
-					<Button className={styles.actionButton} onClick={onShare}>
+					<Button onClick={onShare}>
 						<Share1Icon /> Share
 					</Button>
 				)}
-				<Button className={styles.actionButton} onClick={onExport}>
+				<Button onClick={onExport}>
 					<CodeIcon /> Export Code
 				</Button>
 			</Flex>

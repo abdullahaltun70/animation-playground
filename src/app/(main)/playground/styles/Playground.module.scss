@@ -75,13 +75,7 @@
 .actionButtons {
 	display: flex;
 	flex: 1;
-	position: absolute;
-	top: 0.1rem;
-	bottom: 0;
-	//border: 1px solid #ccc;
-	right: 0;
-	margin-bottom: 1rem;
-	align-self: flex-end;
+	justify-content: center;
 }
 
 .copyButton {
