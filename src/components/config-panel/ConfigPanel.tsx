@@ -1,18 +1,20 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
+import * as LabelPrimitive from '@radix-ui/react-label'; // Use Radix Label primitive
 import {
 	Button,
+	Flex,
 	Heading,
 	Select,
 	Slider,
-	Theme,
 	Text,
 	TextField,
-	Flex,
+	Theme,
 } from '@radix-ui/themes';
 
+import { VisibilitySwitch } from '@/components/config-panel/VisibilitySwitch';
 import {
 	AnimationConfig,
 	AnimationType,
@@ -26,6 +28,8 @@ interface ConfigPanelProps {
 	onConfigChange?: (config: AnimationConfig) => void;
 	onSave?: (config: AnimationConfig) => void;
 	onReset?: () => void;
+	isReadOnly?: boolean;
+	saveButtonText?: string;
 }
 
 export function ConfigPanel({
@@ -33,6 +37,8 @@ export function ConfigPanel({
 	onConfigChange,
 	onSave,
 	onReset,
+	isReadOnly = false,
+	saveButtonText = 'Save',
 }: ConfigPanelProps) {
 	const [config, setConfig] = useState<AnimationConfig>(
 		initialConfig || {
@@ -49,19 +55,28 @@ export function ConfigPanel({
 			},
 			name: '',
 			description: '',
+			isPublic: false,
 		},
 	);
+
+	// Initialize isPublic state from config
+	const [isPublic, setIsPublic] = useState<boolean>(config.isPublic || false);
 
 	useEffect(() => {
 		if (initialConfig) {
 			setConfig(initialConfig);
+			// Update isPublic state when initialConfig changes
+			setIsPublic(initialConfig.isPublic || false);
 		}
 	}, [initialConfig]);
 
 	const handleChange = (
-		key: string,
-		value: string | number | AnimationType | EasingFunction,
+		key: keyof AnimationConfig, // note: keyof is used for better type safety
+		value: string | number | boolean | AnimationType | EasingFunction,
 	) => {
+		// If in read-only mode, don't update
+		if (isReadOnly) return;
+
 		const newConfig = {
 			...config,
 			[key]: value,
@@ -69,15 +84,16 @@ export function ConfigPanel({
 
 		setConfig(newConfig);
 
-		// Alleen namen en beschrijvingen gebufferd updaten
-		if (key === 'name' || key === 'description') {
-		} else if (onConfigChange) {
-			// Direct updaten voor alle andere wijzigingen die de animatie beïnvloeden
+		// Propagate changes immediately unless it's name/description
+		if (key !== 'name' && key !== 'description' && onConfigChange) {
 			onConfigChange(newConfig);
 		}
 	};
 
 	const handleOpacityChange = (key: 'start' | 'end', value: number) => {
+		// If in read-only mode, don't update
+		if (isReadOnly) return;
+
 		setConfig((prev) => ({
 			...prev,
 			opacity: {
@@ -88,27 +104,39 @@ export function ConfigPanel({
 	};
 
 	const handleReset = () => {
-		setConfig({
-			type: 'fade',
-			duration: 0.5,
-			delay: 0,
-			easing: 'ease-out',
-			distance: 50,
-			degrees: 360,
-			scale: 0.8,
-			opacity: {
-				start: 0,
-				end: 1,
-			},
-			name: '',
-			description: '',
-		});
+		// If in read-only mode, only allow reset to go to playground page
+		if (!isReadOnly) {
+			const resetConfig: AnimationConfig = {
+				type: 'fade',
+				duration: 0.5,
+				delay: 0,
+				easing: 'ease-out',
+				distance: 50,
+				degrees: 360,
+				scale: 0.8,
+				opacity: {
+					start: 0,
+					end: 1,
+				},
+				name: '',
+				description: '',
+				isPublic: false,
+			};
+			setConfig(resetConfig);
+			setIsPublic(false);
+		}
 		if (onReset) onReset();
 	};
 
 	const handleSave = () => {
-		if (onConfigChange) onConfigChange(config); // Update parent met laatste wijzigingen
-		if (onSave) onSave(config);
+		// Ensure the latest isPublic state is included in the saved config
+		const updatedConfig = {
+			...config,
+			isPublic,
+		};
+
+		if (!isReadOnly && onConfigChange) onConfigChange(updatedConfig); // Update parent met laatste wijzigingen
+		if (onSave) onSave(updatedConfig);
 	};
 
 	return (
@@ -122,6 +150,7 @@ export function ConfigPanel({
 					placeholder="My Animation"
 					value={config.name || ''}
 					onChange={(e) => handleChange('name', e.target.value)}
+					disabled={isReadOnly}
 				/>
 			</div>
 
@@ -132,6 +161,7 @@ export function ConfigPanel({
 					placeholder="Describe your animation"
 					value={config.description || ''}
 					onChange={(e) => handleChange('description', e.target.value)}
+					disabled={isReadOnly}
 				/>
 			</div>
 
@@ -144,6 +174,7 @@ export function ConfigPanel({
 						onValueChange={(value) =>
 							handleChange('type', value as AnimationType)
 						}
+						disabled={isReadOnly}
 					>
 						<Select.Trigger />
 						<Select.Content>
@@ -166,6 +197,7 @@ export function ConfigPanel({
 						onValueChange={(value) =>
 							handleChange('easing', value as EasingFunction)
 						}
+						disabled={isReadOnly}
 					>
 						<Select.Trigger />
 						<Select.Content>
@@ -193,6 +225,7 @@ export function ConfigPanel({
 						max={30}
 						step={1}
 						onValueChange={(value) => handleChange('duration', value[0] / 10)}
+						disabled={isReadOnly}
 					/>
 					<Text size="1">{config.duration.toFixed(1)}s</Text>
 				</div>
@@ -205,6 +238,7 @@ export function ConfigPanel({
 						max={20}
 						step={1}
 						onValueChange={(value) => handleChange('delay', value[0] / 10)}
+						disabled={isReadOnly}
 					/>
 					<Text size="1">{config.delay.toFixed(1)}s</Text>
 				</div>
@@ -222,6 +256,7 @@ export function ConfigPanel({
 								onValueChange={(value) =>
 									handleOpacityChange('start', value[0])
 								}
+								disabled={isReadOnly}
 							/>
 							<Text size="1">
 								{config.opacity ? (config.opacity.start * 100).toFixed(0) : 0}%
@@ -235,6 +270,7 @@ export function ConfigPanel({
 								max={100}
 								step={1}
 								onValueChange={(value) => handleOpacityChange('end', value[0])}
+								disabled={isReadOnly}
 							/>
 							<Text size="1">
 								{config.opacity ? (config.opacity.end * 100).toFixed(0) : 100}%
@@ -252,6 +288,7 @@ export function ConfigPanel({
 							max={200}
 							step={1}
 							onValueChange={(value) => handleChange('distance', value[0])}
+							disabled={isReadOnly}
 						/>
 						<Text size="1">{config.distance || 50}px</Text>
 					</div>
@@ -266,6 +303,7 @@ export function ConfigPanel({
 							max={200}
 							step={1}
 							onValueChange={(value) => handleChange('scale', value[0] / 100)}
+							disabled={isReadOnly}
 						/>
 						<Text size="1">
 							{config.scale ? (config.scale * 100).toFixed(0) : 80}%
@@ -282,19 +320,40 @@ export function ConfigPanel({
 							max={360}
 							step={1}
 							onValueChange={(value) => handleChange('degrees', value[0])}
+							disabled={isReadOnly}
 						/>
 						<Text size="1">{config.degrees || 360}°</Text>
 					</div>
 				)}
+
+				{/* Visibility Section */}
+				<Flex direction={'column'} className={styles.field} gap="1">
+					{/* Use Radix Label primitive */}
+					<LabelPrimitive.Root asChild>
+						<Text size="2" weight="bold">
+							Visibility
+						</Text>
+					</LabelPrimitive.Root>
+					{/* Use the new VisibilitySwitch component */}
+					<VisibilitySwitch
+						isPublic={isPublic}
+						onChange={(newIsPublicValue) => {
+							setIsPublic(newIsPublicValue); // Update local state
+							// Also update the main config state and notify parent
+							handleChange('isPublic', newIsPublicValue);
+						}}
+						disabled={isReadOnly}
+					/>
+				</Flex>
 			</Theme>
 
 			{/* Buttons */}
 			<div className={styles.configButtons}>
 				<Button className={styles.button} onClick={handleReset}>
-					Reset
+					{isReadOnly ? 'New Animation' : 'Reset'}
 				</Button>
-				<Button className={styles.button} onClick={handleSave}>
-					Save
+				<Button className={styles.copyButton} onClick={handleSave}>
+					{saveButtonText}
 				</Button>
 			</div>
 		</div>

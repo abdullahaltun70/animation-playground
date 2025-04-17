@@ -42,9 +42,9 @@ export function useShareExport(configId: string | null) {
 
 	const handleCopyCode = (animationConfig: AnimationConfig) => {
 		const code =
-			exportTab === 'css'
-				? generateCSSCode(animationConfig)
-				: generateReactComponent(animationConfig);
+			exportTab === 'react'
+				? generateReactComponent(animationConfig)
+				: generateCSSCode(animationConfig);
 
 		navigator.clipboard
 			.writeText(code)

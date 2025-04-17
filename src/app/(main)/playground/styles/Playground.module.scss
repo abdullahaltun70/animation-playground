@@ -1,14 +1,19 @@
 .pageContainer {
 	padding: 1rem;
 	width: 100%;
-	position: relative;
+	position: relative; // Keep if needed for absolute positioned children like modals/notifications
+	display: flex; // Make it a flex container
+	flex-direction: column; // Stack children vertically
+	flex: 1 1 auto; // Allow it to grow/shrink within its parent (main)
+	overflow: hidden; // Prevent this container itself from scrolling
 }
 
 .container {
 	display: flex;
 	flex-direction: row;
 	gap: 2rem;
-	height: calc(100vh - 150px);
+	//min-height: 86dvh;
+	//height: calc(100vh - 150px);
 
 	@media (max-width: 768px) {
 		flex-direction: column;
@@ -18,8 +23,10 @@
 
 .animationArea {
 	flex: 1;
+	flex-direction: column;
 	position: relative;
-	min-height: 400px;
+	min-width: 0;
+	min-height: 0;
 
 	@media (max-width: 768px) {
 		min-height: 300px;
@@ -27,10 +34,17 @@
 }
 
 .configAreaWrapper {
-	flex: 1;
+	flex: 0 0 450px;
 	max-width: 450px;
+	display: flex;
+	flex-direction: column;
+	min-width: 0;
+	min-height: 0;
 
 	@media (max-width: 768px) {
+		flex-basis: auto;
+		flex-grow: 0;
+		width: 100%;
 		max-width: 100%;
 	}
 }
@@ -66,6 +80,18 @@
 	bottom: 0;
 	//border: 1px solid #ccc;
 	right: 0;
+	margin-bottom: 1rem;
+	align-self: flex-end;
+}
+
+.copyButton {
+	cursor: copy;
+}
+
+.copySuccessCard {
+	margin: 0 0 16px 0;
+	padding: 12px;
+	background: var(--green-3);
 }
 
 .codeBlock {
@@ -80,63 +106,8 @@
 	white-space: pre-wrap;
 }
 
-.skeleton {
-	width: 100%;
-	height: 200px;
-	background-color: #e0e0e0;
-	border-radius: 8px;
-	margin-bottom: 16px;
-}
-
-.skeletonButton {
-	width: 48px;
-	height: 48px;
-	background-color: #e0e0e0;
-	border-radius: 50%;
-}
-
-.skeletonPanel {
-	width: 100%;
-	height: 400px;
-	background-color: #e0e0e0;
-	border-radius: 8px;
-}
-
-@keyframes slideInLeft {
-	from {
-		transform: translateX(-200px);
-	}
-	to {
-		transform: translateX(0);
-	}
-}
-
-@keyframes scaleIn {
-	from {
-		transform: scale(0.1);
-	}
-	to {
-		transform: scale(1);
-	}
-}
-
-@keyframes bounceIn {
-	0% {
-		transform: translateY(0);
-	}
-	50% {
-		transform: translateY(-200px);
-	}
-	100% {
-		transform: translateY(0);
-	}
-}
-
-@keyframes fadeIn {
-	from {
-		opacity: 0;
-	}
-	to {
-		opacity: 1;
-	}
+.readOnlyBanner {
+	margin: 0 0 16px 0;
+	padding: 12px;
+	background: var(--blue-3);
 }

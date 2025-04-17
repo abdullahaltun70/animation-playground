@@ -91,11 +91,12 @@ export async function saveConfigAction(
 			title,
 			description,
 			configData,
+			false,
 			user.id,
 		);
 
 		if (newConfig) {
-			// revalidatePath('/profile'); // note to myself: removes cache for the profile page to ensure clean correct data bein displayed
+			// revalidatePath('/profile'); // note to myself: removes cache for the profile page to ensure clean correct data being displayed
 			return {
 				success: true,
 				message: 'Config saved successfully!',
@@ -107,6 +108,7 @@ export async function saveConfigAction(
 					userId: config.userId,
 					createdAt: config.createdAt,
 					updatedAt: config.updatedAt,
+					isPublic: config.isPublic,
 				})),
 			};
 		} else {
@@ -158,7 +160,7 @@ export async function removeConfigAction(
 			};
 		}
 
-		await deleteConfig(configId);
+		await deleteConfig(configId, user.id);
 		revalidatePath('/profile');
 
 		return {
@@ -247,7 +249,7 @@ export async function updateConfigAction(
 		// -----------------
 
 		// Call the database query function to update
-		const updatedConfig = await updateConfig(configId, updatedData);
+		const updatedConfig = await updateConfig(configId, user.id, updatedData);
 
 		if (!updatedConfig) {
 			// Belangrijk: Handel het geval af dat de config niet gevonden werd
@@ -262,7 +264,7 @@ export async function updateConfigAction(
 		return {
 			success: true,
 			message: 'Config updated successfully!',
-			data: updatedConfig,
+			data: updatedConfig[0],
 		};
 	} catch (error) {
 		console.error('[Server Action] Error updating config:', error);

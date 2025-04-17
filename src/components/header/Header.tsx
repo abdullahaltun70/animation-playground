@@ -12,7 +12,6 @@ import {
 	Text,
 } from '@radix-ui/themes';
 import Image from 'next/image';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 
 import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
@@ -74,7 +73,7 @@ export const Header = () => {
 				{/* Left Section: Logo & Links */}
 				<Flex gap="6" align="center" className={styles.leftSection}>
 					{/* Logo */}
-					<Link href="/" className={styles.logoContainer}>
+					<RadixLink href="/" className={styles.logoContainer}>
 						<div className={styles.logo}>
 							<Image
 								src="/logo.png"
@@ -83,27 +82,25 @@ export const Header = () => {
 								height={'36'}
 							/>
 						</div>
-					</Link>
+					</RadixLink>
 
 					{/* Navigation Links */}
 					<nav className={styles.nav}>
-						<Link href="/" passHref legacyBehavior>
-							<RadixLink
-								className={pathname === '/' ? styles.active : ''}
-								weight={pathname === '/' ? 'bold' : 'regular'}
-							>
-								Playground
-							</RadixLink>
-						</Link>
+						<RadixLink
+							href={'/'}
+							className={pathname === '/' ? styles.active : ''}
+							weight={pathname === '/' ? 'bold' : 'regular'}
+						>
+							Playground
+						</RadixLink>
 
-						<Link href="/documentation" passHref legacyBehavior>
-							<RadixLink
-								className={pathname === '/documentation' ? styles.active : ''}
-								weight={pathname === '/documentation' ? 'bold' : 'regular'}
-							>
-								Documentation
-							</RadixLink>
-						</Link>
+						<RadixLink
+							href={'/documentation'}
+							className={pathname === '/documentation' ? styles.active : ''}
+							weight={pathname === '/documentation' ? 'bold' : 'regular'}
+						>
+							Documentation
+						</RadixLink>
 					</nav>
 				</Flex>
 
@@ -154,24 +151,20 @@ export const Header = () => {
 										</DropdownMenu.Item>
 									</>
 								) : (
-									<Link href="/login" passHref legacyBehavior>
-										<DropdownMenu.Item asChild>
-											<a>
-												{' '}
-												{/* Use 'a' tag inside */}
-												<ExitIcon
-													width="16"
-													height="16"
-													style={{
-														transform: 'scaleX(-1)',
-														marginRight: '8px',
-													}}
-												/>{' '}
-												{/* Reversed icon for Sign In */}
-												Sign In
-											</a>
-										</DropdownMenu.Item>
-									</Link>
+									<DropdownMenu.Item asChild>
+										<RadixLink href="/login">
+											<ExitIcon
+												width="16"
+												height="16"
+												style={{
+													transform: 'scaleX(-1)',
+													marginRight: '8px',
+												}}
+											/>
+											{/* Reversed icon for Sign In */}
+											Sign In
+										</RadixLink>
+									</DropdownMenu.Item>
 								)}
 							</DropdownMenu.Content>
 						</DropdownMenu.Root>

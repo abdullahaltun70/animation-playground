@@ -4,12 +4,12 @@ import React from 'react';
 
 import PlaygroundPage from '@/app/(main)/playground/page';
 
-import styles from './playground/styles/Playground.module.scss';
+import styles from './page.module.scss';
 
 export default function Home() {
 	return (
 		<div className={styles.main}>
-			<main className={styles.content}>
+			<main>
 				<PlaygroundPage />
 			</main>
 		</div>

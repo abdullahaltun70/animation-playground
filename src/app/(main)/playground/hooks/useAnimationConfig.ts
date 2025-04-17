@@ -33,25 +33,44 @@ export function useAnimationConfig() {
 	const [loading, setLoading] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [configLoaded, setConfigLoaded] = useState(false);
+	const [isReadOnly, setIsReadOnly] = useState(false);
+	const [configTitle, setConfigTitle] = useState<string>('');
 
 	// Load configuration from URL if configId is present
 	useEffect(() => {
 		if (configId) {
 			setLoading(true);
 			setConfigLoaded(false);
+			setError(null);
 
 			fetch(`/api/configs/${configId}`, {
 				credentials: 'include',
 			})
-				.then((response) => {
+				.then(async (response) => {
 					if (!response.ok) {
-						throw new Error(
-							'Failed to load configuration: ' + response.statusText,
-						);
+						if (response.status === 404) {
+							throw new Error('Configuration not found');
+						} else {
+							throw new Error(
+								'Failed to load configuration: ' + response.statusText,
+							);
+						}
 					}
 					return response.json();
 				})
 				.then((data) => {
+					if (data.error) {
+						// Handle API-returned errors
+						throw new Error(data.error);
+					}
+
+					setIsReadOnly(!!data.isReadOnly);
+					setConfigTitle(data.title || '');
+
+					const isPublicStatus =
+						typeof data.isPublic === 'boolean' ? data.isPublic : false;
+					console.log('Loaded isPublic status from API:', isPublicStatus);
+
 					if (data.configData) {
 						try {
 							const parsedConfig = JSON.parse(data.configData);
@@ -76,6 +95,7 @@ export function useAnimationConfig() {
 								opacity: parsedConfig.opacity || { start: 0, end: 1 },
 								name: parsedConfig.name || data.title || '',
 								description: parsedConfig.description || data.description || '',
+								isPublic: isPublicStatus,
 							};
 
 							setAnimationConfig(loadedConfig);
@@ -84,6 +104,17 @@ export function useAnimationConfig() {
 							console.error('Error parsing configuration data:', e);
 							setError('Invalid configuration data');
 						}
+					} else {
+						// Handles case where configData might be null/missing but we still have top-level fields
+						const fallbackConfig: AnimationConfig = {
+							...DEFAULT_ANIMATION_CONFIG,
+							name: data.title || '',
+							description: data.description || '',
+							isPublic: isPublicStatus,
+						};
+						setAnimationConfig(fallbackConfig);
+						setConfigLoaded(true);
+						setError('Configuration data is missing.');
 					}
 				})
 				.catch((err) => {
@@ -110,7 +141,6 @@ export function useAnimationConfig() {
 		setError(null);
 
 		try {
-			// Check if user is authenticated
 			const supabase = createClient();
 			const {
 				data: { session },
@@ -122,8 +152,11 @@ export function useAnimationConfig() {
 				return false;
 			}
 
-			const method = configId ? 'PUT' : 'POST';
-			const url = configId ? `/api/configs/${configId}` : '/api/configs';
+			// If this is a read-only config, don't try to update it
+			// Instead, create a new one
+			const method = configId && !isReadOnly ? 'PUT' : 'POST';
+			const url =
+				configId && !isReadOnly ? `/api/configs/${configId}` : '/api/configs';
 
 			const response = await fetch(url, {
 				method,
@@ -135,19 +168,20 @@ export function useAnimationConfig() {
 					title: config.name,
 					description: config.description || '',
 					configData: JSON.stringify(config),
+					isPublic: config.isPublic,
 				}),
 			});
 
 			if (!response.ok) {
 				throw new Error(
-					`Failed to ${configId ? 'update' : 'save'} configuration: ${response.statusText}`,
+					`Failed to ${configId && !isReadOnly ? 'update' : 'save'} configuration: ${response.statusText}`,
 				);
 			}
 
 			const data = await response.json();
 
 			// Redirect to the configuration with its ID in the URL if it's a new configuration
-			if (!configId) {
+			if (!configId || isReadOnly) {
 				router.push(`/playground?id=${data.id}`);
 			}
 
@@ -159,6 +193,17 @@ export function useAnimationConfig() {
 		} finally {
 			setLoading(false);
 		}
+	};
+
+	const copyConfig = async () => {
+		// Create a copy of the current animation config
+		const configCopy: AnimationConfig = {
+			...animationConfig,
+			name: `Copy of ${configTitle || animationConfig.name}`,
+		};
+
+		// Save as a new configuration
+		return saveConfig(configCopy);
 	};
 
 	const resetConfig = () => {
@@ -178,7 +223,10 @@ export function useAnimationConfig() {
 		setError,
 		configLoaded,
 		configId,
+		isReadOnly,
+		configTitle,
 		saveConfig,
+		copyConfig,
 		resetConfig,
 	};
 }

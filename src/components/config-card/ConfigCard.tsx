@@ -13,6 +13,7 @@ interface ConfigCardProps {
 	onDeleteAction?: (id: string) => void;
 	onShareAction?: (id: string) => void;
 	setShowDeleteConfirm?: (value: boolean) => void;
+	authorName: string;
 }
 
 export function ConfigCard({
@@ -20,6 +21,7 @@ export function ConfigCard({
 	onDeleteAction,
 	onShareAction,
 	setShowDeleteConfirm,
+	authorName,
 }: ConfigCardProps) {
 	const handleDelete = () => {
 		if (onDeleteAction) {
@@ -38,6 +40,11 @@ export function ConfigCard({
 		window.location.href = `/playground?id=${config.id}`;
 	};
 
+	const formatDate = (dateString: string) => {
+		const date = new Date(dateString);
+		return date.toISOString().split('T')[0];
+	};
+
 	return (
 		<Box
 			className={styles.configCard}
@@ -51,6 +58,10 @@ export function ConfigCard({
 				<Text className={styles.description}>
 					{config.description || 'No description provided'}
 				</Text>
+				<Text className={styles.description}>
+					{formatDate(config.createdAt)}
+				</Text>
+				<Text className={styles.description}>@{authorName}</Text>
 
 				<Flex mt="3" gap="2" justify="end">
 					<button
