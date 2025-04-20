@@ -1,51 +1,51 @@
 // Footer.module.scss
 .footer {
-	width: 100%;
-	background: var(--background);
-	border-top: 1px solid var(--border-color);
+  width: 100%;
+  background: var(--background);
+  border-top: 1px solid var(--border-color);
 }
 
 .footerContent {
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
-	padding: 16px 20px;
-	max-width: 1400px;
-	margin: 0 auto;
-	width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+  width: 100%;
 }
 
 .footerLinks {
-	display: flex;
-	align-items: center;
-	color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  color: var(--text-primary);
 
-	a {
-		margin-left: 20px;
+  a {
+    margin-left: 20px;
 
-		&:hover {
-			color: var(--primary-color);
-		}
-	}
+    &:hover {
+      color: var(--primary-color);
+    }
+  }
 }
 
 /* Mobile responsiveness */
 @media (max-width: 600px) {
-	.footerContent {
-		padding: 12px 16px;
-		flex-direction: column;
-		gap: 8px;
-		text-align: center; // Center text for column layout
+  .footerContent {
+    padding: 12px 16px;
+    flex-direction: column;
+    gap: 8px;
+    text-align: center; // Center text for column layout
 
-		.footerLinks {
-			flex-direction: column; // Stack links vertically on mobile
-			gap: 8px; // Add gap between stacked links
-			align-items: center; // Center links
+    .footerLinks {
+      flex-direction: column; // Stack links vertically on mobile
+      gap: 8px; // Add gap between stacked links
+      align-items: center; // Center links
 
-			a {
-				margin-left: 0; // Remove left margin when stacked
-				// margin-top: 8px; // Gap handles spacing now
-			}
-		}
-	}
+      a {
+        margin-left: 0; // Remove left margin when stacked
+        // margin-top: 8px; // Gap handles spacing now
+      }
+    }
+  }
 }

@@ -7,23 +7,23 @@ import { createClient } from '@/utils/supabase/client';
 
 // Types
 export interface SignInFormData {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface SignUpFormData {
-	email: string;
-	password: string;
+  email: string;
+  password: string;
 }
 
 export interface PasswordResetData {
-	email: string;
+  email: string;
 }
 
 interface AlertState {
-	show: boolean;
-	title: string;
-	message: string;
+  show: boolean;
+  title: string;
+  message: string;
 }
 
 /**
@@ -32,8 +32,8 @@ interface AlertState {
  * @returns True if the email format is valid, false otherwise
  */
 const isValidEmail = (email: string): boolean => {
-	const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-	return emailRegex.test(email);
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return emailRegex.test(email);
 };
 
 /**
@@ -42,28 +42,28 @@ const isValidEmail = (email: string): boolean => {
  * @returns User-friendly error message
  */
 const getErrorMessage = (errorMessage: string): string => {
-	if (errorMessage.includes('Invalid login credentials')) {
-		return 'Invalid email or password.';
-	} else if (errorMessage.includes('User already registered')) {
-		return 'This email address is already registered.';
-	} else if (errorMessage.includes('Unable to validate email address')) {
-		return 'Please enter a valid email address.';
-	}
-	return errorMessage || 'An unexpected error occurred.';
+  if (errorMessage.includes('Invalid login credentials')) {
+    return 'Invalid email or password.';
+  } else if (errorMessage.includes('User already registered')) {
+    return 'This email address is already registered.';
+  } else if (errorMessage.includes('Unable to validate email address')) {
+    return 'Please enter a valid email address.';
+  }
+  return errorMessage || 'An unexpected error occurred.';
 };
 
 interface UseAuthReturn {
-	loading: boolean;
-	error: string | null;
-	showAlert: boolean;
-	alertTitle: string;
-	alertMessage: string;
-	setError: React.Dispatch<React.SetStateAction<string | null>>;
-	setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
-	handleGoogleSignIn: () => Promise<void>;
-	handleSignIn: (data: SignInFormData) => Promise<void>;
-	handleSignUp: (data: SignUpFormData) => Promise<boolean>;
-	handlePasswordReset: (data: PasswordResetData) => Promise<boolean>;
+  loading: boolean;
+  error: string | null;
+  showAlert: boolean;
+  alertTitle: string;
+  alertMessage: string;
+  setError: React.Dispatch<React.SetStateAction<string | null>>;
+  setShowAlert: React.Dispatch<React.SetStateAction<boolean>>;
+  handleGoogleSignIn: () => Promise<void>;
+  handleSignIn: (data: SignInFormData) => Promise<void>;
+  handleSignUp: (data: SignUpFormData) => Promise<boolean>;
+  handlePasswordReset: (data: PasswordResetData) => Promise<boolean>;
 }
 
 /**
@@ -94,190 +94,190 @@ interface UseAuthReturn {
  * await handleSignIn({ email: 'user@example.com', password: '********' });
  */
 export const useAuth = (): UseAuthReturn => {
-	const [error, setError] = useState<string | null>(null);
-	const [loading, setLoading] = useState<boolean>(false);
-	const [alert, setAlert] = useState<AlertState>({
-		show: false,
-		title: '',
-		message: '',
-	});
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [alert, setAlert] = useState<AlertState>({
+    show: false,
+    title: '',
+    message: '',
+  });
 
-	const supabase = createClient();
-	const router = useRouter();
+  const supabase = createClient();
+  const router = useRouter();
 
-	// Validate email and execute action if valid
-	const validateAndExecute = useCallback(
-		async <T extends { email: string }>(
-			data: T,
-			action: () => Promise<boolean>,
-		): Promise<boolean> => {
-			if (!isValidEmail(data.email)) {
-				setError('Please enter a valid email address.');
-				return false;
-			}
-			return await action();
-		},
-		[setError],
-	);
+  // Validate email and execute action if valid
+  const validateAndExecute = useCallback(
+    async <T extends { email: string }>(
+      data: T,
+      action: () => Promise<boolean>
+    ): Promise<boolean> => {
+      if (!isValidEmail(data.email)) {
+        setError('Please enter a valid email address.');
+        return false;
+      }
+      return await action();
+    },
+    [setError]
+  );
 
-	// Helper for API calls
-	const handleAuthAction = useCallback(
-		async (
-			action: () => Promise<{ error: AuthError | null }>,
-			successCallback?: () => void,
-		): Promise<boolean> => {
-			setLoading(true);
-			setError(null);
-			try {
-				const { error: actionError } = await action();
+  // Helper for API calls
+  const handleAuthAction = useCallback(
+    async (
+      action: () => Promise<{ error: AuthError | null }>,
+      successCallback?: () => void
+    ): Promise<boolean> => {
+      setLoading(true);
+      setError(null);
+      try {
+        const { error: actionError } = await action();
 
-				// Error
-				if (actionError) {
-					const friendlyMessage = getErrorMessage(actionError.message);
-					setError(friendlyMessage);
-					return false;
-				}
+        // Error
+        if (actionError) {
+          const friendlyMessage = getErrorMessage(actionError.message);
+          setError(friendlyMessage);
+          return false;
+        }
 
-				// Success
-				if (successCallback) {
-					successCallback();
-				}
-				return true;
-			} catch (err: Error | unknown) {
-				console.error(
-					`Handle Auth Action Error: ${err instanceof Error ? err.message : String(err)}`,
-				);
-				setError('An unexpected error occurred. Please try again later.');
-				return false;
-			} finally {
-				setLoading(false);
-			}
-		},
-		[setLoading, setError],
-	);
+        // Success
+        if (successCallback) {
+          successCallback();
+        }
+        return true;
+      } catch (err: Error | unknown) {
+        console.error(
+          `Handle Auth Action Error: ${err instanceof Error ? err.message : String(err)}`
+        );
+        setError('An unexpected error occurred. Please try again later.');
+        return false;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [setLoading, setError]
+  );
 
-	// Display an alert with the specified title and message
-	const showAlertMessage = useCallback(
-		(title: string, message: string) => {
-			setAlert({
-				show: true,
-				title,
-				message,
-			});
-		},
-		[setAlert],
-	);
+  // Display an alert with the specified title and message
+  const showAlertMessage = useCallback(
+    (title: string, message: string) => {
+      setAlert({
+        show: true,
+        title,
+        message,
+      });
+    },
+    [setAlert]
+  );
 
-	// --- Auth Handlers ---
+  // --- Auth Handlers ---
 
-	/**
-	 * Google OAuth handler
-	 * @returns {Promise<void>} - Promise that resolves when the Google OAuth process is complete
-	 * @async signIgnInWithOAuth - Google OAuth handler
-	 */
-	const handleGoogleSignIn = useCallback(async () => {
-		await handleAuthAction(async () =>
-			supabase.auth.signInWithOAuth({
-				provider: 'google',
-			}),
-		);
-	}, [handleAuthAction, supabase.auth]);
+  /**
+   * Google OAuth handler
+   * @returns {Promise<void>} - Promise that resolves when the Google OAuth process is complete
+   * @async signIgnInWithOAuth - Google OAuth handler
+   */
+  const handleGoogleSignIn = useCallback(async () => {
+    await handleAuthAction(async () =>
+      supabase.auth.signInWithOAuth({
+        provider: 'google',
+      })
+    );
+  }, [handleAuthAction, supabase.auth]);
 
-	/**
-	 * Email/password sign in handler
-	 * @param data - Email and password data
-	 * @returns {Promise<void>} - Promise that resolves when the sign-in process is complete
-	 * @async handleSignIn - Email/password sign in handler
-	 */
-	const handleSignIn = useCallback(
-		async (data: SignInFormData) => {
-			await validateAndExecute(data, async () =>
-				handleAuthAction(
-					() => supabase.auth.signInWithPassword(data),
-					() => router.push('/profile'),
-				),
-			);
-		},
-		[validateAndExecute, handleAuthAction, supabase.auth, router],
-	);
+  /**
+   * Email/password sign in handler
+   * @param data - Email and password data
+   * @returns {Promise<void>} - Promise that resolves when the sign-in process is complete
+   * @async handleSignIn - Email/password sign in handler
+   */
+  const handleSignIn = useCallback(
+    async (data: SignInFormData) => {
+      await validateAndExecute(data, async () =>
+        handleAuthAction(
+          () => supabase.auth.signInWithPassword(data),
+          () => router.push('/profile')
+        )
+      );
+    },
+    [validateAndExecute, handleAuthAction, supabase.auth, router]
+  );
 
-	/**
-	 * New user registration handler
-	 * @param data - Email and password
-	 * @returns {Promise<boolean>} - Promise that resolves when the registration process is complete
-	 * @async handleSignUp - New user registration handler
-	 */
-	const handleSignUp = useCallback(
-		async (data: SignUpFormData) => {
-			return await validateAndExecute(data, async () =>
-				handleAuthAction(
-					() => supabase.auth.signUp(data),
-					() => {
-						showAlertMessage(
-							'Verification Sent',
-							'Verification email has been sent. Please check your inbox.',
-						);
-					},
-				),
-			);
-		},
-		[validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage],
-	);
+  /**
+   * New user registration handler
+   * @param data - Email and password
+   * @returns {Promise<boolean>} - Promise that resolves when the registration process is complete
+   * @async handleSignUp - New user registration handler
+   */
+  const handleSignUp = useCallback(
+    async (data: SignUpFormData) => {
+      return await validateAndExecute(data, async () =>
+        handleAuthAction(
+          () => supabase.auth.signUp(data),
+          () => {
+            showAlertMessage(
+              'Verification Sent',
+              'Verification email has been sent. Please check your inbox.'
+            );
+          }
+        )
+      );
+    },
+    [validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage]
+  );
 
-	/**
-	 * Password reset handler
-	 * @param data - Email for password reset
-	 * @returns {Promise<boolean>} - Promise that resolves when the password reset process is complete
-	 * @async handlePasswordReset - Password reset handler
-	 */
-	const handlePasswordReset = useCallback(
-		async (data: PasswordResetData) => {
-			return await validateAndExecute(data, async () =>
-				handleAuthAction(
-					() =>
-						supabase.auth.resetPasswordForEmail(data.email, {
-							// TODO: make the update password page
-							redirectTo: `${window.location.origin}/update-password`,
-						}),
-					() => {
-						showAlertMessage(
-							'Reset Instructions Sent',
-							'Password reset instructions have been sent to your email.',
-						);
-					},
-				),
-			);
-		},
-		[validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage],
-	);
+  /**
+   * Password reset handler
+   * @param data - Email for password reset
+   * @returns {Promise<boolean>} - Promise that resolves when the password reset process is complete
+   * @async handlePasswordReset - Password reset handler
+   */
+  const handlePasswordReset = useCallback(
+    async (data: PasswordResetData) => {
+      return await validateAndExecute(data, async () =>
+        handleAuthAction(
+          () =>
+            supabase.auth.resetPasswordForEmail(data.email, {
+              // TODO: make the update password page
+              redirectTo: `${window.location.origin}/update-password`,
+            }),
+          () => {
+            showAlertMessage(
+              'Reset Instructions Sent',
+              'Password reset instructions have been sent to your email.'
+            );
+          }
+        )
+      );
+    },
+    [validateAndExecute, handleAuthAction, supabase.auth, showAlertMessage]
+  );
 
-	/**
-	 * Set the alert visibility state
-	 * @param value - New visibility state
-	 * @param callback - Optional callback function to modify the visibility state
-	 * @returns {void} - Updates the alert visibility state
-	 */
-	const setShowAlert = useCallback(
-		(value: React.SetStateAction<boolean>) => {
-			setAlert((prev) => ({
-				...prev,
-				show: typeof value === 'function' ? value(prev.show) : value,
-			}));
-		},
-		[setAlert],
-	);
+  /**
+   * Set the alert visibility state
+   * @param value - New visibility state
+   * @param callback - Optional callback function to modify the visibility state
+   * @returns {void} - Updates the alert visibility state
+   */
+  const setShowAlert = useCallback(
+    (value: React.SetStateAction<boolean>) => {
+      setAlert((prev) => ({
+        ...prev,
+        show: typeof value === 'function' ? value(prev.show) : value,
+      }));
+    },
+    [setAlert]
+  );
 
-	return {
-		loading,
-		error,
-		showAlert: alert.show,
-		alertTitle: alert.title,
-		alertMessage: alert.message,
-		setError,
-		setShowAlert,
-		handleGoogleSignIn,
-		handleSignIn,
-		handleSignUp,
-		handlePasswordReset,
-	};
+  return {
+    loading,
+    error,
+    showAlert: alert.show,
+    alertTitle: alert.title,
+    alertMessage: alert.message,
+    setError,
+    setShowAlert,
+    handleGoogleSignIn,
+    handleSignIn,
+    handleSignUp,
+    handlePasswordReset,
+  };
 };

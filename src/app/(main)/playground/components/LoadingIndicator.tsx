@@ -3,11 +3,11 @@ import React from 'react';
 import styles from '../styles/Playground.module.scss';
 
 interface LoadingIndicatorProps {
-	message?: string;
+  message?: string;
 }
 
 export function LoadingIndicator({
-	message = 'Loading...',
+  message = 'Loading...',
 }: LoadingIndicatorProps) {
-	return <div className={styles.loadingIndicator}>{message}</div>;
+  return <div className={styles.loadingIndicator}>{message}</div>;
 }

@@ -1,59 +1,46 @@
 'use client';
 
-import React, { useEffect, useRef, useState } from 'react';
-
-import { ResetIcon } from '@radix-ui/react-icons';
-import { Button, Heading, Text } from '@radix-ui/themes';
+import { useEffect, useRef, useState } from 'react';
 
 import { AnimationConfig } from '@/types/animations';
 
-import styles from './AnimatedContainer.module.scss';
-
-interface AnimatedContainerProps {
-  children?: React.ReactNode;
-  config?: AnimationConfig;
-}
-
-export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
-  children,
-  config = {
-    type: 'fade',
-    duration: 0.5,
-    delay: 0,
-    easing: 'ease-out',
-    opacity: {
-      start: 0,
-      end: 1,
-    },
-  },
-}) => {
+/**
+ * Custom hook for applying animations to any component without adding extra DOM elements
+ *
+ * @param config Animation configuration
+ * @returns Object containing ref to be applied to the target element and animation control functions
+ */
+export function useAnimation(config: AnimationConfig) {
   const [key, setKey] = useState(0);
-  const elementRef = useRef<HTMLDivElement>(null);
+  const elementRef = useRef<HTMLElement>(null);
 
-  // Function to apply animation classes based on config
-  const getAnimationClasses = (): string => {
-    const baseClass = styles.animatableElement;
-
-    // Map animation type to the corresponding library class
+  // Function to get animation class based on config type
+  const getAnimationClass = (): string => {
     switch (config.type) {
       case 'fade':
-        return `${baseClass} fade-in`;
+        return 'fade-in';
       case 'slide':
-        return `${baseClass} ${config.distance && config.distance < 0 ? 'slide-in-left' : 'slide-in-right'}`;
+        return config.distance && config.distance < 0
+          ? 'slide-in-left'
+          : 'slide-in-right';
       case 'scale':
-        return `${baseClass} scale-in`;
+        return 'scale-in';
       case 'rotate':
-        return `${baseClass} rotate-in`;
+        return 'rotate-in';
       case 'bounce':
-        return `${baseClass} bounce-in`;
+        return 'bounce-in';
       default:
-        return baseClass;
+        return '';
     }
   };
 
   // Apply CSS custom properties and force re-render when config changes
   useEffect(() => {
     if (elementRef.current) {
+      // Add animation class
+      const animationClass = getAnimationClass();
+      elementRef.current.classList.add(animationClass);
+
       // Convert duration, delay and other parameters to CSS custom properties
       // Duration for all animation types
       elementRef.current.style.setProperty(
@@ -136,43 +123,40 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
           `${config.distance}px`
         );
       }
+
+      // Clean up function to remove animation class when component unmounts
+      return () => {
+        if (elementRef.current) {
+          elementRef.current.classList.remove(animationClass);
+        }
+      };
     }
   }, [config, key]);
 
   // Function to replay the animation
-  const handleReplay = () => {
+  const replay = () => {
     setKey((prevKey) => prevKey + 1);
   };
 
-  // Force re-render to restart animation when config changes
-  useEffect(() => {
-    handleReplay();
-  }, [
-    config.type,
-    config.duration,
-    config.delay,
-    config.easing,
-    config.opacity,
-    config.distance, // Slide & Bounce
-    config.scale, // Scale
-    config.degrees, // Rotate
-  ]);
+  // Function to pause the animation
+  const pause = () => {
+    if (elementRef.current) {
+      elementRef.current.style.animationPlayState = 'paused';
+    }
+  };
 
-  return (
-    <>
-      <Heading className={styles.title}>Animation Preview</Heading>
-      <div className={styles.container}>
-        <div className={styles.animationBox}>
-          {children || (
-            <div key={key} ref={elementRef} className={getAnimationClasses()}>
-              <Text>Animate Me!</Text>
-            </div>
-          )}
-        </div>
-        <Button className={styles.replayButton} onClick={handleReplay}>
-          <ResetIcon /> Replay Animation
-        </Button>
-      </div>
-    </>
-  );
-};
+  // Function to resume the animation
+  const resume = () => {
+    if (elementRef.current) {
+      elementRef.current.style.animationPlayState = 'running';
+    }
+  };
+
+  return {
+    ref: elementRef,
+    key,
+    replay,
+    pause,
+    resume,
+  };
+}

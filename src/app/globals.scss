@@ -1,53 +1,53 @@
-@use 'animation-library-test-abdullah-altun/styles/globals';
+// @use 'animation-library-test-abdullah-altun/styles/main.scss';
 
 :root {
-	--background: #ffffff;
-	--card-bg: #f8f9fa;
-	--text-primary: #111827;
-	--text-secondary: #4b5563;
-	--primary-color: #3b82f6;
-	--border-color: #e5e7eb;
-	--hover-bg: #f3f4f6;
-	--slider-bg: #e5e7eb;
-	--button-primary: #3e63dd;
+  --background: #ffffff;
+  --card-bg: #f8f9fa;
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --primary-color: #3b82f6;
+  --border-color: #e5e7eb;
+  --hover-bg: #f3f4f6;
+  --slider-bg: #e5e7eb;
+  --button-primary: #3e63dd;
 
-	--footer-height: 53px;
+  --footer-height: 53px;
 }
 
 .dark {
-	--background: #111827;
-	--card-bg: #1f2937;
-	--text-primary: #f9fafb;
-	--text-secondary: #9ca3af;
-	--primary-color: #3b82f6;
-	--border-color: #374151;
-	--hover-bg: #2d3748;
-	--slider-bg: #374151;
-	--button-primary: #3e63dd;
+  --background: #111827;
+  --card-bg: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #9ca3af;
+  --primary-color: #3b82f6;
+  --border-color: #374151;
+  --hover-bg: #2d3748;
+  --slider-bg: #374151;
+  --button-primary: #3e63dd;
 }
 
 * {
-	box-sizing: border-box;
-	padding: 0;
-	margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 html,
 body {
-	height: 100%;
-	max-width: 100vw;
-	min-height: 100vh;
-	overflow-x: hidden;
-	font-family:
-		-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
-		Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  height: 100%;
+  max-width: 100vw;
+  min-height: 100vh;
+  overflow-x: hidden;
+  font-family:
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu,
+    Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
 }
 
 body {
-	display: flex;
-	flex-direction: column;
-	min-height: 100vh;
-	color: var(--text-primary);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  color: var(--text-primary);
 }
 
 //html body[data-scroll-locked] {
@@ -56,28 +56,28 @@ body {
 //}
 
 a {
-	color: inherit;
-	text-decoration: none;
+  color: inherit;
+  text-decoration: none;
 }
 
 /* Basis light mode stijlen worden door :root gedefinieerd */
 
 @media (prefers-color-scheme: dark) {
-	:root:not(.light) {
-		// Toepassen van dark thema wanneer het systeem dark mode gebruikt
-		// en geen expliciete light class is toegepast
-		--color-background: #111827;
-		--color-foreground: #f9fafb;
-		--color-muted: #9ca3af;
-		--color-muted-background: #1f2937;
-		--color-border: #374151;
-		--color-primary: #3b82f6;
-		--color-primary-foreground: #ffffff;
-		--color-secondary: #1f2937;
-		--color-secondary-foreground: #f9fafb;
-		--color-accent: #818cf8;
-		--color-accent-foreground: #ffffff;
-	}
+  :root:not(.light) {
+    // Toepassen van dark thema wanneer het systeem dark mode gebruikt
+    // en geen expliciete light class is toegepast
+    --color-background: #111827;
+    --color-foreground: #f9fafb;
+    --color-muted: #9ca3af;
+    --color-muted-background: #1f2937;
+    --color-border: #374151;
+    --color-primary: #3b82f6;
+    --color-primary-foreground: #ffffff;
+    --color-secondary: #1f2937;
+    --color-secondary-foreground: #f9fafb;
+    --color-accent: #818cf8;
+    --color-accent-foreground: #ffffff;
+  }
 }
 
 /* Basis dark mode stijlen worden door :root gedefinieerd */

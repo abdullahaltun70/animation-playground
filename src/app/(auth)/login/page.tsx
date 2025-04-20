@@ -5,11 +5,11 @@ import React from 'react';
 import AuthComponent from '@/app/(auth)/login/components/AuthComponent';
 
 function Page() {
-	return (
-		<>
-			<AuthComponent />
-		</>
-	);
+  return (
+    <>
+      <AuthComponent />
+    </>
+  );
 }
 
 export default Page;
