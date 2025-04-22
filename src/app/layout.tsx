@@ -5,7 +5,7 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
 import { ThemeProvider } from 'next-themes';
-import '../../node_modules/animation-library-test-abdullah-altun/styles/main.scss';
+import 'animation-library-test-abdullah-altun';
 
 import '@radix-ui/themes/styles.css';
 

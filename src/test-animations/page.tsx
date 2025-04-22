@@ -3,9 +3,7 @@
 import React from 'react';
 
 import { Card } from '@radix-ui/themes';
-
-// import { Animate } from '../../node_modules/animation-library-test-abdullah-altun/src/components/Animate';
-import Animate from '@/app/(main)/documentation/Animate';
+import { Animate } from 'animation-library-test-abdullah-altun';
 
 /**
  * Test page for the enhanced animation component
@@ -21,6 +19,23 @@ export default function TestPage() {
         color: 'red',
       }}
     >
+      <ScaleAnimationWrapper>
+        <SlideAnimationWrapper>
+          <RotateAnimationWrapper>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                height: '100px',
+                width: '100px',
+                borderRadius: '10%',
+                backgroundColor: '#f0f0f0',
+              }}
+            ></div>
+          </RotateAnimationWrapper>
+        </SlideAnimationWrapper>
+      </ScaleAnimationWrapper>
       <h1>Enhanced Animation Component Test</h1>
       <p>
         This page demonstrates the simplified API and improved directional logic
@@ -231,3 +246,55 @@ export default function TestPage() {
     </div>
   );
 }
+// Example component using the generated animation: scale
+export const ScaleAnimationWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  // Wrap the content you want to animate with the <Animate> component.
+  // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).
+  return (
+    <Animate
+      type="scale"
+      easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+      scale={2}
+    >
+      {children}
+    </Animate>
+  );
+};
+
+// Example component using the generated animation: slide
+export const SlideAnimationWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  // Wrap the content you want to animate with the <Animate> component.
+  // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).
+  return (
+    <Animate
+      type="slide"
+      easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+      distance={-158}
+    >
+      {children}
+    </Animate>
+  );
+};
+
+// Example component using the generated animation: rotate
+export const RotateAnimationWrapper = ({
+  children,
+}: {
+  children: React.ReactNode;
+}) => {
+  // Wrap the content you want to animate with the <Animate> component.
+  // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).
+  return (
+    <Animate type="rotate" easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+      {children}
+    </Animate>
+  );
+};

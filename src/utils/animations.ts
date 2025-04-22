@@ -66,6 +66,18 @@ const ANIMATION_DEFINITIONS = {
   },
 };
 
+// Default values MUST match the defaults in the useAnimation hook
+const DEFAULTS = {
+  duration: 0.5,
+  delay: 0,
+  easing: 'ease-out',
+  opacityStart: 0,
+  opacityEnd: 1,
+  distance: 50,
+  degrees: 360,
+  scale: 0.8,
+};
+
 /**
  * Gets the animation name based on configuration
  */
@@ -101,76 +113,164 @@ export function generateCSSCode(config: AnimationConfig): string {
  * Generates React component code for the animation configuration
  * using the new AnimateElement component that preserves DOM structure
  */
+// export function generateReactComponent(config: AnimationConfig): string {
+//   const { type, duration, delay, easing } = config;
+//   const definition = ANIMATION_DEFINITIONS[config.type];
+
+//   let component = `import React from 'react';\n`;
+//   component += `import { AnimateElement } from '@/components/AnimateElement';\n\n`;
+//   component += `// Animation component generated from ${config.name || 'Animation Playground'}\n`;
+//   component += `export const ${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
+//   component += `    children, \n`;
+//   component += `}: {\n`;
+//   component += `    children: React.ReactElement; \n`;
+//   component += `}) => {\n`;
+//   component += `  const animationConfig = {\n`;
+//   component += `    type: '${type}',\n`;
+//   component += `    duration: ${duration},\n`;
+//   component += `    delay: ${delay},\n`;
+//   component += `    easing: '${easing}',\n`;
+
+//   // Add type-specific properties
+//   if (type === 'fade' && config.opacity) {
+//     component += `    opacity: {\n`;
+//     component += `      start: ${config.opacity.start},\n`;
+//     component += `      end: ${config.opacity.end},\n`;
+//     component += `    },\n`;
+//   }
+
+//   if (
+//     (type === 'slide' || type === 'bounce') &&
+//     config.distance !== undefined
+//   ) {
+//     component += `    distance: ${config.distance},\n`;
+//   }
+
+//   if (type === 'scale' && config.scale !== undefined) {
+//     component += `    scale: ${config.scale},\n`;
+//   }
+
+//   if (type === 'rotate' && config.degrees !== undefined) {
+//     component += `    degrees: ${config.degrees},\n`;
+//   }
+
+//   component += `  };\n\n`;
+
+//   component += `  return (\n`;
+//   component += `    <AnimateElement config={animationConfig}>\n`;
+//   component += `      {children}\n`;
+//   component += `    </AnimateElement>\n`;
+//   component += `  );\n`;
+//   component += `};\n\n`;
+
+//   // Add hook example
+//   component += `// Alternative implementation using hook\n`;
+//   component += `export const Use${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
+//   component += `    children, \n`;
+//   component += `}: {\n`;
+//   component += `    children: React.ReactElement; \n`;
+//   component += `}) => {\n`;
+//   component += `  const { ref, key, replay } = useAnimation(animationConfig);\n\n`;
+//   component += `  // Clone the child element and add the ref\n`;
+//   component += `  return React.cloneElement(children, { ref, key });\n`;
+//   component += `};\n\n`;
+
+//   // Add CSS comment
+//   component += `// Add this CSS to your stylesheet or import the animation library:\n`;
+//   const keyframes = definition
+//     .getKeyframes(config)
+//     .split('\n')
+//     .map((line) => `// ${line}`)
+//     .join('\n');
+//   component += keyframes + '\n';
+
+//   return component;
+// }
+
+/**
+ * Generates a concise React code snippet using the <Animate> component.
+ * Only includes props that differ from the library's defaults.
+ */
 export function generateReactComponent(config: AnimationConfig): string {
-  const { type, duration, delay, easing } = config;
-  const definition = ANIMATION_DEFINITIONS[config.type];
+  const { type, name } = config;
+  const componentName = `${type.charAt(0).toUpperCase() + type.slice(1)}AnimationWrapper`;
 
-  let component = `import React from 'react';\n`;
-  component += `import { AnimateElement } from '@/components/AnimateElement';\n\n`;
-  component += `// Animation component generated from ${config.name || 'Animation Playground'}\n`;
-  component += `export const ${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
-  component += `    children, \n`;
-  component += `}: {\n`;
-  component += `    children: React.ReactElement; \n`;
-  component += `}) => {\n`;
-  component += `  const animationConfig = {\n`;
-  component += `    type: '${type}',\n`;
-  component += `    duration: ${duration},\n`;
-  component += `    delay: ${delay},\n`;
-  component += `    easing: '${easing}',\n`;
+  // Build props string, ONLY including non-default values
+  const propsArray: string[] = [`type="${type}"`]; // Type is always required
 
-  // Add type-specific properties
-  if (type === 'fade' && config.opacity) {
-    component += `    opacity: {\n`;
-    component += `      start: ${config.opacity.start},\n`;
-    component += `      end: ${config.opacity.end},\n`;
-    component += `    },\n`;
+  if (config.duration !== undefined && config.duration !== DEFAULTS.duration) {
+    propsArray.push(`duration={${config.duration}}`);
+  }
+  if (config.delay !== undefined && config.delay !== DEFAULTS.delay) {
+    propsArray.push(`delay={${config.delay}}`);
+  }
+  if (config.easing !== undefined && config.easing !== DEFAULTS.easing) {
+    propsArray.push(`easing="${config.easing}"`);
   }
 
+  if (type === 'fade' && config.opacity) {
+    const { start, end } = config.opacity;
+    const startProp =
+      start !== undefined && start !== DEFAULTS.opacityStart
+        ? `start: ${start}`
+        : '';
+    const endProp =
+      end !== undefined && end !== DEFAULTS.opacityEnd ? `end: ${end}` : '';
+    if (startProp || endProp) {
+      propsArray.push(
+        `opacity={{ ${startProp}${startProp && endProp ? ', ' : ''}${endProp} }}`
+      );
+    }
+  }
   if (
     (type === 'slide' || type === 'bounce') &&
-    config.distance !== undefined
+    config.distance !== undefined &&
+    config.distance !== DEFAULTS.distance
   ) {
-    component += `    distance: ${config.distance},\n`;
+    propsArray.push(`distance={${config.distance}}`);
+  }
+  if (
+    type === 'scale' &&
+    config.scale !== undefined &&
+    config.scale !== DEFAULTS.scale
+  ) {
+    propsArray.push(`scale={${config.scale}}`);
+  }
+  if (
+    type === 'rotate' &&
+    config.degrees !== undefined &&
+    config.degrees !== DEFAULTS.degrees
+  ) {
+    propsArray.push(`degrees={${config.degrees}}`);
   }
 
-  if (type === 'scale' && config.scale !== undefined) {
-    component += `    scale: ${config.scale},\n`;
-  }
+  // Format props nicely indented
+  const propsString = propsArray.map((p) => `      ${p}`).join('\n');
 
-  if (type === 'rotate' && config.degrees !== undefined) {
-    component += `    degrees: ${config.degrees},\n`;
-  }
-
-  component += `  };\n\n`;
-
+  // --- Generate Code Snippet ---
+  let component = `import React from 'react';\n`;
+  component += `// 1. Ensure you've installed the library: npm install animation-library-test-abdullah-altun\n`;
+  component += `// 2. Import the component and styles (styles usually imported globally):\n`;
+  component += `import { Animate } from 'animation-library-test-abdullah-altun';\n`;
+  component += `// import 'animation-library-test-abdullah-altun/styles/main.scss'; // Typically in layout.tsx or globals.scss\n\n`;
+  component += `// Example component using the generated animation: ${name || type}\n`;
+  component += `export const ${componentName} = ({ children }: { children: React.ReactNode }) => {\n`;
+  component += `  // Wrap the content you want to animate with the <Animate> component.\n`;
+  component += `  // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).\n`;
   component += `  return (\n`;
-  component += `    <AnimateElement config={animationConfig}>\n`;
+  component += `    <Animate\n${propsString}\n    >\n`;
   component += `      {children}\n`;
-  component += `    </AnimateElement>\n`;
+  component += `    </Animate>\n`;
   component += `  );\n`;
   component += `};\n\n`;
-
-  // Add hook example
-  component += `// Alternative implementation using hook\n`;
-  component += `export const Use${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
-  component += `    children, \n`;
-  component += `}: {\n`;
-  component += `    children: React.ReactElement; \n`;
-  component += `}) => {\n`;
-  component += `  const { ref, key, replay } = useAnimation(animationConfig);\n\n`;
-  component += `  // Clone the child element and add the ref\n`;
-  component += `  return React.cloneElement(children, { ref, key });\n`;
-  component += `};\n\n`;
-
-  // Add CSS comment
-  component += `// Add this CSS to your stylesheet or import the animation library:\n`;
-  const keyframes = definition
-    .getKeyframes(config)
-    .split('\n')
-    .map((line) => `// ${line}`)
-    .join('\n');
-  component += keyframes + '\n';
+  component += `// --- How to use it: ---\n`;
+  component += `// function App() {\n`;
+  component += `//   return (\n`;
+  component += `//     <${componentName}>\n`;
+  component += `//       <p>This content will be animated!</p>\n`;
+  component += `//     </${componentName}>\n`;
+  component += `//   );\n`;
+  component += `// }\n`;
 
   return component;
 }
