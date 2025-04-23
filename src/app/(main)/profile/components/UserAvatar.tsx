@@ -5,7 +5,7 @@ import { useState, useEffect } from 'react';
 import { PersonIcon } from '@radix-ui/react-icons';
 import { Avatar } from '@radix-ui/themes';
 
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/app/utils/supabase/client';
 
 import styles from '../../../../components/profile/UserAvatar.module.scss';
 

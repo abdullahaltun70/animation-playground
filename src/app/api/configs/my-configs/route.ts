@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 import { getConfigsByUserId } from '@/db/queries/read';
-import { authenticateUser } from '@/utils/supabase/authenticateUser';
 
 export async function GET(request: NextRequest) {
   try {

@@ -7,8 +7,8 @@ import { Box, Button, Dialog, Flex, Tabs, Text } from '@radix-ui/themes';
 import { useRouter } from 'next/navigation';
 
 import AlertNotification from '@/app/(auth)/login/components/AlertComponent';
+import { createClient } from '@/app/utils/supabase/client';
 import { ConfigModel } from '@/types/animations';
-import { createClient } from '@/utils/supabase/client';
 
 import ConfigList from './components/ConfigList';
 import styles from './Profile.module.scss';
@@ -24,8 +24,6 @@ export default function ProfilePage() {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
   const [copySuccess, setCopySuccess] = useState(false);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [checkingAuth, setCheckingAuth] = useState(true);
 
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
@@ -89,7 +87,7 @@ export default function ProfilePage() {
 
       if (response.status === 401) {
         // If unauthorized, redirect to login
-        router.push('/login?redirectTo=/profile');
+        router.push('/login');
         return;
       }
 
@@ -180,38 +178,11 @@ export default function ProfilePage() {
     fetchUserConfigs();
   };
 
-  // Check if user is authenticated before loading any data
   useEffect(() => {
-    const checkAuth = async () => {
-      try {
-        setCheckingAuth(true);
-        const supabase = createClient();
-        const {
-          data: { user },
-        } = await supabase.auth.getUser();
-        setAuthorName(user?.user_metadata.name);
-
-        if (!user) {
-          // If no session, redirect to login
-          console.log('No authentication session found, redirecting to login');
-          router.push('/login?redirectTo=/profile');
-          return;
-        }
-
-        setIsAuthenticated(true);
-        // Once authenticated, fetch the data
-        fetchAllConfigs();
-        fetchUserConfigs();
-      } catch (err) {
-        console.error('Error checking authentication:', err);
-        setError('Authentication error. Please try logging in again.');
-      } finally {
-        setCheckingAuth(false);
-      }
-    };
-
-    checkAuth();
-  }, [router]);
+    // Fetch all configurations and user configurations on component mount
+    fetchAllConfigs();
+    fetchUserConfigs();
+  }, []);
 
   // Set up auth state change listener
   useEffect(() => {
@@ -222,7 +193,7 @@ export default function ProfilePage() {
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
         // If signed out during the session, redirect to login
-        router.push('/login?redirectTo=/profile');
+        router.push('/login');
       }
     });
 
@@ -233,24 +204,9 @@ export default function ProfilePage() {
   }, [router]);
 
   // Show loading state when checking authentication
-  if (checkingAuth) {
-    return <Box className={styles.authMessage}>Checking authentication...</Box>;
-  }
-
-  // Only render the profile content if authenticated
-  if (!isAuthenticated) {
-    return (
-      <Box className={styles.authMessage}>
-        <Text size="4">You must be logged in to view this page</Text>
-        <Button
-          mt="4"
-          onClick={() => router.push('/login?redirectTo=/profile')}
-        >
-          Go to Login
-        </Button>
-      </Box>
-    );
-  }
+  // if (checkingAuth) {
+  //   return <Box className={styles.authMessage}>Checking authentication...</Box>;
+  // }
 
   return (
     <div className={styles.profileContainer}>

@@ -4,11 +4,11 @@
 import { revalidatePath } from 'next/cache';
 import { redirect } from 'next/navigation';
 
+import { createClient } from '@/app/utils/supabase/server';
 import { createConfig } from '@/db/queries/create';
 import { deleteConfig } from '@/db/queries/delete';
 import { updateConfig } from '@/db/queries/update';
 import { Config } from '@/db/schema';
-import { createClient } from '@/utils/supabase/server';
 
 /**
  * **Server action that saves a new configuration to the database.**

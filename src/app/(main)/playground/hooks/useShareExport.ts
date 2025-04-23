@@ -1,7 +1,10 @@
 import { useState } from 'react';
 
+import {
+  generateCSSCode,
+  generateReactComponent,
+} from '@/app/utils/animations';
 import { AnimationConfig } from '@/types/animations';
-import { generateCSSCode, generateReactComponent } from '@/utils/animations';
 
 export function useShareExport(configId: string | null) {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);

@@ -4,22 +4,22 @@
 import { useState } from 'react';
 
 import { Button } from '@radix-ui/themes';
-import { useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/app/utils/supabase/client';
 
 import styles from '../styles/components.module.scss';
 
 export function SignOutButton() {
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleSignOut = async () => {
     setIsLoading(true);
     try {
       const supabase = createClient();
       await supabase.auth.signOut();
-      router.push('/');
+      window.location.reload();
+      redirect('/');
     } catch (error) {
       console.error('Error signing out:', error);
     } finally {

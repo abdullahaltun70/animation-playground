@@ -5,7 +5,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
 import { ThemeProvider } from 'next-themes';
+
 import 'animation-library-test-abdullah-altun';
+import { AuthProvider } from '@/context/AuthProvider';
 
 import '@radix-ui/themes/styles.css';
 
@@ -34,7 +36,7 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
         <ThemeProvider attribute={'class'} defaultTheme={'system'}>
           <Theme appearance="inherit" radius="large" accentColor={'indigo'}>
-            {children}
+            <AuthProvider>{children}</AuthProvider>
           </Theme>
         </ThemeProvider>
       </body>

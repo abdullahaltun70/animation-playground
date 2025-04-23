@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 import { createConfig } from '@/db/queries/create';
 import { getAllConfigs } from '@/db/queries/read';
-import { authenticateUser } from '@/utils/supabase/authenticateUser';
 
 // GET /api/configs - Get all configurations for the current user
 export async function GET() {

@@ -3,8 +3,11 @@ import React from 'react';
 import { CopyIcon } from '@radix-ui/react-icons';
 import { Dialog, Flex, Button, Box, Tabs, Text } from '@radix-ui/themes';
 
+import {
+  generateCSSCode,
+  generateReactComponent,
+} from '@/app/utils/animations';
 import { AnimationConfig } from '@/types/animations';
-import { generateCSSCode, generateReactComponent } from '@/utils/animations';
 
 import styles from '../styles/Playground.module.scss';
 

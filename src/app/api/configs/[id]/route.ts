@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 import { deleteConfig } from '@/db/queries/delete';
 import {
   getConfigById,
   getConfigsByUserIdAndConfigId,
 } from '@/db/queries/read';
 import { updateConfig } from '@/db/queries/update';
-import { authenticateUser } from '@/utils/supabase/authenticateUser';
 
 // GET /api/configs/[id] - Get a specific configuration
 export async function GET(

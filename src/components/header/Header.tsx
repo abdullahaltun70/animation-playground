@@ -14,9 +14,10 @@ import {
 import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 
+import { SignOutButton } from '@/app/(main)/profile/components/SignOutButton';
 import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
+import { createClient } from '@/app/utils/supabase/client';
 import { ThemeToggle } from '@/components/theme-toggle';
-import { createClient } from '@/utils/supabase/client';
 
 import styles from './Header.module.scss';
 
@@ -141,13 +142,9 @@ export const Header = () => {
                       </RadixLink>
                     </DropdownMenu.Item>
                     <DropdownMenu.Separator />
-                    <DropdownMenu.Item color="red" onSelect={handleSignOut}>
-                      <ExitIcon
-                        width="16"
-                        height="16"
-                        style={{ marginRight: '8px' }}
-                      />
-                      Sign Out
+
+                    <DropdownMenu.Item asChild>
+                      <SignOutButton />
                     </DropdownMenu.Item>
                   </>
                 ) : (
@@ -171,7 +168,6 @@ export const Header = () => {
           )}
           {isLoadingAuth && (
             <div className={styles.avatarTriggerButton}>
-              {' '}
               {/* Placeholder with same dimensions */}
               <UserAvatar /> {/* Or a skeleton Avatar */}
             </div>

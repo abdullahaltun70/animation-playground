@@ -19,6 +19,34 @@ export default function TestPage() {
         color: 'red',
       }}
     >
+      <h2>Composition Example</h2>
+      <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
+        <Animate
+          type="fade"
+          duration={1.2}
+          delay={0.3}
+          easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+        >
+          <Animate type="bounce" duration={0.5} delay={0.9} distance={50}>
+            {/* De 'bounce' wordt overridden door de 'fade' */}
+            <Animate type="slide" duration={1} delay={0} distance={-200}>
+              <Animate type="rotate" duration={0.4} delay={1.5} degrees={180}>
+                <div
+                  style={{
+                    padding: '20px',
+                    background: '#e8eaf6',
+                    borderRadius: '8px',
+                    width: '300px',
+                  }}
+                >
+                  Combined Fade + Slide from Left + Bounce
+                </div>
+              </Animate>
+            </Animate>
+          </Animate>
+        </Animate>
+      </div>
+
       <ScaleAnimationWrapper>
         <SlideAnimationWrapper>
           <RotateAnimationWrapper>
@@ -193,32 +221,6 @@ export default function TestPage() {
           >
             Bounce Down (-30)
           </div>
-        </Animate>
-      </div>
-
-      <h2>Composition Example</h2>
-      <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
-        <Animate
-          type="fade"
-          duration={1.2}
-          delay={0.3}
-          easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
-        >
-          <Animate type="bounce" duration={1} delay={0.5} distance={50}>
-            {/* De 'bounce' wordt overridden door de 'fade' */}
-            <Animate type="slide" duration={1} delay={0.5} distance={-200}>
-              <div
-                style={{
-                  padding: '20px',
-                  background: '#e8eaf6',
-                  borderRadius: '8px',
-                  width: '300px',
-                }}
-              >
-                Combined Fade + Slide from Left
-              </div>
-            </Animate>
-          </Animate>
         </Animate>
       </div>
 

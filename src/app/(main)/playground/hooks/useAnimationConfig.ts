@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react';
 
 import { useRouter, useSearchParams } from 'next/navigation';
 
+import { createClient } from '@/app/utils/supabase/client';
 import { AnimationConfig } from '@/types/animations';
-import { createClient } from '@/utils/supabase/client';
 
 // Default animation configuration
 export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {

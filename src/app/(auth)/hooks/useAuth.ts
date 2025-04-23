@@ -3,7 +3,7 @@ import React, { useCallback, useState } from 'react';
 import { AuthError } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
 
-import { createClient } from '@/utils/supabase/client';
+import { createClient } from '@/app/utils/supabase/client';
 
 // Types
 export interface SignInFormData {
@@ -179,9 +179,14 @@ export const useAuth = (): UseAuthReturn => {
     await handleAuthAction(async () =>
       supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          //first refresh windows and then redirect to home page
+          redirectTo: `${window.location.origin}/auth/callback`, // Example callback url (recommended)
+        },
       })
     );
-  }, [handleAuthAction, supabase.auth]);
+    // router.push('/'); // Removed: Let Supabase handle the redirect after OAuth
+  }, [handleAuthAction, supabase.auth]); // Removed router from dependencies
 
   /**
    * Email/password sign in handler
@@ -194,7 +199,7 @@ export const useAuth = (): UseAuthReturn => {
       await validateAndExecute(data, async () =>
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
-          () => router.push('/profile')
+          () => router.push('/') // Changed from '/profile' to '/'
         )
       );
     },
