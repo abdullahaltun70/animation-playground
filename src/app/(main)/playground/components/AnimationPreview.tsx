@@ -9,33 +9,33 @@ import { AnimationConfig } from '@/types/animations';
 import styles from '../styles/Playground.module.scss';
 
 interface AnimationPreviewProps {
-	config: AnimationConfig;
-	configId: string | null;
-	onShare: () => void;
-	onExport: () => void;
+  config: AnimationConfig;
+  configId: string | null;
+  onShare: () => void;
+  onExport: () => void;
 }
 
 export function AnimationPreview({
-	config,
-	configId,
-	onShare,
-	onExport,
+  config,
+  configId,
+  onShare,
+  onExport,
 }: AnimationPreviewProps) {
-	return (
-		<Box className={styles.animationArea}>
-			<AnimatedContainer config={config} />
+  return (
+    <Box className={styles.animationArea}>
+      <AnimatedContainer config={config} />
 
-			{/* Action buttons */}
-			<Flex className={styles.actionButtons} gap="2">
-				{configId && (
-					<Button className={styles.actionButton} onClick={onShare}>
-						<Share1Icon /> Share
-					</Button>
-				)}
-				<Button className={styles.actionButton} onClick={onExport}>
-					<CodeIcon /> Export Code
-				</Button>
-			</Flex>
-		</Box>
-	);
+      {/* Action buttons */}
+      <Flex className={styles.actionButtons} gap="2">
+        {configId && (
+          <Button onClick={onShare}>
+            <Share1Icon /> Share
+          </Button>
+        )}
+        <Button onClick={onExport}>
+          <CodeIcon /> Export Code
+        </Button>
+      </Flex>
+    </Box>
+  );
 }

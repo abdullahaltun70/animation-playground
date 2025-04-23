@@ -1,113 +1,107 @@
 .pageContainer {
-	padding: 1rem;
-	width: 100%;
-	position: relative; // Keep if needed for absolute positioned children like modals/notifications
-	display: flex; // Make it a flex container
-	flex-direction: column; // Stack children vertically
-	flex: 1 1 auto; // Allow it to grow/shrink within its parent (main)
-	overflow: hidden; // Prevent this container itself from scrolling
+  padding: 1rem;
+  width: 100%;
+  position: relative; // Keep if needed for absolute positioned children like modals/notifications
+  display: flex; // Make it a flex container
+  flex-direction: column; // Stack children vertically
+  flex: 1 1 auto; // Allow it to grow/shrink within its parent (main)
+  overflow: hidden; // Prevent this container itself from scrolling
 }
 
 .container {
-	display: flex;
-	flex-direction: row;
-	gap: 2rem;
-	//min-height: 86dvh;
-	//height: calc(100vh - 150px);
+  display: flex;
+  flex-direction: row;
+  gap: 2rem;
+  //min-height: 86dvh;
+  //height: calc(100vh - 150px);
 
-	@media (max-width: 768px) {
-		flex-direction: column;
-		height: auto;
-	}
+  @media (max-width: 768px) {
+    flex-direction: column;
+    height: auto;
+  }
 }
 
 .animationArea {
-	flex: 1;
-	flex-direction: column;
-	position: relative;
-	min-width: 0;
-	min-height: 0;
+  flex: 1;
+  flex-direction: column;
+  position: relative;
+  min-width: 0;
+  min-height: 0;
 
-	@media (max-width: 768px) {
-		min-height: 300px;
-	}
+  @media (max-width: 768px) {
+    min-height: 300px;
+  }
 }
 
 .configAreaWrapper {
-	flex: 0 0 450px;
-	max-width: 450px;
-	display: flex;
-	flex-direction: column;
-	min-width: 0;
-	min-height: 0;
+  flex: 0 0 450px;
+  max-width: 450px;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 
-	@media (max-width: 768px) {
-		flex-basis: auto;
-		flex-grow: 0;
-		width: 100%;
-		max-width: 100%;
-	}
+  @media (max-width: 768px) {
+    flex-basis: auto;
+    flex-grow: 0;
+    width: 100%;
+    max-width: 100%;
+  }
 }
 
 .errorMessage {
-	background-color: #fee2e2;
-	border: 1px solid #ef4444;
-	color: #b91c1c;
-	padding: 0.75rem 1rem;
-	border-radius: 0.5rem;
-	margin-bottom: 1rem;
-	display: flex;
-	justify-content: space-between;
-	align-items: center;
+  background-color: #fee2e2;
+  border: 1px solid #ef4444;
+  color: #b91c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .loadingIndicator {
-	position: absolute;
-	top: 0;
-	left: 0;
-	right: 0;
-	background-color: rgba(255, 255, 255, 0.8);
-	padding: 0.5rem;
-	text-align: center;
-	z-index: 10;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  padding: 0.5rem;
+  text-align: center;
+  z-index: 10;
 }
 
 .actionButtons {
-	display: flex;
-	flex: 1;
-	position: absolute;
-	top: 0.1rem;
-	bottom: 0;
-	//border: 1px solid #ccc;
-	right: 0;
-	margin-bottom: 1rem;
-	align-self: flex-end;
+  display: flex;
+  flex: 1;
+  justify-content: center;
 }
 
 .copyButton {
-	cursor: copy;
+  cursor: copy;
 }
 
 .copySuccessCard {
-	margin: 0 0 16px 0;
-	padding: 12px;
-	background: var(--green-3);
+  margin: 0 0 16px 0;
+  padding: 12px;
+  background: var(--green-3);
 }
 
 .codeBlock {
-	background-color: var(--card-bg);
-	color: var(--text-primary);
-	padding: 1rem;
-	border-radius: 0.5rem;
-	overflow: auto;
-	max-height: 300px;
-	font-family: monospace;
-	font-size: 0.875rem;
-	white-space: pre-wrap;
+  background-color: var(--card-bg);
+  color: var(--text-primary);
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow: auto;
+  max-height: 300px;
+  font-family: monospace;
+  font-size: 0.875rem;
+  white-space: pre-wrap;
 }
 
 .readOnlyBanner {
-	margin: 0 0 16px 0;
-	padding: 12px;
-	background: var(--blue-3);
+  margin: 0 0 16px 0;
+  padding: 12px;
+  background: var(--blue-3);
 }

@@ -1,173 +1,96 @@
-.authContainer {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
-	padding: 2rem;
-	background-color: var(--gray-1);
-}
-
-.authCard {
-	width: 100%;
-	max-width: 440px;
-	padding: 2rem;
-	background-color: var(--gray-2);
-	border-radius: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
 .formRoot {
-	width: 100%;
+  width: 100%;
 }
 
 .formField {
-	display: flex;
-	flex-direction: column;
-	margin-bottom: 1rem;
-}
-
-.formFieldHeader {
-	display: flex;
-	align-items: baseline;
-	justify-content: space-between;
-	margin-bottom: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
 }
 
 .formLabel {
-	font-size: 0.875rem;
-	font-weight: 500;
-	color: var(--gray-12);
-}
-
-.formMessage {
-	font-size: 0.75rem;
-	color: var(--red-9);
-	opacity: 0;
-	&[data-visible] {
-		opacity: 1;
-	}
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-12);
 }
 
 .formInput {
-	padding: 0.75rem;
-	font-size: 1rem;
-	border: 1px solid var(--gray-7);
-	border-radius: 6px;
-	background-color: var(--gray-3);
-	color: var(--gray-12);
-	width: 100%;
-	transition:
-		border-color 0.2s,
-		box-shadow 0.2s;
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--gray-7);
+  border-radius: 6px;
+  background-color: var(--gray-3);
+  color: var(--gray-12);
+  width: 100%;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
 
-	&:focus {
-		outline: none;
-		border-color: var(--blue-8);
-		box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
-	}
+  &:focus {
+    outline: none;
+    border-color: var(--blue-8);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
 
-	&::placeholder {
-		color: var(--gray-8);
-	}
+  &::placeholder {
+    color: var(--gray-8);
+  }
 }
 
 .submitButton {
-	width: 100%;
-	color: white;
-	cursor: pointer;
-	transition: background-color 0.2s;
+  width: 100%;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
 
-	&:disabled {
-		opacity: 0.6;
-		cursor: not-allowed;
-	}
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
 }
 
 .googleButton {
-	width: 100%;
-	padding: 12px 16px !important;
-	font-size: 16px !important;
-	border-radius: 6px !important;
-	cursor: pointer;
-	display: flex !important;
-	align-items: center;
-	justify-content: center;
-	gap: 0.75rem;
-	margin-bottom: 1rem;
+  width: 100%;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
 }
 
 .divider {
-	margin: 1.5rem 0;
-	text-align: center;
-	font-size: 12px;
-	color: var(--text-secondary);
-	position: relative;
+  margin: 1.5rem 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  position: relative;
 
-	&::before,
-	&::after {
-		content: '';
-		position: absolute;
-		top: 50%;
-		width: calc(50% - 20px);
-		height: 1px;
-		background-color: var(--border-color);
-	}
-	&::before {
-		left: 0;
-	}
-	&::after {
-		right: 0;
-	}
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 20px);
+    height: 1px;
+    background-color: var(--border-color);
+  }
+  &::before {
+    left: 0;
+  }
+  &::after {
+    right: 0;
+  }
 }
 
 .errorMessage {
-	padding: 0.75rem;
-	background-color: rgba(var(--red-9-rgb), 0.1);
-	border: 1px solid var(--red-7);
-	border-radius: 6px;
-	color: var(--red-11);
-	font-size: 0.875rem;
-}
-
-.successMessage {
-	padding: 0.75rem;
-	background-color: rgba(var(--green-9-rgb), 0.1);
-	border: 1px solid var(--green-7);
-	border-radius: 6px;
-	color: var(--green-11);
-	font-size: 0.875rem;
-}
-
-.authLink {
-	color: var(--blue-9);
-	text-decoration: none;
-	font-weight: 500;
-	transition: color 0.2s;
-
-	&:hover {
-		color: var(--blue-10);
-		text-decoration: underline;
-	}
-}
-
-.tabsRoot {
-	display: flex;
-	margin-bottom: 2rem;
-	border-bottom: 1px solid var(--gray-6);
-}
-
-.tabsTrigger {
-	flex: 1;
-	padding: 0.75rem 1rem;
-	background: none;
-	border: none;
-	font-size: 1rem;
-	font-weight: 500;
-	color: var(--gray-10);
-	cursor: pointer;
-
-	&[data-state='active'] {
-		color: var(--blue-10);
-		border-bottom: 2px solid var(--blue-9);
-	}
+  padding: 0.75rem;
+  background-color: rgba(var(--red-9-rgb), 0.1);
+  border: 1px solid var(--red-7);
+  border-radius: 6px;
+  color: var(--red-11);
+  font-size: 0.875rem;
 }
