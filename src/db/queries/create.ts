@@ -28,6 +28,7 @@ export async function createConfig(
   title: string,
   description: string | null,
   configData: string | null,
+  authorName: string | null,
   isPublic: boolean,
   userId: string
 ): Promise<Config[]> {
@@ -38,6 +39,7 @@ export async function createConfig(
         title: title,
         description: description,
         configData: configData,
+        authorName: authorName,
         isPublic: isPublic,
         userId: userId,
       })

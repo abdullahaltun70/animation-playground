@@ -37,7 +37,7 @@ export interface ConfigListProps {
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                         */
 /* ------------------------------------------------------------------ */
-const ConfigList: React.FC<ConfigListProps> = ({
+export const ConfigList: React.FC<ConfigListProps> = ({
   configs,
   loading,
   error,
@@ -49,7 +49,6 @@ const ConfigList: React.FC<ConfigListProps> = ({
   onDeleteAction,
   onShareAction,
 
-  authorName = '',
   emptyStateAction,
 }) => {
   /* ---------------------------- render --------------------------- */
@@ -67,8 +66,7 @@ const ConfigList: React.FC<ConfigListProps> = ({
   if (loading) {
     return (
       <Flex direction="column" gap="3">
-        {/* Add loadingLabel if desired */}
-        {/* <Text mb="2">{loadingLabel}</Text>  */}
+        <Text mb="2">{loadingLabel}</Text>
         <ConfigCardSkeleton />
         <ConfigCardSkeleton />
         <ConfigCardSkeleton />
@@ -93,7 +91,7 @@ const ConfigList: React.FC<ConfigListProps> = ({
           config={cfg}
           onDeleteAction={onDeleteAction}
           onShareAction={onShareAction}
-          authorName={authorName}
+          authorName={cfg.authorName || 'Unknown User'}
         />
       ))}
     </Flex>

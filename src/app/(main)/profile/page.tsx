@@ -28,7 +28,7 @@ export default function ProfilePage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
-  const [authorName, setAuthorName] = useState('');
+  // const [authorName, setAuthorName] = useState('');
 
   const fetchAllConfigs = async () => {
     setLoading(true);
@@ -227,7 +227,7 @@ export default function ProfilePage() {
               onRetry={handleRetry}
               onDeleteAction={handleDeleteRequest}
               onShareAction={handleShare}
-              authorName={authorName}
+              // authorName={authorName}
               emptyStateAction={
                 <Button onClick={() => router.push('/playground')}>
                   Create Your First Animation
@@ -245,7 +245,7 @@ export default function ProfilePage() {
               loadingLabel="Loading all configurations…"
               onRetry={handleRetry}
               onShareAction={handleShare}
-              authorName={authorName}
+              // authorName={authorName}
               emptyStateAction={
                 <Button onClick={() => router.push('/playground')}>
                   Create Your First Animation

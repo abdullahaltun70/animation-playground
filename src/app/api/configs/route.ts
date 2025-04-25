@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import {
+  getAllConfigsAction,
+  saveConfigAction,
+} from '@/app/utils/actions/supabase/configs';
 import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
-import { createConfig } from '@/db/queries/create';
-import { getAllConfigs } from '@/db/queries/read';
 
-// GET /api/configs - Get all configurations for the current user
+// GET /api/configs - Get all configurations for the current
 export async function GET() {
   try {
-    const allConfigs = await getAllConfigs();
+    const allConfigs = (await getAllConfigsAction()).data;
 
     return NextResponse.json(allConfigs);
   } catch (error) {
@@ -29,8 +31,7 @@ export async function POST(request: NextRequest) {
       return authResult.error;
     }
 
-    const { user } = authResult;
-    const userId = user.id;
+    const userId = authResult.user.id;
     const body = await request.json();
 
     // Validate title and configData before inserting
@@ -43,19 +44,49 @@ export async function POST(request: NextRequest) {
 
     const isPublic = typeof body.isPublic === 'boolean' ? body.isPublic : false;
 
-    const [insertedConfig] = await createConfig(
+    // Call the server action
+    const result = await saveConfigAction(
       body.title,
-      body.description,
+      body.description || null,
       body.configData,
       isPublic,
       userId
     );
 
-    return NextResponse.json(insertedConfig, { status: 201 });
+    // Handle the server action's response
+    if (result.success && result.data && result.data.length > 0) {
+      // Return the first created config from the data array
+      return NextResponse.json(result.data[0], { status: 201 });
+    } else {
+      // Return the error message from the server action
+      const status =
+        result.message?.includes('cannot exceed') ||
+        result.message?.includes('enter a config title')
+          ? 400
+          : 500;
+      return NextResponse.json(
+        { error: result.message || 'Failed to save configuration' },
+        { status }
+      );
+    }
   } catch (error) {
     console.error('Error creating configuration:', error);
+
+    // Handle JSON parsing errors or other unexpected errors
+    const message =
+      error instanceof Error
+        ? error.message
+        : 'An internal server error occurred';
+
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: 'Invalid JSON payload' },
+        { status: 400 }
+      );
+    }
+
     return NextResponse.json(
-      { error: `Failed to create configuration: ${error}` },
+      { error: `Failed to create configuration: ${message}` },
       { status: 500 }
     );
   }

@@ -36,6 +36,7 @@ export interface ConfigModel {
   createdAt: string;
   updatedAt?: string;
   isPublic?: boolean;
+  authorName?: string;
 }
 
 // API response types

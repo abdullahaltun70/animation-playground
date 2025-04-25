@@ -3,6 +3,7 @@ import { useState, useEffect, useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 
 import { createClient } from '@/app/utils/supabase/client';
+import { useToast } from '@/context/ToastContext';
 import { AnimationConfig } from '@/types/animations';
 
 // Default animation configuration
@@ -22,10 +23,20 @@ export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
   description: '',
 };
 
+/**
+ * Returns a cleaned configId or null if missing/invalid.
+ */
+function getValidConfigId(searchParams: URLSearchParams): string | null {
+  const id = searchParams.get('id');
+  // Consider 'undefined', '', null as missing
+  if (!id || id === 'undefined') return null;
+  return id;
+}
+
 export function useAnimationConfig() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const configId = searchParams.get('id');
+  const configId = getValidConfigId(searchParams);
 
   const [animationConfig, setAnimationConfig] = useState<AnimationConfig>(
     DEFAULT_ANIMATION_CONFIG
@@ -35,6 +46,7 @@ export function useAnimationConfig() {
   const [configLoaded, setConfigLoaded] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
   const [configTitle, setConfigTitle] = useState<string>('');
+  const { showToast } = useToast(); // Get the showToast function
 
   // Load configuration from URL if configId is present
   useEffect(() => {
@@ -69,12 +81,10 @@ export function useAnimationConfig() {
 
           const isPublicStatus =
             typeof data.isPublic === 'boolean' ? data.isPublic : false;
-          console.log('Loaded isPublic status from API:', isPublicStatus);
 
           if (data.configData) {
             try {
               const parsedConfig = JSON.parse(data.configData);
-              console.log('Loaded config:', parsedConfig);
 
               // Ensure all required properties are present
               const loadedConfig: AnimationConfig = {
@@ -100,8 +110,19 @@ export function useAnimationConfig() {
 
               setAnimationConfig(loadedConfig);
               setConfigLoaded(true);
+              showToast({
+                title: 'Configuration Loaded',
+                description: 'Your configuration has been loaded successfully.',
+                variant: 'success',
+              });
             } catch (e) {
               console.error('Error parsing configuration data:', e);
+
+              showToast({
+                title: 'Error',
+                description: 'Failed to parse configuration data',
+                variant: 'error',
+              });
               setError('Invalid configuration data');
             }
           } else {
@@ -114,11 +135,21 @@ export function useAnimationConfig() {
             };
             setAnimationConfig(fallbackConfig);
             setConfigLoaded(true);
+            showToast({
+              title: 'Warning',
+              description: 'Configuration data is missing, using defaults.',
+              variant: 'info',
+            });
             setError('Configuration data is missing.');
           }
         })
         .catch((err) => {
           console.error('Error loading configuration:', err);
+          showToast({
+            title: 'Error catch',
+            description: err.message,
+            variant: 'error',
+          });
           setError(err.message);
         })
         .finally(() => {
@@ -133,6 +164,11 @@ export function useAnimationConfig() {
 
   const saveConfig = async (config: AnimationConfig) => {
     if (!config.name) {
+      showToast({
+        title: 'Error',
+        description: 'Please provide a name for your configuration',
+        variant: 'error',
+      });
       setError('Please provide a name for your configuration');
       return false;
     }
@@ -147,13 +183,17 @@ export function useAnimationConfig() {
       } = await supabase.auth.getSession();
 
       if (!session) {
+        showToast({
+          title: 'Error',
+          description: 'You must be logged in to save configurations',
+          variant: 'error',
+        });
         setError('You must be logged in to save configurations');
         setLoading(false);
         return false;
       }
 
-      // If this is a read-only config, don't try to update it
-      // Instead, create a new one
+      // If this is a read-only config, or no valid ID, create a new one
       const method = configId && !isReadOnly ? 'PUT' : 'POST';
       const url =
         configId && !isReadOnly ? `/api/configs/${configId}` : '/api/configs';
@@ -185,9 +225,21 @@ export function useAnimationConfig() {
         router.push(`/playground?id=${data.id}`);
       }
 
+      showToast({
+        title: 'Configuration Saved',
+        description: `Your configuration has been ${
+          configId && !isReadOnly ? 'updated' : 'saved'
+        } successfully.`,
+        variant: 'success',
+      });
       return true;
     } catch (err: any) {
       console.error('Error saving configuration:', err);
+      showToast({
+        title: 'Error',
+        description: err.message,
+        variant: 'error',
+      });
       setError(err.message);
       return false;
     } finally {
