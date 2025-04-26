@@ -55,10 +55,10 @@ export const ConfigList: React.FC<ConfigListProps> = ({
   if (error) {
     return (
       <Box className={styles.errorMessage}>
-        {error}
-        <Button onClick={onRetry} ml="3">
-          Retry
-        </Button>
+        <Text color="red" mr="3">
+          Error: {error}
+        </Text>
+        <Button onClick={onRetry}>Retry</Button>
       </Box>
     );
   }
@@ -67,17 +67,20 @@ export const ConfigList: React.FC<ConfigListProps> = ({
     return (
       <Flex direction="column" gap="3">
         <Text mb="2">{loadingLabel}</Text>
-        <ConfigCardSkeleton />
-        <ConfigCardSkeleton />
-        <ConfigCardSkeleton />
+        {/* Render multiple skeletons for a better loading preview */}
+        {[...Array(3)].map((_, index) => (
+          <ConfigCardSkeleton key={index} />
+        ))}
       </Flex>
     );
   }
 
   if (configs.length === 0) {
     return (
-      <Box className={styles.emptyState}>
-        <Text size="3">{emptyStateMessage}</Text>
+      <Box className={styles.emptyState} p="4" style={{ textAlign: 'center' }}>
+        <Text size="3" color="gray">
+          {emptyStateMessage}
+        </Text>
         {emptyStateAction && <Box mt="3">{emptyStateAction}</Box>}
       </Box>
     );

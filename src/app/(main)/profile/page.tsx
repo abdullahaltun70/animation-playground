@@ -8,6 +8,7 @@ import { useRouter } from 'next/navigation';
 
 import AlertNotification from '@/app/(auth)/login/components/AlertComponent';
 import { createClient } from '@/app/utils/supabase/client';
+import { useToast } from '@/context/ToastContext';
 import { ConfigModel } from '@/types/animations';
 
 import ConfigList from './components/ConfigList';
@@ -28,7 +29,7 @@ export default function ProfilePage() {
   const [isDeleting, setIsDeleting] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
-  // const [authorName, setAuthorName] = useState('');
+  const { showToast } = useToast();
 
   const fetchAllConfigs = async () => {
     setLoading(true);
@@ -125,25 +126,42 @@ export default function ProfilePage() {
     if (!configToDeleteId) return;
 
     setIsDeleting(true);
+    setError(null);
 
     try {
       const response = await fetch(`/api/configs/${configToDeleteId}`, {
         method: 'DELETE',
-        credentials: 'include', // Include credentials for authentication
+        credentials: 'include',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to delete configuration');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.error || 'Failed to delete configuration');
       }
 
-      // Remove the deleted config from the state
-      setUserConfigs(
-        userConfigs.filter((config) => config.id !== configToDeleteId)
+      // Remove the deleted config from both userConfigs and allConfigs state
+      setUserConfigs((prev) =>
+        prev.filter((config) => config.id !== configToDeleteId)
       );
+      setAllConfigs((prev) =>
+        prev.filter((config) => config.id !== configToDeleteId)
+      );
+
       setShowDeleteConfirm(false);
+
+      showToast({
+        title: 'Configuration deleted successfully',
+        variant: 'success',
+      });
     } catch (err: any) {
       console.error('Error deleting config:', err);
       setError(err.message);
+
+      showToast({
+        title: 'Error Deleting Configuration',
+        description: err.message,
+        variant: 'error',
+      });
     } finally {
       setIsDeleting(false);
       setConfigToDeleteId(null);
