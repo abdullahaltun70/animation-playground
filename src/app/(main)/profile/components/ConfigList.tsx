@@ -37,7 +37,7 @@ export interface ConfigListProps {
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                         */
 /* ------------------------------------------------------------------ */
-const ConfigList: React.FC<ConfigListProps> = ({
+export const ConfigList: React.FC<ConfigListProps> = ({
   configs,
   loading,
   error,
@@ -49,17 +49,16 @@ const ConfigList: React.FC<ConfigListProps> = ({
   onDeleteAction,
   onShareAction,
 
-  authorName = '',
   emptyStateAction,
 }) => {
   /* ---------------------------- render --------------------------- */
   if (error) {
     return (
       <Box className={styles.errorMessage}>
-        {error}
-        <Button onClick={onRetry} ml="3">
-          Retry
-        </Button>
+        <Text color="red" mr="3">
+          Error: {error}
+        </Text>
+        <Button onClick={onRetry}>Retry</Button>
       </Box>
     );
   }
@@ -67,19 +66,21 @@ const ConfigList: React.FC<ConfigListProps> = ({
   if (loading) {
     return (
       <Flex direction="column" gap="3">
-        {/* Add loadingLabel if desired */}
-        {/* <Text mb="2">{loadingLabel}</Text>  */}
-        <ConfigCardSkeleton />
-        <ConfigCardSkeleton />
-        <ConfigCardSkeleton />
+        <Text mb="2">{loadingLabel}</Text>
+        {/* Render multiple skeletons for a better loading preview */}
+        {[...Array(3)].map((_, index) => (
+          <ConfigCardSkeleton key={index} />
+        ))}
       </Flex>
     );
   }
 
   if (configs.length === 0) {
     return (
-      <Box className={styles.emptyState}>
-        <Text size="3">{emptyStateMessage}</Text>
+      <Box className={styles.emptyState} p="4" style={{ textAlign: 'center' }}>
+        <Text size="3" color="gray">
+          {emptyStateMessage}
+        </Text>
         {emptyStateAction && <Box mt="3">{emptyStateAction}</Box>}
       </Box>
     );
@@ -93,7 +94,7 @@ const ConfigList: React.FC<ConfigListProps> = ({
           config={cfg}
           onDeleteAction={onDeleteAction}
           onShareAction={onShareAction}
-          authorName={authorName}
+          authorName={cfg.authorName || 'Unknown User'}
         />
       ))}
     </Flex>

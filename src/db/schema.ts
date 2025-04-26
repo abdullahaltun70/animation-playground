@@ -29,6 +29,7 @@ export const configsTable = pgTable(
       withTimezone: true,
       mode: 'string',
     }).defaultNow(),
+    authorName: varchar('author_name', { length: 128 }).default(''),
     isPublic: boolean('is_public').default(false),
   },
   (table) => [

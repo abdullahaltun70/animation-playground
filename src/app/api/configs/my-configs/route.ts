@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 
+import { getConfigsByUserIdAction } from '@/app/utils/actions/supabase/configs';
 import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
-import { getConfigsByUserId } from '@/db/queries/read';
 
 export async function GET(request: NextRequest) {
   try {
@@ -17,16 +17,10 @@ export async function GET(request: NextRequest) {
     const userId = user.id;
 
     // Fetch the user's configurations
-    const configs = await getConfigsByUserId(userId);
+    const configs = (await getConfigsByUserIdAction(userId)).data;
 
     // Return the configurations and user info
-    return NextResponse.json({
-      configs,
-      user: {
-        id: user.id,
-        email: user.email,
-      },
-    });
+    return NextResponse.json(configs);
   } catch (error) {
     console.error('Error fetching configurations:', error);
     return NextResponse.json(

@@ -8,6 +8,7 @@ import { ThemeProvider } from 'next-themes';
 
 import 'animation-library-test-abdullah-altun';
 import { AuthProvider } from '@/context/AuthProvider';
+import { ToastProvider, ToastViewport } from '@/context/ToastContext';
 
 import '@radix-ui/themes/styles.css';
 
@@ -34,11 +35,16 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${geistSans.variable} ${geistMono.variable}`}>
-        <ThemeProvider attribute={'class'} defaultTheme={'system'}>
-          <Theme appearance="inherit" radius="large" accentColor={'indigo'}>
-            <AuthProvider>{children}</AuthProvider>
-          </Theme>
-        </ThemeProvider>
+        <AuthProvider>
+          <ToastProvider>
+            <ThemeProvider attribute={'class'} defaultTheme={'system'}>
+              <Theme appearance="inherit" radius="large" accentColor={'indigo'}>
+                {children}
+                <ToastViewport />
+              </Theme>
+            </ThemeProvider>
+          </ToastProvider>
+        </AuthProvider>
       </body>
     </html>
   );

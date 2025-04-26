@@ -12,7 +12,7 @@ import {
   Pencil2Icon,
 } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
-import { useRouter } from 'next/navigation';
+import { redirect, useRouter } from 'next/navigation';
 
 import { ConfigModel } from '@/types/animations';
 
@@ -39,7 +39,7 @@ export function ConfigCard({
   };
 
   const handleEdit = () => {
-    router.push(`/playground?id=${config.id}`);
+    redirect(`/playground?id=${config.id}`);
     window.location.href = `/playground?id=${config.id}`;
   };
 
