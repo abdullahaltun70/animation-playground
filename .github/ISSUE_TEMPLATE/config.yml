@@ -6,6 +6,8 @@ contact_links:
   - name: GitHub Security Bug Bounty
     url: https://bounty.github.com/
     about: Please report security vulnerabilities here.
+  - name: Default Issue Template
+    file: issue_template.md
 issue_templates:
   - name: Default Issue Template
     description: Use this template to report an issue.
