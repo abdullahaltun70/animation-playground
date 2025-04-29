@@ -1,7 +1,7 @@
 ---
 name: Default Issue Template
 about: Describe your new issue.
-title: Issue
+title: 
 labels: enhancement
 assignees: abdullahaltun70
 
