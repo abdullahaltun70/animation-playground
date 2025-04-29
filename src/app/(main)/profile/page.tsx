@@ -221,11 +221,6 @@ export default function ProfilePage() {
     };
   }, [router]);
 
-  // Show loading state when checking authentication
-  // if (checkingAuth) {
-  //   return <Box className={styles.authMessage}>Checking authentication...</Box>;
-  // }
-
   return (
     <div className={styles.profileContainer}>
       <Tabs.Root defaultValue="my-configs">

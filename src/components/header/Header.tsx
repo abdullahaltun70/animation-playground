@@ -12,7 +12,7 @@ import {
   Text,
 } from '@radix-ui/themes';
 import Image from 'next/image';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 
 import { SignOutButton } from '@/app/(main)/profile/components/SignOutButton';
 import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
@@ -23,7 +23,6 @@ import styles from './Header.module.scss';
 
 export const Header = () => {
   const pathname = usePathname();
-  const router = useRouter();
   const supabase = createClient();
 
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -59,14 +58,6 @@ export const Header = () => {
       subscription?.unsubscribe();
     };
   }, [supabase.auth]); // Add supabase.auth dependency
-
-  const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setIsAuthenticated(false);
-    setUserEmail(null);
-    router.push('/');
-    router.refresh();
-  };
 
   return (
     <header className={`${styles.header} fade-in`}>
