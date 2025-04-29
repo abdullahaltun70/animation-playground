@@ -194,7 +194,6 @@ export async function DELETE(
     if (authResult.error) {
       return authResult.error; // Returns 401 Unauthorized
     }
-    const { user } = authResult; // Get user to pass ID for deletion
 
     const configId = params.id;
     if (!configId || configId === 'undefined') {
@@ -219,7 +218,7 @@ export async function DELETE(
     }
 
     // Call the remove server action, passing the authenticated user's ID
-    const deleteResult = await removeConfigAction(configId, user.id);
+    const deleteResult = await removeConfigAction(configId);
 
     if (!deleteResult.success) {
       // Determine status based on message (e.g., 404 if not found, 403 if permission denied, 500 otherwise)
