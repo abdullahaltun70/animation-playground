@@ -16,54 +16,49 @@ export default function TestPage() {
         padding: '40px',
         maxWidth: '1200px',
         margin: '0 auto',
-        color: 'red',
+        color: 'blue',
       }}
     >
-      <h2>Composition Example</h2>
+      <h2>Using Animate comp directly</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
-        <Animate
-          type="fade"
-          duration={1.2}
-          delay={0.3}
-          easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
-        >
-          <Animate type="bounce" duration={0.5} delay={0.9} distance={50}>
-            {/* De 'bounce' wordt overridden door de 'fade' */}
-            <Animate type="slide" duration={1} delay={0} distance={-200}>
-              <Animate type="rotate" duration={0.4} delay={1.5} degrees={180}>
-                <div
-                  style={{
-                    padding: '20px',
-                    background: '#e8eaf6',
-                    borderRadius: '8px',
-                    width: '300px',
-                  }}
-                >
-                  Combined Fade + Slide from Left + Bounce
-                </div>
-              </Animate>
+        <Animate type="bounce" duration={0.5} delay={0.9} distance={50}>
+          <Animate type="slide" duration={1} delay={0} distance={-200}>
+            <Animate type="rotate" duration={0.4} delay={1.5} degrees={180}>
+              <div
+                style={{
+                  padding: '20px',
+                  background: '#e8eaf6',
+                  borderRadius: '8px',
+                  width: '300px',
+                }}
+              >
+                Combined Bounce + Slide + Rotate
+              </div>
             </Animate>
           </Animate>
         </Animate>
       </div>
 
-      <ScaleAnimationWrapper>
-        <SlideAnimationWrapper>
-          <RotateAnimationWrapper>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '100px',
-                width: '100px',
-                borderRadius: '10%',
-                backgroundColor: '#f0f0f0',
-              }}
-            ></div>
-          </RotateAnimationWrapper>
-        </SlideAnimationWrapper>
-      </ScaleAnimationWrapper>
+      <h2>Using Wrappers (composition not working!)</h2>
+      <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
+        <ScaleAnimationWrapper>
+          <SlideAnimationWrapper>
+            <RotateAnimationWrapper>
+              <div
+                style={{
+                  padding: '20px',
+                  background: '#e8eaf6',
+                  borderRadius: '8px',
+                  width: '300px',
+                }}
+              >
+                Combined Scale + Slide + Rotate
+              </div>
+            </RotateAnimationWrapper>
+          </SlideAnimationWrapper>
+        </ScaleAnimationWrapper>
+      </div>
+
       <h1>Enhanced Animation Component Test</h1>
       <p>
         This page demonstrates the simplified API and improved directional logic

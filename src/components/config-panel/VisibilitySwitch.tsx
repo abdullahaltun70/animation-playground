@@ -36,28 +36,19 @@ export function VisibilitySwitch({
       value={currentValue}
       onValueChange={handleValueChange}
       disabled={disabled}
-      radius="full" // Keep the familiar rounded pill shape
-      // We'll stick with the default `variant="surface"` as it provides clear active state
-      // variant="surface"
-      // Keep the control compact horizontally
+      radius="full"
       style={{ width: 'fit-content' }}
       className={styles.visibilitySwitchRoot}
     >
       {/* Private Option */}
-      <SegmentedControl.Item
-        value="private"
-        className={styles.privateOptionStyle}
-      >
+      <SegmentedControl.Item value="private">
         <Flex gap="2" align="center" title="Set visibility to Private">
           <LockClosedIcon
             width="16"
             height="16"
-            // Subtle Enhancement: Use a neutral gray for the lock icon always.
-            // This provides a consistent visual cue for 'private/secure'.
-            // `var(--gray-11)` offers good visibility in both light/dark modes.
+            // color="var(--gray-11)"
             color="var(--red-11)"
           />
-          {/* Using standard Text size for consistency */}
           <Text size="2">Private</Text>
         </Flex>
       </SegmentedControl.Item>
@@ -65,14 +56,7 @@ export function VisibilitySwitch({
       {/* Public Option */}
       <SegmentedControl.Item value="public">
         <Flex gap="2" align="center" title="Set visibility to Public">
-          <EyeOpenIcon
-            width="16"
-            height="16"
-            // Subtle Enhancement: Use the theme's primary accent color for the eye icon always.
-            // This visually associates 'public/visible' with the theme's highlight color.
-            // `var(--accent-9)` is the main interactive shade used for backgrounds/borders.
-            color="var(--accent-9)"
-          />
+          <EyeOpenIcon width="16" height="16" color="var(--accent-9)" />
           <Text size="2">Public</Text>
         </Flex>
       </SegmentedControl.Item>

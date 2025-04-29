@@ -193,7 +193,7 @@ export function generateCSSCode(config: AnimationConfig): string {
  */
 export function generateReactComponent(config: AnimationConfig): string {
   const { type, name } = config;
-  const componentName = `${type.charAt(0).toUpperCase() + type.slice(1)}AnimationWrapper`;
+  const componentName = `// ${type.charAt(0).toUpperCase() + type.slice(1)} Animation \n`;
 
   // Build props string, ONLY including non-default values
   const propsArray: string[] = [`type="${type}"`]; // Type is always required
@@ -248,91 +248,12 @@ export function generateReactComponent(config: AnimationConfig): string {
   const propsString = propsArray.map((p) => `      ${p}`).join('\n');
 
   // --- Generate Code Snippet ---
-  let component = `import React from 'react';\n`;
-  component += `// 1. Ensure you've installed the library: npm install animation-library-test-abdullah-altun\n`;
-  component += `// 2. Import the component and styles (styles usually imported globally):\n`;
-  component += `import { Animate } from 'animation-library-test-abdullah-altun';\n`;
-  component += `// import 'animation-library-test-abdullah-altun/styles/main.scss'; // Typically in layout.tsx or globals.scss\n\n`;
-  component += `// Example component using the generated animation: ${name || type}\n`;
-  component += `export const ${componentName} = ({ children }: { children: React.ReactNode }) => {\n`;
-  component += `  // Wrap the content you want to animate with the <Animate> component.\n`;
-  component += `  // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).\n`;
-  component += `  return (\n`;
-  component += `    <Animate\n${propsString}\n    >\n`;
-  component += `      {children}\n`;
-  component += `    </Animate>\n`;
-  component += `  );\n`;
-  component += `};\n\n`;
-  component += `// --- How to use it: ---\n`;
-  component += `// function App() {\n`;
-  component += `//   return (\n`;
-  component += `//     <${componentName}>\n`;
-  component += `//       <p>This content will be animated!</p>\n`;
-  component += `//     </${componentName}>\n`;
-  component += `//   );\n`;
-  component += `// }\n`;
 
-  return component;
-}
-
-/**
- * Generates React HOC code for the animation configuration
- */
-export function generateHOCCode(config: AnimationConfig): string {
-  const { type, duration, delay, easing } = config;
-  const definition = ANIMATION_DEFINITIONS[config.type];
-
-  let component = `import React from 'react';\n`;
-  component += `import { withAnimation } from '@/components/withAnimation';\n\n`;
-  component += `// HOC animation example generated from ${config.name || 'Animation Playground'}\n\n`;
-  component += `// Define your component\n`;
-  component += `const YourComponent = React.forwardRef((props, ref) => {\n`;
-  component += `  return <div ref={ref} {...props}>Your content here</div>;\n`;
-  component += `});\n\n`;
-
-  component += `// Animation configuration\n`;
-  component += `const animationConfig = {\n`;
-  component += `  type: '${type}',\n`;
-  component += `  duration: ${duration},\n`;
-  component += `  delay: ${delay},\n`;
-  component += `  easing: '${easing}',\n`;
-
-  // Add type-specific properties
-  if (type === 'fade' && config.opacity) {
-    component += `  opacity: {\n`;
-    component += `    start: ${config.opacity.start},\n`;
-    component += `    end: ${config.opacity.end},\n`;
-    component += `  },\n`;
-  }
-
-  if (
-    (type === 'slide' || type === 'bounce') &&
-    config.distance !== undefined
-  ) {
-    component += `  distance: ${config.distance},\n`;
-  }
-
-  if (type === 'scale' && config.scale !== undefined) {
-    component += `  scale: ${config.scale},\n`;
-  }
-
-  if (type === 'rotate' && config.degrees !== undefined) {
-    component += `  degrees: ${config.degrees},\n`;
-  }
-
-  component += `};\n\n`;
-
-  component += `// Create animated component using HOC\n`;
-  component += `export const Animated${type.charAt(0).toUpperCase() + type.slice(1)}Component = withAnimation(YourComponent, animationConfig);\n\n`;
-
-  // Add CSS comment
-  component += `// Add this CSS to your stylesheet or import the animation library:\n`;
-  const keyframes = definition
-    .getKeyframes(config)
-    .split('\n')
-    .map((line) => `// ${line}`)
-    .join('\n');
-  component += keyframes + '\n';
+  let component = `${componentName}`;
+  component += `<Animate\n`;
+  component += `${propsString}\n    >\n`;
+  component += `    {children}\n`;
+  component += `</Animate>\n`;
 
   return component;
 }

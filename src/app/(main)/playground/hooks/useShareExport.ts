@@ -44,10 +44,19 @@ export function useShareExport(configId: string | null) {
   };
 
   const handleCopyCode = (animationConfig: AnimationConfig) => {
-    const code =
-      exportTab === 'react'
-        ? generateReactComponent(animationConfig)
-        : generateCSSCode(animationConfig);
+    let code: string;
+
+    switch (exportTab) {
+      case 'react':
+        code = generateReactComponent(animationConfig);
+        break;
+      case 'css':
+        code = generateCSSCode(animationConfig);
+        break;
+      default:
+        setError('Unknown export type');
+        return;
+    }
 
     navigator.clipboard
       .writeText(code)
