@@ -259,8 +259,7 @@ export function ConfigPanel({
                   disabled={isReadOnly}
                 />
                 <Text size="1">
-                  {config.opacity ? (config.opacity.start * 100).toFixed(0) : 0}
-                  %
+                  {`${config.opacity ? (config.opacity.start * 100).toFixed(0) : 0}%`}
                 </Text>
               </div>
               <div className={styles.field}>
@@ -276,8 +275,7 @@ export function ConfigPanel({
                   disabled={isReadOnly}
                 />
                 <Text size="1">
-                  {config.opacity ? (config.opacity.end * 100).toFixed(0) : 100}
-                  %
+                  {`${config.opacity ? (config.opacity.end * 100).toFixed(0) : 0}%`}
                 </Text>
               </div>
             </>

@@ -4,8 +4,6 @@ import React from 'react';
 
 import { ResetIcon } from '@radix-ui/react-icons';
 import { Button, Heading, Text } from '@radix-ui/themes';
-
-// Import the hook and types FROM THE LIBRARY
 import {
   useAnimation,
   AnimationConfig,
@@ -14,18 +12,16 @@ import {
 import styles from './AnimatedContainer.module.scss';
 
 interface AnimatedContainerProps {
-  children?: React.ReactNode; // Keep children prop if you want to allow custom content
-  config: AnimationConfig; // Use the config type from the library
+  children?: React.ReactNode;
+  config: AnimationConfig;
 }
 
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
-  config, // Receive the config object directly
+  config,
 }) => {
-  // Use the animation hook from the library
+  // Using the animation hook from the library
   const { ref, key, replay } = useAnimation<HTMLDivElement>(config);
-
-  // No need for getAnimationClasses or useEffect here anymore!
 
   return (
     <>
@@ -38,16 +34,14 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
           */}
           {children || (
             <div
-              key={key} // Key from the hook is essential for replaying
+              key={key}
               ref={ref} // Ref from the hook attaches to the DOM element
-              className={styles.animatableElement} // Base styles for the box itself
-              // The animation class (e.g., 'animate-fade') will be added by the hook's effect
+              className={styles.animatableElement}
             >
               <Text>Animate Me!</Text>
             </div>
           )}
         </div>
-        {/* Replay button now calls the replay function from the hook */}
         <Button className={styles.replayButton} onClick={replay}>
           <ResetIcon /> Replay Animation
         </Button>

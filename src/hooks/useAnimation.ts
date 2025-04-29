@@ -131,7 +131,7 @@ export function useAnimation(config: AnimationConfig) {
         }
       };
     }
-  }, [config, key]);
+  }, [config, key, config.opacity]);
 
   // Function to replay the animation
   const replay = () => {
