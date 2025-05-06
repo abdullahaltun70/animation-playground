@@ -61,7 +61,7 @@ export const ToastProvider = ({ children }: { children: ReactNode }) => {
 
   return (
     <ToastContext.Provider value={{ showToast }}>
-      <Toast.Provider swipeDirection="right">
+      <Toast.Provider swipeDirection="up">
         {children}
         {toasts.map(
           ({
