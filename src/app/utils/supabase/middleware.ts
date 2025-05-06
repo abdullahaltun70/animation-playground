@@ -39,7 +39,7 @@ export async function updateSession(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  // Controleer of er een Authorization header met een Bearer token aanwezig is
+  // for api testing purposes
   const authHeader = request.headers.get('Authorization');
   const hasBearerToken = authHeader?.startsWith('Bearer ');
 
@@ -48,7 +48,7 @@ export async function updateSession(request: NextRequest) {
     !hasBearerToken && // EN geen Bearer token aanwezig
     !request.nextUrl.pathname.startsWith('/login') &&
     !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api/auth') // VOEG DEZE TOE om /api/auth/* paden toe te staan
+    !request.nextUrl.pathname.startsWith('/api/auth')
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
