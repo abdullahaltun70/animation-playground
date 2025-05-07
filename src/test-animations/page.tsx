@@ -21,9 +21,9 @@ export default function TestPage() {
     >
       <h2>Using Animate comp directly</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
-        <Animate type="bounce" duration={0.5} delay={0.9} distance={50}>
-          <Animate type="slide" duration={1} delay={0} distance={-200}>
-            <Animate type="rotate" duration={0.4} delay={1.5} degrees={180}>
+        <Animate type="bounce" duration={0.5} distance={50}>
+          <Animate type="slide" duration={1} distance={-200}>
+            <Animate type="rotate" duration={0.4} degrees={180}>
               <div
                 style={{
                   padding: '20px',
