@@ -1,26 +1,29 @@
 // app/(main)/layout.tsx
 
-import React from 'react';
+import React, { Suspense } from 'react';
 
+import Loading from '@/app/(main)/playground/loading';
 import { Footer } from '@/components/footer/Footer';
 import { Header } from '@/components/header';
 
-import styles from './playground/page.module.scss';
+import styles from './page.module.scss';
 
 export default function MainLayout({
-	children,
+  children,
 }: {
-	children: React.ReactNode;
+  children: React.ReactNode;
 }) {
-	return (
-		<>
-			<header>
-				<Header />
-			</header>
-			<main className={styles.main}>{children}</main>
-			<footer>
-				<Footer />
-			</footer>
-		</>
-	);
+  return (
+    <div className={styles.mainLayout}>
+      <header className={styles.header} style={{ flexShrink: 0 }}>
+        <Header />
+      </header>
+      <Suspense fallback={<Loading />}>
+        <main className={styles.main}>{children}</main>
+      </Suspense>
+      <footer className={styles.footer}>
+        <Footer />
+      </footer>
+    </div>
+  );
 }

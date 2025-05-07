@@ -1,0 +1,31 @@
+.profileContainer {
+  max-width: 600px; // Set a reasonable max width
+  width: 100%;
+  margin: 3rem auto; // Center horizontally with auto margins
+  padding: 2rem 2.5rem;
+  border-radius: 12px;
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+
+  .dark & {
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  }
+
+  h1 {
+    text-align: center;
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+    color: var(--text-primary);
+    font-weight: 600;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    color: var(--text-primary);
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.6rem;
+    margin-bottom: 2rem;
+    font-weight: 500;
+  }
+}

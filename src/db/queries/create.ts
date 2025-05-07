@@ -9,6 +9,7 @@ import { Config } from '@/db/schema';
  * @param title - Configuration title
  * @param description - Optional configuration description
  * @param configData - Optional JSON configuration data
+ * @param isPublic - Whether the config is public or private (boolean)
  * @param userId - ID of user creating the config (UUID)
  *
  * @returns Promise<Config[]> - Array containing the newly created config
@@ -24,34 +25,38 @@ import { Config } from '@/db/schema';
  * );
  */
 export async function createConfig(
-	title: string,
-	description: string | null,
-	configData: string | null,
-	userId: string,
+  title: string,
+  description: string | null,
+  configData: string | null,
+  authorName: string | null,
+  isPublic: boolean,
+  userId: string
 ): Promise<Config[]> {
-	try {
-		const insertedConfigs = await db
-			.insert(configsTable)
-			.values({
-				title: title,
-				description: description,
-				configData: configData,
-				userId: userId,
-			})
-			.returning();
+  try {
+    const insertedConfigs = await db
+      .insert(configsTable)
+      .values({
+        title: title,
+        description: description,
+        configData: configData,
+        authorName: authorName,
+        isPublic: isPublic,
+        userId: userId,
+      })
+      .returning();
 
-		if (!insertedConfigs || insertedConfigs.length === 0) {
-			console.warn(
-				'[DB Query - Drizzle] Insert operation succeeded but returned no data.',
-			);
-			throw new Error(
-				'Database insertion failed to return the created config.',
-			);
-		}
+    if (!insertedConfigs || insertedConfigs.length === 0) {
+      console.warn(
+        '[DB Query - Drizzle] Insert operation succeeded but returned no data.'
+      );
+      throw new Error(
+        'Database insertion failed to return the created config.'
+      );
+    }
 
-		return insertedConfigs;
-	} catch (error) {
-		console.error('[DB Query - Drizzle] Error creating config:', error);
-		throw error;
-	}
+    return insertedConfigs;
+  } catch (error) {
+    console.error('[DB Query - Drizzle] Error creating config:', error);
+    throw error;
+  }
 }

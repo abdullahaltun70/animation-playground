@@ -1,0 +1,96 @@
+.formRoot {
+  width: 100%;
+}
+
+.formField {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+}
+
+.formLabel {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--gray-12);
+}
+
+.formInput {
+  padding: 0.75rem;
+  font-size: 1rem;
+  border: 1px solid var(--gray-7);
+  border-radius: 6px;
+  background-color: var(--gray-3);
+  color: var(--gray-12);
+  width: 100%;
+  transition:
+    border-color 0.2s,
+    box-shadow 0.2s;
+
+  &:focus {
+    outline: none;
+    border-color: var(--blue-8);
+    box-shadow: 0 0 0 2px rgba(0, 122, 255, 0.2);
+  }
+
+  &::placeholder {
+    color: var(--gray-8);
+  }
+}
+
+.submitButton {
+  width: 100%;
+  color: white;
+  cursor: pointer;
+  transition: background-color 0.2s;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.googleButton {
+  width: 100%;
+  padding: 12px 16px !important;
+  font-size: 16px !important;
+  border-radius: 6px !important;
+  cursor: pointer;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-bottom: 1rem;
+}
+
+.divider {
+  margin: 1.5rem 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-secondary);
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: calc(50% - 20px);
+    height: 1px;
+    background-color: var(--border-color);
+  }
+  &::before {
+    left: 0;
+  }
+  &::after {
+    right: 0;
+  }
+}
+
+.errorMessage {
+  padding: 0.75rem;
+  background-color: rgba(var(--red-9-rgb), 0.1);
+  border: 1px solid var(--red-7);
+  border-radius: 6px;
+  color: var(--red-11);
+  font-size: 0.875rem;
+}

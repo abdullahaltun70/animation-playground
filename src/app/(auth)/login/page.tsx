@@ -1,19 +1,15 @@
 'use client';
 
-import React, { Suspense } from 'react';
-
-import { Skeleton } from '@radix-ui/themes';
+import React from 'react';
 
 import AuthComponent from '@/app/(auth)/login/components/AuthComponent';
 
 function Page() {
-	return (
-		<>
-			<Suspense fallback={<Skeleton loading={true} />}>
-				<AuthComponent />
-			</Suspense>
-		</>
-	);
+  return (
+    <>
+      <AuthComponent />
+    </>
+  );
 }
 
 export default Page;

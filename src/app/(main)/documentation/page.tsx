@@ -1,11 +1,14 @@
+'use client';
+
 // app/(main)/documentation/page.tsx
-import styles from './page.module.scss';
+import React from 'react';
+
+import TestPage from '@/test-animations/page';
 
 export default function Documentation() {
-	return (
-		<div className={styles.container}>
-			<h1>Documentatie</h1>
-			<div className={styles.docs}>{/* Documentatie inhoud */}</div>
-		</div>
-	);
+  return (
+    <>
+      <TestPage />
+    </>
+  );
 }
