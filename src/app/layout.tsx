@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Theme } from '@radix-ui/themes';
+import { SpeedInsights } from '@vercel/speed-insights/next';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.scss';
@@ -40,6 +41,7 @@ export default function RootLayout({
             <ThemeProvider attribute={'class'} defaultTheme={'system'}>
               <Theme appearance="inherit" radius="large" accentColor={'indigo'}>
                 {children}
+                <SpeedInsights />
                 <ToastViewport />
               </Theme>
             </ThemeProvider>
