@@ -26,7 +26,7 @@ export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
 /**
  * Returns a cleaned configId or null if missing/invalid.
  */
-function getValidConfigId(searchParams: URLSearchParams): string | null {
+export function getValidConfigId(searchParams: URLSearchParams): string | null {
   const id = searchParams.get('id');
   // Consider 'undefined', '', null as missing
   if (!id || id === 'undefined') return null;
@@ -59,22 +59,29 @@ export function useAnimationConfig() {
         credentials: 'include',
       })
         .then(async (response) => {
-          if (!response.ok) {
-            if (response.status === 404) {
-              throw new Error('Configuration not found');
-            } else {
-              throw new Error(
-                'Failed to load configuration: ' + response.statusText
-              );
-            }
+          const data = await response.json().catch(() => ({}));
+          if (!response.ok || data.error) {
+            const errorMessage =
+              data.error ||
+              `Failed to load configuration: ${response.statusText}`;
+            showToast({
+              title: 'Error',
+              description: errorMessage,
+              variant: 'error',
+            });
+            console.log(`data: ${JSON.stringify(data)}`);
+            console.log(`response: ${JSON.stringify(response)}`);
+            console.log(`errorMessage: ${errorMessage}`);
+            setError(errorMessage);
+            setAnimationConfig(DEFAULT_ANIMATION_CONFIG);
+            setConfigLoaded(false);
+            setLoading(false);
+            return null;
           }
-          return response.json();
+          return data;
         })
         .then((data) => {
-          if (data.error) {
-            // Handle API-returned errors
-            throw new Error(data.error);
-          }
+          if (!data) return;
 
           setIsReadOnly(!!data.isReadOnly);
           setConfigTitle(data.title || '');
@@ -116,14 +123,19 @@ export function useAnimationConfig() {
                 variant: 'success',
                 duration: 700,
               });
-            } catch (e) {
-              console.error('Error parsing configuration data:', e);
+            } catch (err) {
+              console.error('Error parsing configuration data:', err);
 
               showToast({
                 title: 'Error',
                 description: 'Failed to parse configuration data',
                 variant: 'error',
               });
+              setError('Failed to parse configuration data');
+              setAnimationConfig(DEFAULT_ANIMATION_CONFIG);
+              setConfigLoaded(true);
+              setLoading(false);
+              return;
             }
           } else {
             // Handles case where configData might be null/missing but we still have top-level fields
@@ -149,6 +161,7 @@ export function useAnimationConfig() {
             description: err.message,
             variant: 'error',
           });
+          setError(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -252,6 +265,7 @@ export function useAnimationConfig() {
         description: errorMessage,
         variant: 'error',
       });
+      setError(errorMessage);
       return false;
     } finally {
       setLoading(false);

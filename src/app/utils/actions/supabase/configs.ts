@@ -45,7 +45,7 @@ export async function getConfigByIdAction(configId: string): Promise<{
     // The API route or component calling this should handle authorization.
     const config = await getConfigById(configId); // Returns array or empty array
 
-    if (!config) {
+    if (!config || config.length === 0) {
       return {
         success: false,
         message: `Configuration with ID ${configId} not found.`,

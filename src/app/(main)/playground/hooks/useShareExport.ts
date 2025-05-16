@@ -22,6 +22,7 @@ export function useShareExport(configId: string | null) {
 
     // Generate shareable URL
     const url = new URL(window.location.href);
+    url.searchParams.set('id', configId);
     setShareUrl(url.toString());
     setShareDialogOpen(true);
   };

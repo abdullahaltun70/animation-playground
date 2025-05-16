@@ -14,9 +14,9 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    // User might be authenticated or not, we fetch first, then check ownership
+    // User might be authenticated or not, we fetch the config, then check ownership/access
     const authResult = await authenticateUser(request);
-    const configId = await params.id;
+    const configId = params.id; // <-- Corrected: removed unnecessary await
 
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
@@ -25,20 +25,20 @@ export async function GET(
       );
     }
 
-    // Call the server action to get the config data
+    // Fetch config regardless of authentication, check visibility after
     const result = await getConfigByIdAction(configId);
 
     if (!result.success || !result.data) {
       // Action failed (e.g., not found)
       return NextResponse.json(
         { error: result.message || 'Configuration not found' },
-        { status: 404 } // Use 404 for not found
+        { status: 404 }
       );
     }
 
     const config = result.data;
 
-    // Check if the user (if logged in) is the owner
+    // Ownership/access logic
     let isReadOnly = true; // Default to read-only
     if (authResult.user) {
       // If user is logged in, check if their ID matches the config's userId
@@ -50,8 +50,7 @@ export async function GET(
         { status: 403 }
       );
     }
-
-    // If user is not owner AND config is not public, deny access
+    // If user is not owner AND config is not public, further deny access
     if (isReadOnly && !config.isPublic) {
       return NextResponse.json(
         {
@@ -62,7 +61,7 @@ export async function GET(
       );
     }
 
-    // Return the configuration with ownership info
+    // Return the configuration with ownership information
     return NextResponse.json(
       {
         ...config, // Spread the config data from the action result
@@ -71,6 +70,7 @@ export async function GET(
       { status: 200 }
     );
   } catch (error) {
+    // params.id is always available here due to previous checks
     console.error(`[API GET /api/configs/${params.id}] Error:`, error);
     const message =
       error instanceof Error
@@ -94,7 +94,6 @@ export async function PUT(
     if (authResult.error) {
       return authResult.error; // Returns 401 Unauthorized
     }
-    // No need for userId from authResult here, updateConfigAction handles it
 
     const configId = params.id;
     if (!configId || configId === 'undefined') {
@@ -104,9 +103,8 @@ export async function PUT(
       );
     }
 
-    // First, verify the user owns the config using the specific action
-    // Note: updateConfigAction *also* verifies ownership internally, but this check
-    // can provide a clearer 404/403 before attempting the update logic.
+    // Optional: first, verify the user owns the config using the specific action.
+    // updateConfigAction also verifies ownership internally.
     const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
     if (!ownershipCheck.success) {
       return NextResponse.json(
@@ -135,7 +133,7 @@ export async function PUT(
       title: string;
       description: string | null;
       configData: string | null;
-      isPublic?: boolean; // Make optional as action handles default
+      isPublic?: boolean;
     }> = {};
 
     updateData.title = body.title;
@@ -149,9 +147,8 @@ export async function PUT(
 
     if (!updateResult.success || !updateResult.data) {
       // Handle potential errors from the action (validation, db error)
-      const status = updateResult.message.includes('cannot exceed') ? 400 : 500; // Basic status mapping
+      const status = updateResult.message.includes('cannot exceed') ? 400 : 500;
       if (updateResult.message.includes('not found')) {
-        // If somehow ownership check passed but update failed on not found
         return NextResponse.json(
           { error: updateResult.message },
           { status: 404 }
@@ -159,7 +156,7 @@ export async function PUT(
       }
       return NextResponse.json(
         { error: updateResult.message || 'Failed to update configuration' },
-        { status: status }
+        { status }
       );
     }
 
@@ -168,7 +165,6 @@ export async function PUT(
   } catch (error) {
     console.error(`[API PUT /api/configs/${params.id}] Error:`, error);
     if (error instanceof SyntaxError) {
-      // Handle JSON parsing error
       return NextResponse.json(
         { error: 'Invalid JSON payload' },
         { status: 400 }
@@ -203,8 +199,7 @@ export async function DELETE(
       );
     }
 
-    // Note: removeConfigAction performs its own ownership check using the authenticated user.
-    // Calling getConfigByUserIdAndConfigIdAction first is optional but provides a clearer 404/403 check.
+    // Optional: first, check ownership. removeConfigAction also checks.
     const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
     if (!ownershipCheck.success) {
       return NextResponse.json(
@@ -213,30 +208,29 @@ export async function DELETE(
             ownershipCheck.message ||
             'Configuration not found or not owned by user for deletion',
         },
-        { status: 404 } // Or 403 Forbidden
+        { status: 404 }
       );
     }
 
-    // Call the remove server action, passing the authenticated user's ID
+    // Call the remove server action
     const deleteResult = await removeConfigAction(configId);
 
     if (!deleteResult.success) {
-      // Determine status based on message (e.g., 404 if not found, 403 if permission denied, 500 otherwise)
       let status = 500;
       if (deleteResult.message.includes('not found')) status = 404;
       if (deleteResult.message.includes('permission denied')) status = 403;
       return NextResponse.json(
         { error: deleteResult.message || 'Failed to delete configuration' },
-        { status: status }
+        { status }
       );
     }
 
     // Return success response (No Content)
-    // return new NextResponse(null, { status: 204 }); // Alternative: No Content
     return NextResponse.json(
       { message: 'Configuration deleted successfully' },
       { status: 200 }
-    ); // Or return simple success message
+    );
+    // Alternative: new NextResponse(null, { status: 204 })
   } catch (error) {
     console.error(`[API DELETE /api/configs/${params.id}] Error:`, error);
     const message =

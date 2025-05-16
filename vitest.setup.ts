@@ -1,88 +1,107 @@
-// Import the necessary testing utilities
+// vitest.setup.ts
 import { cleanup } from '@testing-library/react';
-import { vi } from 'vitest';
-import { afterEach, beforeEach } from 'vitest';
+import { vi, afterEach, beforeEach } from 'vitest';
 
 // --- Mocks for Next.js Navigation ---
 const mockPush = vi.fn();
 const mockReplace = vi.fn();
+const mockRefresh = vi.fn();
 
-// --- Mocks for Supabase Auth Methods ---
-const mockSupabaseAuth = {
+// --- Mocks for Supabase Auth Methods (single source of truth) ---
+// This object will be used by the mock factory and by the tests for assertions.
+export const mockSupabaseAuth = {
   signUp: vi.fn(),
   signInWithPassword: vi.fn(),
   signInWithOAuth: vi.fn(),
   resetPasswordForEmail: vi.fn(),
   signOut: vi.fn(),
-  getSession: vi.fn(),
+  getSession: vi.fn(), // Crucial for useAnimationConfig
+  getUser: vi.fn(), // Often used for auth state
+  onAuthStateChange: vi.fn(() => ({
+    // Mock onAuthStateChange
+    data: { subscription: { unsubscribe: vi.fn() } },
+  })),
 };
 
-// --- Mock Implementations ---
-
 // Mock next/navigation
-vi.mock('next/navigation', () => ({
-  useRouter: () => ({
-    push: mockPush,
-    replace: mockReplace,
-  }),
-  useSearchParams: () => ({
-    get: vi.fn(),
-  }),
-  usePathname: vi.fn().mockReturnValue('/'),
-  useParams: vi.fn().mockReturnValue({}),
-}));
+vi.mock('next/navigation', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('next/navigation')>();
+  return {
+    ...actual,
+    useRouter: () => ({
+      push: mockPush,
+      replace: mockReplace,
+      refresh: mockRefresh,
+    }),
+    useSearchParams: () => ({
+      get: vi.fn((key: string) => {
+        // Default behavior for useAnimationConfig tests (no 'id' initially)
+        if (key === 'id') return null;
+        return null; // Default for other params
+      }),
+    }),
+    usePathname: vi.fn().mockReturnValue('/playground'), // Default pathname
+    useParams: vi.fn().mockReturnValue({}),
+  };
+});
 
-// Mock Supabase client creator
-// IMPORTANT: This mock ensures that `createClient()` returns the `mockSupabaseAuth` object.
-vi.mock('@/utils/supabase/client', () => ({
-  createClient: () => ({
-    auth: mockSupabaseAuth,
+// Mock the primary supabase client factory
+// This is the module imported by useAuth.ts and useAnimationConfig.ts
+vi.mock('@/app/utils/supabase/client', () => ({
+  createClient: vi.fn(() => {
+    // This factory function is called when `createClient()` is used in the hooks
+    return {
+      auth: mockSupabaseAuth, // Ensure this returns the shared mockSupabaseAuth object
+    };
   }),
 }));
 
 // --- Global Test Setup ---
-
-// Set up default mock behaviors and reset mocks before each test
 beforeEach(() => {
-  // Clear call history and reset implementations for ALL mocks
-  vi.clearAllMocks();
+  vi.clearAllMocks(); // Clears call history and resets implementations for ALL mocks
 
-  // Set default SUCCESSFUL return values for Supabase Auth mocks
-  // Tests needing specific error cases will override these using .mockResolvedValueOnce / .mockRejectedValueOnce
+  // Reset default SUCCESSFUL return values for Supabase Auth mocks
   mockSupabaseAuth.signUp.mockResolvedValue({
     data: { user: { id: 'mock-user-id-signup' }, session: null },
     error: null,
   });
   mockSupabaseAuth.signInWithPassword.mockResolvedValue({
-    data: { user: { id: 'mock-user-id-signin' }, session: {} },
+    data: { user: { id: 'mock-user-id-signin' }, session: {} as any },
     error: null,
   });
   mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-    data: { url: 'mock-oauth-url' },
+    data: { provider: 'google', url: 'mock-oauth-url' } as any,
     error: null,
   });
   mockSupabaseAuth.resetPasswordForEmail.mockResolvedValue({
-    data: { data: { mail: '' } },
+    data: {} as any,
     error: null,
   });
-  mockSupabaseAuth.signOut.mockResolvedValue({
-    error: null,
-  });
+  mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
   mockSupabaseAuth.getSession.mockResolvedValue({
     data: { session: null },
     error: null,
-  });
+  }); // Default: no active session
+  mockSupabaseAuth.getUser.mockResolvedValue({
+    data: { user: null },
+    error: null,
+  }); // Default: no user
+
+  (
+    mockSupabaseAuth.onAuthStateChange as ReturnType<typeof vi.fn>
+  ).mockReturnValue({
+    data: { subscription: { unsubscribe: vi.fn() } },
+  } as any);
 });
 
-// Clean up React components after each test
 afterEach(() => {
   cleanup();
 });
 
-// Export the mocks needed by tests
-// Primarily export the object containing the auth mocks
+// Export for tests to import and use for assertions
 export const mocks = {
   mockPush,
   mockReplace,
-  mockSupabaseAuth, // Export the main auth mock object
+  mockRefresh,
+  mockSupabaseAuth, // This is the object tests should import
 };
