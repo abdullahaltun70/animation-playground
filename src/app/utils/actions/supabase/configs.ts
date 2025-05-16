@@ -217,7 +217,7 @@ export async function getConfigByUserIdAndConfigIdAction(
  * **Server action that saves a new configuration to the database.**
  * Fetches author name from user session.
  *
- * @param title - Configuration title (required, max 30 chars)
+ * @param title - Configuration title (required, max 50 chars)
  * @param description - Optional configuration description (max 255 chars)
  * @param configData - Optional JSON configuration data (max 10000 chars)
  * @param isPublic - Whether the configuration is public
@@ -270,17 +270,10 @@ export async function saveConfigAction(
       return { success: false, message: 'Please enter a config title.' };
     }
 
-    if (title.length > 30) {
+    if (title.length > 50) {
       return {
         success: false,
-        message: 'Title cannot exceed 30 characters.',
-      };
-    }
-
-    if (configData && configData.length > 10000) {
-      return {
-        success: false,
-        message: 'Config data cannot exceed 10,000 characters.',
+        message: 'Title cannot exceed 50 characters.',
       };
     }
 
@@ -442,24 +435,19 @@ export async function updateConfigAction(
     if (updatedData.title && !updatedData.title.trim()) {
       return { success: false, message: 'Title cannot be empty.', data: null };
     }
-    if (updatedData.title && updatedData.title.length > 30) {
+
+    if (updatedData.title && updatedData.title.length > 50) {
       return {
         success: false,
-        message: 'Title cannot exceed 30 characters.',
+        message: 'Title cannot exceed 50 characters.',
         data: null,
       };
     }
+
     if (updatedData.description && updatedData.description.length > 255) {
       return {
         success: false,
         message: 'Description cannot exceed 255 characters.',
-        data: null,
-      };
-    }
-    if (updatedData.configData && updatedData.configData.length > 10000) {
-      return {
-        success: false,
-        message: 'Config data cannot exceed 10,000 characters.',
         data: null,
       };
     }

@@ -114,6 +114,7 @@ export function useAnimationConfig() {
                 title: 'Configuration Loaded',
                 description: 'Your configuration has been loaded successfully.',
                 variant: 'success',
+                duration: 700,
               });
             } catch (e) {
               console.error('Error parsing configuration data:', e);
@@ -123,7 +124,6 @@ export function useAnimationConfig() {
                 description: 'Failed to parse configuration data',
                 variant: 'error',
               });
-              setError('Invalid configuration data');
             }
           } else {
             // Handles case where configData might be null/missing but we still have top-level fields
@@ -140,7 +140,6 @@ export function useAnimationConfig() {
               description: 'Configuration data is missing, using defaults.',
               variant: 'info',
             });
-            setError('Configuration data is missing.');
           }
         })
         .catch((err) => {
@@ -150,7 +149,6 @@ export function useAnimationConfig() {
             description: err.message,
             variant: 'error',
           });
-          setError(err.message);
         })
         .finally(() => {
           setLoading(false);
@@ -167,9 +165,8 @@ export function useAnimationConfig() {
       showToast({
         title: 'Error',
         description: 'Please provide a name for your configuration',
-        variant: 'error',
+        variant: 'info',
       });
-      setError('Please provide a name for your configuration');
       return false;
     }
 
@@ -188,7 +185,6 @@ export function useAnimationConfig() {
           description: 'You must be logged in to save configurations',
           variant: 'error',
         });
-        setError('You must be logged in to save configurations');
         setLoading(false);
         return false;
       }
@@ -213,9 +209,20 @@ export function useAnimationConfig() {
       });
 
       if (!response.ok) {
-        throw new Error(
-          `Failed to ${configId && !isReadOnly ? 'update' : 'save'} configuration: ${response.statusText}`
-        );
+        let errorMessage = response.statusText; // Default to status text like "Bad Request"
+        try {
+          const errorData = await response.json();
+          if (errorData && errorData.error) {
+            errorMessage = errorData.error; // Use specific error from server
+          }
+        } catch (e) {
+          // Failed to parse JSON, or no specific error field. Stick with response.statusText.
+          console.error(
+            'Failed to parse error response JSON or error field missing:',
+            e
+          );
+        }
+        throw new Error(errorMessage);
       }
 
       const data = await response.json();
@@ -231,16 +238,20 @@ export function useAnimationConfig() {
           configId && !isReadOnly ? 'updated' : 'saved'
         } successfully.`,
         variant: 'success',
+        duration: 1500,
       });
       return true;
-    } catch (err: any) {
+    } catch (err) {
+      let errorMessage = 'An unknown error occurred.';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      }
       console.error('Error saving configuration:', err);
       showToast({
         title: 'Error',
-        description: err.message,
+        description: errorMessage,
         variant: 'error',
       });
-      setError(err.message);
       return false;
     } finally {
       setLoading(false);
@@ -251,7 +262,7 @@ export function useAnimationConfig() {
     // Create a copy of the current animation config
     const configCopy: AnimationConfig = {
       ...animationConfig,
-      name: `Copy of ${configTitle || animationConfig.name}`,
+      name: configTitle || animationConfig.name,
     };
 
     // Save as a new configuration

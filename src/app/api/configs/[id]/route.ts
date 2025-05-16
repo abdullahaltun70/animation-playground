@@ -16,7 +16,7 @@ export async function GET(
   try {
     // User might be authenticated or not, we fetch first, then check ownership
     const authResult = await authenticateUser(request);
-    const configId = params.id;
+    const configId = await params.id;
 
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
