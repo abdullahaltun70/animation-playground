@@ -12,7 +12,7 @@ import {
   Pencil2Icon,
 } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
-import { redirect, useRouter } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { ConfigModel } from '@/types/animations';
 
@@ -31,7 +31,6 @@ export function ConfigCard({
   onShareAction,
   authorName,
 }: ConfigCardProps) {
-  const router = useRouter();
   const handleShare = () => {
     if (onShareAction) {
       onShareAction(config.id);

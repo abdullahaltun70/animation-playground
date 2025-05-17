@@ -1,7 +1,7 @@
 import { Theme } from '@radix-ui/themes';
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 
 import { ExportDialog } from '@/app/(main)/playground/components/ExportDialog';
 import * as animationUtils from '@/app/utils/animations';

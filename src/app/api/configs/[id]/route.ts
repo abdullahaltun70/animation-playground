@@ -8,11 +8,72 @@ import {
 } from '@/app/utils/actions/supabase/configs';
 import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 
-// GET /api/configs/[id] - Get a specific configuration using Action
+/**
+ * @swagger
+ * /api/configs/{id}:
+ *   get:
+ *     summary: Retrieve a specific animation configuration by its ID.
+ *     description: >
+ *       Fetches a configuration. If the user is authenticated and owns the configuration,
+ *       it returns the full configuration data with `isReadOnly` set to `false`.
+ *       If the user is not authenticated or does not own the configuration, it returns the
+ *       configuration data only if it's public, with `isReadOnly` set to `true`.
+ *       Returns a 403 error for private configurations if the user is not the owner.
+ *       Returns a 404 error if the configuration is not found.
+ *     tags:
+ *       - Configurations
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the animation configuration to retrieve.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully retrieved the configuration.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 userId:
+ *                   type: string
+ *                 title:
+ *                   type: string
+ *                 description:
+ *                   type: string
+ *                   nullable: true
+ *                 configData:
+ *                   type: object // Assuming configData is a JSON object
+ *                 isPublic:
+ *                   type: boolean
+ *                 isReadOnly:
+ *                   type: boolean
+ *                 createdAt:
+ *                   type: string
+ *                   format: date-time
+ *                 updatedAt:
+ *                   type: string
+ *                   format: date-time
+ *                 authorName:
+ *                   type: string
+ *                   nullable: true
+ *       400:
+ *         description: Invalid configuration ID provided.
+ *       403:
+ *         description: Forbidden. Configuration is private and user is not the owner.
+ *       404:
+ *         description: Configuration not found.
+ *       500:
+ *         description: Failed to fetch configuration due to a server error.
+ */
 export async function GET(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse> {
   try {
     // User might be authenticated or not, we fetch the config, then check ownership/access
     const authResult = await authenticateUser(request);
@@ -25,11 +86,10 @@ export async function GET(
       );
     }
 
-    // Fetch config regardless of authentication, check visibility after
+    // Fetch config regardless of authentication, visibility is checked afterwards
     const result = await getConfigByIdAction(configId);
 
     if (!result.success || !result.data) {
-      // Action failed (e.g., not found)
       return NextResponse.json(
         { error: result.message || 'Configuration not found' },
         { status: 404 }
@@ -38,7 +98,6 @@ export async function GET(
 
     const config = result.data;
 
-    // Ownership/access logic
     let isReadOnly = true; // Default to read-only
     if (authResult.user) {
       // If user is logged in, check if their ID matches the config's userId
@@ -50,7 +109,8 @@ export async function GET(
         { status: 403 }
       );
     }
-    // If user is not owner AND config is not public, further deny access
+    // If user is not owner AND config is not public, deny access
+    // This condition is an additional safeguard, typically covered by the above logic.
     if (isReadOnly && !config.isPublic) {
       return NextResponse.json(
         {
@@ -61,16 +121,14 @@ export async function GET(
       );
     }
 
-    // Return the configuration with ownership information
     return NextResponse.json(
       {
-        ...config, // Spread the config data from the action result
+        ...config,
         isReadOnly,
       },
       { status: 200 }
     );
   } catch (error) {
-    // params.id is always available here due to previous checks
     console.error(`[API GET /api/configs/${params.id}] Error:`, error);
     const message =
       error instanceof Error
@@ -83,13 +141,66 @@ export async function GET(
   }
 }
 
-// PUT /api/configs/[id] - Update a specific configuration using Action
+/**
+ * @swagger
+ * /api/configs/{id}:
+ *   put:
+ *     summary: Update an existing animation configuration.
+ *     description: >
+ *       Updates a specific animation configuration. The user must be authenticated and
+ *       must be the owner of the configuration. The request body should contain
+ *       the fields to be updated (e.g., title, description, configData, isPublic).
+ *     tags:
+ *       - Configurations
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the animation configuration to update.
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               title:
+ *                 type: string
+ *               description:
+ *                 type: string
+ *                 nullable: true
+ *               configData:
+ *                 type: object // Assuming configData is a JSON object
+ *               isPublic:
+ *                 type: boolean
+ *             required:
+ *               - title
+ *               - configData
+ *     responses:
+ *       200:
+ *         description: Successfully updated the configuration.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               $ref: '#/components/schemas/AnimationConfig' // Assuming you have a schema defined
+ *       400:
+ *         description: Invalid input, object invalid, or configuration ID missing.
+ *       401:
+ *         description: Unauthorized. User must be authenticated.
+ *       403:
+ *         description: Forbidden. User does not own the configuration.
+ *       404:
+ *         description: Configuration not found or not owned by the user.
+ *       500:
+ *         description: Failed to update configuration due to a server error.
+ */
 export async function PUT(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse> {
   try {
-    // Must be authenticated to update
     const authResult = await authenticateUser(request);
     if (authResult.error) {
       return authResult.error; // Returns 401 Unauthorized
@@ -103,8 +214,8 @@ export async function PUT(
       );
     }
 
-    // Optional: first, verify the user owns the config using the specific action.
-    // updateConfigAction also verifies ownership internally.
+    // Verify the user owns the config before attempting an update.
+    // updateConfigAction also performs this check, but this provides an earlier exit.
     const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
     if (!ownershipCheck.success) {
       return NextResponse.json(
@@ -113,11 +224,12 @@ export async function PUT(
             ownershipCheck.message ||
             'Configuration not found or not owned by user',
         },
-        { status: 404 } // Or 403 Forbidden depending on message
+        // Use 403 if the config exists but isn't owned, 404 if it doesn't exist.
+        // The action message might not distinguish, so 404 is a safe default.
+        { status: ownershipCheck.message?.includes('not owned') ? 403 : 404 }
       );
     }
 
-    // Proceed with update logic
     const body = await request.json();
 
     // Basic validation for request body
@@ -128,31 +240,30 @@ export async function PUT(
       );
     }
 
-    // Prepare data, excluding fields handled by the action (like authorName)
     const updateData: Partial<{
       title: string;
       description: string | null;
-      configData: string | null;
+      configData: string | null; // Assuming configData is stringified JSON
       isPublic?: boolean;
     }> = {};
 
     updateData.title = body.title;
-    if (body.description !== undefined)
+    if (body.description !== undefined) {
       updateData.description = body.description;
+    }
     updateData.configData = body.configData;
-    if (typeof body.isPublic === 'boolean') updateData.isPublic = body.isPublic;
+    if (typeof body.isPublic === 'boolean') {
+      updateData.isPublic = body.isPublic;
+    }
 
-    // Call the update server action
     const updateResult = await updateConfigAction(configId, updateData);
 
     if (!updateResult.success || !updateResult.data) {
-      // Handle potential errors from the action (validation, db error)
-      const status = updateResult.message.includes('cannot exceed') ? 400 : 500;
-      if (updateResult.message.includes('not found')) {
-        return NextResponse.json(
-          { error: updateResult.message },
-          { status: 404 }
-        );
+      let status = 500;
+      if (updateResult.message?.includes('not found')) {
+        status = 404;
+      } else if (updateResult.message?.includes('cannot exceed')) {
+        status = 400;
       }
       return NextResponse.json(
         { error: updateResult.message || 'Failed to update configuration' },
@@ -160,18 +271,13 @@ export async function PUT(
       );
     }
 
-    // Return the updated config data from the action's response
     return NextResponse.json(updateResult.data, { status: 200 });
   } catch (error) {
     console.error(`[API PUT /api/configs/${params.id}] Error:`, error);
-    if (error instanceof SyntaxError) {
-      return NextResponse.json(
-        { error: 'Invalid JSON payload' },
-        { status: 400 }
-      );
-    }
     const message =
-      error instanceof Error ? error.message : 'An unknown error occurred.';
+      error instanceof Error
+        ? error.message
+        : 'An unknown server error occurred.';
     return NextResponse.json(
       { error: `Failed to update configuration: ${message}` },
       { status: 500 }
@@ -179,13 +285,50 @@ export async function PUT(
   }
 }
 
-// DELETE /api/configs/[id] - Delete a specific configuration using Action
+/**
+ * @swagger
+ * /api/configs/{id}:
+ *   delete:
+ *     summary: Delete an animation configuration.
+ *     description: >
+ *       Deletes a specific animation configuration. The user must be authenticated and
+ *       must be the owner of the configuration.
+ *     tags:
+ *       - Configurations
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         description: The ID of the animation configuration to delete.
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Successfully deleted the configuration.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Configuration deleted successfully.
+ *       400:
+ *         description: Invalid configuration ID provided.
+ *       401:
+ *         description: Unauthorized. User must be authenticated.
+ *       403:
+ *         description: Forbidden. User does not own the configuration.
+ *       404:
+ *         description: Configuration not found or not owned by the user.
+ *       500:
+ *         description: Failed to delete configuration due to a server error.
+ */
 export async function DELETE(
   request: NextRequest,
   { params }: { params: { id: string } }
-) {
+): Promise<NextResponse> {
   try {
-    // Must be authenticated to delete
     const authResult = await authenticateUser(request);
     if (authResult.error) {
       return authResult.error; // Returns 401 Unauthorized
@@ -199,7 +342,8 @@ export async function DELETE(
       );
     }
 
-    // Optional: first, check ownership. removeConfigAction also checks.
+    // Verify the user owns the config before attempting deletion.
+    // removeConfigAction also performs this check.
     const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
     if (!ownershipCheck.success) {
       return NextResponse.json(
@@ -208,33 +352,33 @@ export async function DELETE(
             ownershipCheck.message ||
             'Configuration not found or not owned by user for deletion',
         },
-        { status: 404 }
+        { status: ownershipCheck.message?.includes('not owned') ? 403 : 404 }
       );
     }
 
-    // Call the remove server action
     const deleteResult = await removeConfigAction(configId);
 
     if (!deleteResult.success) {
       let status = 500;
-      if (deleteResult.message.includes('not found')) status = 404;
-      if (deleteResult.message.includes('permission denied')) status = 403;
+      if (deleteResult.message?.includes('not found')) {
+        status = 404;
+      }
       return NextResponse.json(
         { error: deleteResult.message || 'Failed to delete configuration' },
         { status }
       );
     }
 
-    // Return success response (No Content)
     return NextResponse.json(
       { message: 'Configuration deleted successfully' },
       { status: 200 }
     );
-    // Alternative: new NextResponse(null, { status: 204 })
   } catch (error) {
     console.error(`[API DELETE /api/configs/${params.id}] Error:`, error);
     const message =
-      error instanceof Error ? error.message : 'An unknown error occurred.';
+      error instanceof Error
+        ? error.message
+        : 'An unknown server error occurred.';
     return NextResponse.json(
       { error: `Failed to delete configuration: ${message}` },
       { status: 500 }

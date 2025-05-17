@@ -1,13 +1,13 @@
 ---
 name: Default Issue Template
 about: Describe your new issue.
-title: 
+title:
 labels: enhancement
 assignees: abdullahaltun70
-
 ---
 
-**Description:** 
+**Description:**
 
 **Checklist:**
+
 - [ ]

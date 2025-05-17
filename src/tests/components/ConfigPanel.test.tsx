@@ -1,12 +1,6 @@
 // src/tests/components/ConfigPanel.test.tsx
 import { Theme } from '@radix-ui/themes';
-import {
-  render,
-  screen,
-  fireEvent,
-  waitFor,
-  within,
-} from '@testing-library/react'; // Added within
+import { render, screen, waitFor, within } from '@testing-library/react'; // Added within
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
