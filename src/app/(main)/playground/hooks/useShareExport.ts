@@ -6,6 +6,10 @@ import {
 } from '@/app/utils/animations';
 import { AnimationConfig } from '@/types/animations';
 
+/**
+ * Custom hook to manage state and logic for sharing and exporting animation configurations.
+ * @param configId - The ID of the current animation configuration, or null if new.
+ */
 export function useShareExport(configId: string | null) {
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [exportDialogOpen, setExportDialogOpen] = useState(false);
@@ -14,23 +18,34 @@ export function useShareExport(configId: string | null) {
   const [exportTab, setExportTab] = useState('react');
   const [error, setError] = useState<string | null>(null);
 
+  /**
+   * Handles the action of sharing a configuration.
+   * Sets an error if no configId is present, otherwise generates a shareable URL and opens the share dialog.
+   */
   const handleShare = () => {
     if (!configId) {
       setError('Please save your configuration before sharing');
       return;
     }
 
-    // Generate shareable URL
+    // Generate shareable URL using the current window location and the configId.
     const url = new URL(window.location.href);
     url.searchParams.set('id', configId);
     setShareUrl(url.toString());
     setShareDialogOpen(true);
   };
 
+  /**
+   * Opens the export dialog.
+   */
   const handleExport = () => {
     setExportDialogOpen(true);
   };
 
+  /**
+   * Copies the generated share URL to the clipboard.
+   * Shows a success message or an error if copying fails.
+   */
   const handleCopyUrl = () => {
     navigator.clipboard
       .writeText(shareUrl)
@@ -44,6 +59,10 @@ export function useShareExport(configId: string | null) {
       });
   };
 
+  /**
+   * Copies the generated animation code (React component or CSS) to the clipboard.
+   * @param animationConfig - The current animation configuration object.
+   */
   const handleCopyCode = (animationConfig: AnimationConfig) => {
     let code: string;
 

@@ -2,15 +2,13 @@
 import { render, screen, fireEvent, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAnimation as mockedUseAnimation } from 'animation-library-test-abdullah-altun';
-import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
 
 import { AnimatedContainer } from '@/components/animated-container';
-import styles from '@/components/animated-container/AnimatedContainer.module.scss'; // Corrected path
+import styles from '@/components/animated-container/AnimatedContainer.module.scss';
 import type { AnimationConfig } from '@/types/animations';
 
-// --- Mock the animation library's useAnimation hook ---
-
-// These will be used by the mock implementation *inside* the factory
+// Mock the animation library's useAnimation hook
 const mockReplayFn = vi.fn();
 const mockRefObj = { current: null };
 let mockKeyToReturn = 0;
@@ -20,8 +18,6 @@ vi.mock('animation-library-test-abdullah-altun', async (importOriginal) => {
     await importOriginal<
       typeof import('animation-library-test-abdullah-altun')
     >();
-  // This is the actual spy that will replace useAnimation.
-  // It's defined *inside* the factory's scope or returned by it.
   const mockUseAnimationSpy = vi.fn(() => ({
     ref: mockRefObj,
     key: mockKeyToReturn,
@@ -31,14 +27,11 @@ vi.mock('animation-library-test-abdullah-altun', async (importOriginal) => {
   }));
   return {
     ...actual,
-    useAnimation: mockUseAnimationSpy, // Export the spy
+    useAnimation: mockUseAnimationSpy,
   };
 });
 
-// After mocking, we can import the mocked module to get the spy if needed for direct manipulation,
-// but often we can just rely on the mock being in place.
-// For direct assertions on the spy, we'll import it.
-// Vitest should ensure that this import gets the *mocked* version.
+// Importing the mocked module ensures the mock is in place for all tests
 
 describe('AnimatedContainer Component', () => {
   const sampleConfig: AnimationConfig = {
@@ -49,16 +42,9 @@ describe('AnimatedContainer Component', () => {
   };
 
   beforeEach(() => {
-    // Clear all mocks (including the one from the factory)
-    vi.clearAllMocks(); // This will reset call counts etc. on `mockedUseAnimation`
-
-    // Reset shared state for the mock's return values
+    vi.clearAllMocks();
     mockKeyToReturn = 0;
     mockRefObj.current = null;
-
-    // Re-assign the default implementation for the main spy if needed,
-    // or rely on the factory being called anew if modules are re-evaluated per test (less common for vi.mock)
-    // For safety, let's ensure the mock uses the reset values:
     (mockedUseAnimation as ReturnType<typeof vi.fn>).mockImplementation(() => ({
       ref: mockRefObj,
       key: mockKeyToReturn,
@@ -98,34 +84,28 @@ describe('AnimatedContainer Component', () => {
 
   it('should call useAnimation hook with the provided config', () => {
     render(<AnimatedContainer config={sampleConfig} />);
-    expect(mockedUseAnimation).toHaveBeenCalledTimes(1); // Assert on the imported mock
+    expect(mockedUseAnimation).toHaveBeenCalledTimes(1);
     expect(mockedUseAnimation).toHaveBeenCalledWith(sampleConfig);
   });
 
   it('should apply key from useAnimation to the default animatable element', () => {
-    mockKeyToReturn = 123; // Set the key value our mock will return
-    // The beforeEach mockImplementation will pick this up
-
+    mockKeyToReturn = 123;
     const { rerender } = render(<AnimatedContainer config={sampleConfig} />);
-    // The component has rendered and called useAnimation, which used mockKeyToReturn = 123
-    expect((mockedUseAnimation as Mock).mock.results[0].value.key).toBe(123);
-
-    mockKeyToReturn = 456; // Change the key value for the next render
-
+    expect(mockedUseAnimation.mock.results[0].value.key).toBe(123);
+    mockKeyToReturn = 456;
     rerender(<AnimatedContainer config={sampleConfig} />);
     expect(mockedUseAnimation).toHaveBeenCalledTimes(2);
-    expect((mockedUseAnimation as Mock).mock.results[1].value.key).toBe(456);
+    expect(mockedUseAnimation.mock.results[1].value.key).toBe(456);
   });
 
   it('should apply key from useAnimation to the provided child element', () => {
-    mockKeyToReturn = 789; // Set the key value our mock will return
-
+    mockKeyToReturn = 789;
     render(
       <AnimatedContainer config={sampleConfig}>
         <div data-testid="child-to-animate">Child</div>
       </AnimatedContainer>
     );
-    expect((mockedUseAnimation as Mock).mock.results[0].value.key).toBe(789);
+    expect(mockedUseAnimation.mock.results[0].value.key).toBe(789);
   });
 
   it('should call replay function from useAnimation when Replay button is clicked', async () => {
@@ -134,9 +114,7 @@ describe('AnimatedContainer Component', () => {
     const replayButton = screen.getByRole('button', {
       name: /replay animation/i,
     });
-
     await user.click(replayButton);
-
-    expect(mockReplayFn).toHaveBeenCalledTimes(1); // Assert on the specific mock for replay
+    expect(mockReplayFn).toHaveBeenCalledTimes(1);
   });
 });

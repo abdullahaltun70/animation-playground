@@ -1,10 +1,10 @@
 .pageContainer {
   padding: 1rem;
   width: 100%;
-  position: relative; // Keep if needed for absolute positioned children like modals/notifications
-  display: flex; // Make it a flex container
-  flex-direction: column; // Stack children vertically
-  flex: 1 1 auto; // Allow it to grow/shrink within its parent (main)
+  position: relative; // For absolute positioned children like modals/notifications
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto; // Allow grow/shrink within parent
 }
 
 .container {
@@ -23,11 +23,11 @@
   flex: 2;
   flex-direction: column;
   position: relative;
-  max-width: 50%;
+  max-width: 50%; // Default max width for larger screens
 
   @media (max-width: 768px) {
     min-height: 300px;
-    max-width: 100%; // Ensure it doesn't overflow horizontally on mobile
+    max-width: 100%; // Full width on smaller screens
   }
 }
 
@@ -45,9 +45,9 @@
 }
 
 .errorMessage {
-  background-color: #fee2e2;
-  border: 1px solid #ef4444;
-  color: #b91c1c;
+  background-color: #fee2e2; // Light red background for errors
+  border: 1px solid #ef4444; // Red border
+  color: #b91c1c; // Dark red text
   padding: 0.75rem 1rem;
   border-radius: 0.5rem;
   margin-bottom: 1rem;
@@ -61,10 +61,15 @@
   top: 0;
   left: 0;
   right: 0;
-  background-color: rgba(255, 255, 255, 0.8);
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.8
+  ); // Semi-transparent white background
   padding: 0.5rem;
   text-align: center;
-  z-index: 10;
+  z-index: 10; // Ensure it's above other content
 }
 
 .actionButtons {
@@ -74,29 +79,29 @@
 }
 
 .copyButton {
-  cursor: copy;
+  cursor: copy; // Indicates the button copies content
 }
 
 .copySuccessCard {
   margin: 0 0 16px 0;
   padding: 12px;
-  background: var(--green-3);
+  background: var(--green-3); // Use theme variable for success background
 }
 
 .codeBlock {
-  background-color: var(--card-bg);
-  color: var(--text-primary);
+  background-color: var(--card-bg); // Use theme variable for background
+  color: var(--text-primary); // Use theme variable for text color
   padding: 1rem;
   border-radius: 0.5rem;
   overflow: auto;
-  max-height: 300px;
+  max-height: 300px; // Limit height and allow scrolling
   font-family: monospace;
   font-size: 0.875rem;
-  white-space: pre-wrap;
+  white-space: pre-wrap; // Preserve whitespace and wrap lines
 }
 
 .readOnlyBanner {
   margin: 0 0 16px 0;
   padding: 12px;
-  background: var(--blue-3);
+  background: var(--blue-3); // Use theme variable for info banner background
 }

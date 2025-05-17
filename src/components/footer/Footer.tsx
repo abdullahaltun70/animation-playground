@@ -1,4 +1,3 @@
-// components/footer/Footer.tsx
 import React from 'react';
 
 import { Link as RadixLink, Text } from '@radix-ui/themes';

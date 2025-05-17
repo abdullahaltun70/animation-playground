@@ -9,6 +9,10 @@ import { createClient } from '@/app/utils/supabase/client';
 
 import styles from '../../../../components/profile/UserAvatar.module.scss';
 
+/**
+ * UserAvatar component displays the user's avatar or initials.
+ * It fetches user data from Supabase and updates on auth state changes.
+ */
 export function UserAvatar() {
   const [initials, setInitials] = useState('');
   const [imageUrl, setImageUrl] = useState<string | null>(null);
@@ -31,11 +35,11 @@ export function UserAvatar() {
             user.user_metadata &&
             Object.keys(user.user_metadata).length > 0
           ) {
-            // Get name from Google metadata
+            // Get name from user metadata (e.g., Google provider)
             const fullName =
               user.user_metadata.name || user.user_metadata.full_name || '';
 
-            // Get image from Google metadata
+            // Get image from user metadata
             const picture =
               user.user_metadata.picture || user.user_metadata.avatar_url;
 
@@ -53,7 +57,7 @@ export function UserAvatar() {
             setInitials(userInitials);
             setImageUrl(picture);
           } else if (user.email) {
-            // For email login: use first two letters of email
+            // Fallback for email/password or other providers: use first two letters of email
             const emailInitials = user.email.substring(0, 2).toUpperCase();
             setInitials(emailInitials);
           }
@@ -72,7 +76,7 @@ export function UserAvatar() {
 
     getUserData();
 
-    // Subscribe to auth state changes
+    // Subscribe to authentication state changes to update avatar accordingly
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
@@ -91,10 +95,12 @@ export function UserAvatar() {
   }, [supabase.auth]);
 
   if (isLoading) {
+    // Display a placeholder avatar while loading
     return <Avatar size="2" radius="full" fallback="" />;
   }
 
   if (!isAuthenticated) {
+    // Display a generic person icon if the user is not authenticated
     return (
       <Avatar
         size="2"
@@ -105,6 +111,7 @@ export function UserAvatar() {
     );
   }
 
+  // Display the user's avatar image or fallback to initials
   return (
     <Avatar
       size="2"

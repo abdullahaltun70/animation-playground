@@ -50,22 +50,15 @@ body {
   color: var(--text-primary);
 }
 
-//html body[data-scroll-locked] {
-//	overflow: visible !important;
-//	margin-right: 0 !important;
-//}
-
 a {
   color: inherit;
   text-decoration: none;
 }
 
-/* Basis light mode stijlen worden door :root gedefinieerd */
-
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
-    // Toepassen van dark thema wanneer het systeem dark mode gebruikt
-    // en geen expliciete light class is toegepast
+    // Apply dark theme when the system uses dark mode
+    // and no explicit .light class is applied to the :root element.
     --color-background: #111827;
     --color-foreground: #f9fafb;
     --color-muted: #9ca3af;
@@ -79,5 +72,3 @@ a {
     --color-accent-foreground: #ffffff;
   }
 }
-
-/* Basis dark mode stijlen worden door :root gedefinieerd */

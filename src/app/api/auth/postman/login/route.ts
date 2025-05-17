@@ -2,6 +2,16 @@ import { createRouteHandlerClient } from '@supabase/auth-helpers-nextjs';
 import { cookies } from 'next/headers';
 import { NextRequest, NextResponse } from 'next/server';
 
+/**
+ * Handles POST requests to /api/auth/postman/login for user authentication.
+ * This endpoint is specifically designed for Postman or similar API testing tools,
+ * allowing users to sign in and receive session tokens directly in the response body.
+ *
+ * @param {NextRequest} request - The incoming Next.js request object.
+ * @returns {Promise<NextResponse>} A promise that resolves to a Next.js response object.
+ *                                  On success, returns user and session data (including tokens).
+ *                                  On failure, returns an error message with an appropriate status code.
+ */
 export async function POST(request: NextRequest) {
   try {
     const { email, password } = await request.json();

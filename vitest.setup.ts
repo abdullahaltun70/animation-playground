@@ -1,4 +1,3 @@
-// vitest.setup.ts
 import { cleanup } from '@testing-library/react';
 import '@testing-library/jest-dom/vitest';
 import { vi, afterEach, beforeEach } from 'vitest';
@@ -17,10 +16,8 @@ if (typeof window !== 'undefined' && !window.ResizeObserver) {
       /* mock */
     }
   }
-  // @ts-ignore
   window.ResizeObserver = ResizeObserver;
-  // @ts-ignore
-  global.ResizeObserver = ResizeObserver; // Also assign to global for good measure
+  global.ResizeObserver = ResizeObserver;
 }
 
 // --- Polyfill/Mock Pointer Event methods and scrollIntoView for JSDOM ---

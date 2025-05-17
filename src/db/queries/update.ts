@@ -1,4 +1,3 @@
-// src/db/queries/update.ts (or wherever you put update queries)
 import { eq, and } from 'drizzle-orm';
 
 import { db } from '@/db';

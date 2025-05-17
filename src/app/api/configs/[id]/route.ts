@@ -16,7 +16,7 @@ export async function GET(
   try {
     // User might be authenticated or not, we fetch the config, then check ownership/access
     const authResult = await authenticateUser(request);
-    const configId = params.id; // <-- Corrected: removed unnecessary await
+    const configId = params.id;
 
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
