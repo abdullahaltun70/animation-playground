@@ -254,7 +254,9 @@ export function useAnimationConfig() {
       // Match exact test expectations for toast messages
       showToast({
         title: 'Configuration Saved',
-        description: isUpdate ? 'Your configuration has been updated successfully.' : 'has been saved successfully.',
+        description: isUpdate
+          ? 'Your configuration has been updated successfully.'
+          : 'has been saved successfully.',
         variant: 'success',
       });
       return true;

@@ -1,8 +1,8 @@
 // src/components/animated-container/AnimatedContainer.test.tsx
-import { render, screen, fireEvent, act } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useAnimation as mockedUseAnimation } from 'animation-library-test-abdullah-altun';
-import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, Mock } from 'vitest';
 
 import { AnimatedContainer } from '@/components/animated-container';
 import styles from '@/components/animated-container/AnimatedContainer.module.scss';
@@ -91,11 +91,11 @@ describe('AnimatedContainer Component', () => {
   it('should apply key from useAnimation to the default animatable element', () => {
     mockKeyToReturn = 123;
     const { rerender } = render(<AnimatedContainer config={sampleConfig} />);
-    expect(mockedUseAnimation.mock.results[0].value.key).toBe(123);
+    expect((mockedUseAnimation as Mock).mock.results[0].value.key).toBe(123);
     mockKeyToReturn = 456;
     rerender(<AnimatedContainer config={sampleConfig} />);
     expect(mockedUseAnimation).toHaveBeenCalledTimes(2);
-    expect(mockedUseAnimation.mock.results[1].value.key).toBe(456);
+    expect((mockedUseAnimation as Mock).mock.results[1].value.key).toBe(456);
   });
 
   it('should apply key from useAnimation to the provided child element', () => {
@@ -105,7 +105,7 @@ describe('AnimatedContainer Component', () => {
         <div data-testid="child-to-animate">Child</div>
       </AnimatedContainer>
     );
-    expect(mockedUseAnimation.mock.results[0].value.key).toBe(789);
+    expect((mockedUseAnimation as Mock).mock.results[0].value.key).toBe(789);
   });
 
   it('should call replay function from useAnimation when Replay button is clicked', async () => {

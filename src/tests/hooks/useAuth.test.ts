@@ -65,7 +65,7 @@ describe('useAuth', () => {
     const mockApiError = { message: 'Invalid login credentials' }; // Simulate Supabase error object structure
     mockSupabaseAuth.signInWithPassword.mockResolvedValueOnce({
       data: { user: null, session: null },
-      error: mockApiError as any, // Cast as any if type mismatch with real AuthError
+      error: mockApiError as unknown as { message: string }, // Cast to a specific error type
     });
     // Inject a logger into useAuth and mock it in tests
     const { result } = renderHook(() => useAuth()); // Call useAuth without logger

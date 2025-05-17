@@ -91,9 +91,14 @@ const AuthComponent: React.FC = () => {
       if (success) {
         setView(AuthView.SIGN_IN);
       }
-    } catch (err: any) {
-      console.log(`On Submit error: ${err.message}`);
-      setError(err.message);
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.log(`On Submit error: ${err.message}`);
+        setError(err.message);
+      } else {
+        console.log('On Submit error:', err);
+        setError('An unknown error occurred');
+      }
     }
   };
 

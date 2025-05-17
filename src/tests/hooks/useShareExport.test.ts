@@ -1,9 +1,10 @@
 // src/app/(main)/playground/hooks/useShareExport.test.ts
-import { act, renderHook, waitFor } from '@testing-library/react';
+import { act, renderHook } from '@testing-library/react';
 import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 
 import { useShareExport } from '@/app/(main)/playground/hooks/useShareExport';
 import * as animationUtils from '@/app/utils/animations'; // To mock generate functions
+import type { AnimationConfig } from '@/types/animations'; // Import the main type
 
 // Mock animation utility functions
 vi.mock('@/app/utils/animations', () => ({
@@ -22,7 +23,13 @@ Object.defineProperty(global.navigator, 'clipboard', {
 });
 
 describe('useShareExport Hook', () => {
-  const sampleAnimationConfig = { type: 'fade', duration: 1 } as any; // Cast as any for simplicity
+  // Use the imported AnimationConfig type
+  const sampleAnimationConfig: AnimationConfig = {
+    type: 'fade',
+    duration: 1,
+    delay: 0, // Added missing property
+    easing: 'ease-out', // Added missing property
+  };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -60,9 +67,8 @@ describe('useShareExport Hook', () => {
       const mockConfigId = 'test-config-id';
       // Mock window.location.href for consistent URL generation
       const originalLocation = window.location;
-      // @ts-ignore
-      delete window.location;
-      // @ts-ignore
+
+      // @ts-expect-error: Overriding window.location for test
       window.location = {
         ...originalLocation,
         href: `http://localhost:3000/playground`,
@@ -78,7 +84,11 @@ describe('useShareExport Hook', () => {
       expect(result.current.shareDialogOpen).toBe(true);
       expect(result.current.error).toBeNull();
 
-      window.location = originalLocation; // Restore original location
+      Object.defineProperty(window, 'location', {
+        value: originalLocation,
+        configurable: true,
+        writable: true,
+      }); // Restore original location
     });
   });
 
@@ -141,10 +151,11 @@ describe('useShareExport Hook', () => {
       const { result } = renderHook(() => useShareExport(null));
       act(() => {
         result.current.setExportTab('react');
-      }); // Ensure correct tab
+      }); 
 
       await act(async () => {
-        await result.current.handleCopyCode(sampleAnimationConfig);
+
+        result.current.handleCopyCode(sampleAnimationConfig);
       });
 
       expect(animationUtils.generateReactComponent).toHaveBeenCalledWith(
@@ -170,7 +181,8 @@ describe('useShareExport Hook', () => {
       });
 
       await act(async () => {
-        await result.current.handleCopyCode(sampleAnimationConfig);
+
+        result.current.handleCopyCode(sampleAnimationConfig);
       });
 
       expect(animationUtils.generateCSSCode).toHaveBeenCalledWith(
@@ -191,7 +203,8 @@ describe('useShareExport Hook', () => {
         result.current.setExportTab('unknown-tab');
       });
       act(() => {
-        result.current.handleCopyCode(sampleAnimationConfig);
+        // No need to spread and add missing props here anymore
+        return result.current.handleCopyCode(sampleAnimationConfig);
       });
 
       expect(result.current.error).toBe('Unknown export type');
@@ -206,7 +219,8 @@ describe('useShareExport Hook', () => {
       const { result } = renderHook(() => useShareExport(null));
 
       await act(async () => {
-        await result.current.handleCopyCode(sampleAnimationConfig);
+
+        return result.current.handleCopyCode(sampleAnimationConfig);
       });
       expect(result.current.error).toBe('Failed to copy code to clipboard');
       expect(result.current.copySuccess).toBe(false);

@@ -25,21 +25,22 @@ if (typeof window !== 'undefined' && !window.ResizeObserver) {
 if (typeof window !== 'undefined') {
   const pointerEventProps = {
     setPointerCapture: {
-      value: function (pointerId: number) {
-        /* mock */
+      value: function () {
+        /* mock - pointerId is unused */
       },
       writable: true,
       configurable: true,
     },
     releasePointerCapture: {
-      value: function (pointerId: number) {
-        /* mock */
+      value: function () {
+        /* mock - pointerId is unused */
       },
       writable: true,
       configurable: true,
     },
     hasPointerCapture: {
-      value: function (pointerId: number) {
+      value: function () {
+        /* mock - pointerId is unused */
         return false; /* mock */
       },
       writable: true,
@@ -48,32 +49,36 @@ if (typeof window !== 'undefined') {
   };
 
   // Apply to Element.prototype
-  if (!window.Element.prototype.setPointerCapture) {
-    // Check if already defined
-    Object.defineProperties(window.Element.prototype, pointerEventProps);
+  if (
+    typeof Element !== 'undefined' &&
+    Element.prototype &&
+    !Element.prototype.setPointerCapture
+  ) {
+    Object.defineProperties(Element.prototype, pointerEventProps);
   }
 
   // Apply to HTMLElement.prototype if it exists and doesn't have them
-  // @ts-ignore
-  if (typeof HTMLElement !== 'undefined') {
+  if (typeof HTMLElement !== 'undefined' && HTMLElement.prototype) {
     if (!HTMLElement.prototype.setPointerCapture) {
-      // @ts-ignore
       Object.defineProperties(HTMLElement.prototype, pointerEventProps);
     }
   }
 
   // Add scrollIntoView mock if not present
-  if (!window.Element.prototype.scrollIntoView) {
-    window.Element.prototype.scrollIntoView = function () {
+  if (
+    typeof Element !== 'undefined' &&
+    Element.prototype &&
+    !Element.prototype.scrollIntoView
+  ) {
+    Element.prototype.scrollIntoView = function () {
       /* mock */
     };
   }
-  // @ts-ignore
   if (
     typeof HTMLElement !== 'undefined' &&
+    HTMLElement.prototype &&
     !HTMLElement.prototype.scrollIntoView
   ) {
-    // @ts-ignore
     HTMLElement.prototype.scrollIntoView = function () {
       /* mock */
     };
@@ -81,20 +86,26 @@ if (typeof window !== 'undefined') {
 }
 
 // --- Mock navigator.clipboard ---
-// This needs to be defined before it's potentially accessed by tests or hooks during import.
 const mockClipboard = {
   writeText: vi.fn(),
   readText: vi.fn(),
+  read: vi.fn(() => Promise.resolve([])), // Return Promise<ClipboardItems> which is ClipboardItem[]
+  write: vi.fn(() => Promise.resolve()),
+  addEventListener: vi.fn(),
+  removeEventListener: vi.fn(),
+  dispatchEvent: vi.fn(() => true),
 };
 
 if (typeof navigator !== 'undefined') {
-  Object.defineProperty(navigator, 'clipboard', {
-    value: mockClipboard,
-    writable: true,
-    configurable: true,
-  });
+  if (!navigator.clipboard) {
+    Object.defineProperty(navigator, 'clipboard', {
+      value: mockClipboard,
+      writable: true,
+      configurable: true,
+    });
+  }
 } else {
-  // @ts-ignore - If navigator doesn't exist (e.g. pure Node env for some tests, though unlikely with JSDOM)
+  // @ts-expect-error Property 'navigator' does not exist on type 'Global & typeof globalThis'.
   global.navigator = {
     clipboard: mockClipboard,
   };
@@ -156,15 +167,25 @@ beforeEach(() => {
     error: null,
   });
   mockSupabaseAuth.signInWithPassword.mockResolvedValue({
-    data: { user: { id: 'mock-user-id-signin' }, session: {} as any },
+    data: {
+      user: { id: 'mock-user-id-signin' },
+      session: {
+        access_token: 'mock-token',
+        user: { id: 'mock-user-id' },
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      } as any,
+    }, // Keeping 'as any' for now as Session type is complex
     error: null,
   });
   mockSupabaseAuth.signInWithOAuth.mockResolvedValue({
-    data: { provider: 'google', url: 'mock-oauth-url' } as any,
+    data: { provider: 'google', url: 'mock-oauth-url' } as {
+      provider: string;
+      url: string;
+    },
     error: null,
   });
   mockSupabaseAuth.resetPasswordForEmail.mockResolvedValue({
-    data: {} as any,
+    data: {} as {},
     error: null,
   });
   mockSupabaseAuth.signOut.mockResolvedValue({ error: null });
@@ -180,7 +201,7 @@ beforeEach(() => {
     mockSupabaseAuth.onAuthStateChange as ReturnType<typeof vi.fn>
   ).mockReturnValue({
     data: { subscription: { unsubscribe: vi.fn() } },
-  } as any);
+  } as { data: { subscription: { unsubscribe: () => void } } });
 
   // Reset clipboard mock behavior
   mockClipboard.writeText.mockResolvedValue(undefined);
@@ -197,5 +218,4 @@ export const mocks = {
   mockReplace,
   mockRefresh,
   mockSupabaseAuth,
-  // mockClipboard, // You can export this if tests need to directly manipulate it, though usually not needed
 };

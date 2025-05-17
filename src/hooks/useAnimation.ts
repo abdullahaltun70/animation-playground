@@ -36,101 +36,73 @@ export function useAnimation(config: AnimationConfig) {
 
   // Apply CSS custom properties and force re-render when config changes
   useEffect(() => {
-    if (elementRef.current) {
+    const node = elementRef.current;
+    if (node) {
       // Add animation class
       const animationClass = getAnimationClass();
-      elementRef.current.classList.add(animationClass);
+      node.classList.add(animationClass);
 
       // Convert duration, delay and other parameters to CSS custom properties
       // Duration for all animation types
-      elementRef.current.style.setProperty(
-        '--fade-duration',
-        `${config.duration}s`
-      );
-      elementRef.current.style.setProperty(
-        '--slide-duration',
-        `${config.duration}s`
-      );
-      elementRef.current.style.setProperty(
-        '--scale-duration',
-        `${config.duration}s`
-      );
-      elementRef.current.style.setProperty(
-        '--rotate-duration',
-        `${config.duration}s`
-      );
-      elementRef.current.style.setProperty(
-        '--bounce-duration',
-        `${config.duration}s`
-      );
+      node.style.setProperty('--fade-duration', `${config.duration}s`);
+      node.style.setProperty('--slide-duration', `${config.duration}s`);
+      node.style.setProperty('--scale-duration', `${config.duration}s`);
+      node.style.setProperty('--rotate-duration', `${config.duration}s`);
+      node.style.setProperty('--bounce-duration', `${config.duration}s`);
 
       // Delay for all animation types
-      elementRef.current.style.setProperty('--fade-delay', `${config.delay}s`);
-      elementRef.current.style.setProperty('--slide-delay', `${config.delay}s`);
-      elementRef.current.style.setProperty('--scale-delay', `${config.delay}s`);
-      elementRef.current.style.setProperty(
-        '--rotate-delay',
-        `${config.delay}s`
-      );
-      elementRef.current.style.setProperty(
-        '--bounce-delay',
-        `${config.delay}s`
-      );
+      node.style.setProperty('--fade-delay', `${config.delay}s`);
+      node.style.setProperty('--slide-delay', `${config.delay}s`);
+      node.style.setProperty('--scale-delay', `${config.delay}s`);
+      node.style.setProperty('--rotate-delay', `${config.delay}s`);
+      node.style.setProperty('--bounce-delay', `${config.delay}s`);
 
       // Easing for all animation types
-      elementRef.current.style.setProperty('--fade-easing', config.easing);
-      elementRef.current.style.setProperty('--slide-easing', config.easing);
-      elementRef.current.style.setProperty('--scale-easing', config.easing);
-      elementRef.current.style.setProperty('--rotate-easing', config.easing);
-      elementRef.current.style.setProperty('--bounce-easing', config.easing);
+      node.style.setProperty('--fade-easing', config.easing);
+      node.style.setProperty('--slide-easing', config.easing);
+      node.style.setProperty('--scale-easing', config.easing);
+      node.style.setProperty('--rotate-easing', config.easing);
+      node.style.setProperty('--bounce-easing', config.easing);
 
       // Type-specific variables
       if (config.type === 'fade' && config.opacity) {
-        elementRef.current.style.setProperty(
+        node.style.setProperty(
           '--fade-opacity-start',
           config.opacity.start.toString()
         );
-        elementRef.current.style.setProperty(
+        node.style.setProperty(
           '--fade-opacity-end',
           config.opacity.end.toString()
         );
       }
 
       if (config.type === 'slide' && config.distance !== undefined) {
-        elementRef.current.style.setProperty(
+        node.style.setProperty(
           '--slide-distance',
           `${Math.abs(config.distance)}px`
         );
       }
 
       if (config.type === 'scale' && config.scale !== undefined) {
-        elementRef.current.style.setProperty(
-          '--scale-from',
-          config.scale.toString()
-        );
+        node.style.setProperty('--scale-from', config.scale.toString());
       }
 
       if (config.type === 'rotate' && config.degrees !== undefined) {
-        elementRef.current.style.setProperty(
-          '--rotate-degrees',
-          `${config.degrees}deg`
-        );
+        node.style.setProperty('--rotate-degrees', `${config.degrees}deg`);
       }
 
       if (config.type === 'bounce' && config.distance !== undefined) {
-        elementRef.current.style.setProperty(
-          '--bounce-height',
-          `${config.distance}px`
-        );
+        node.style.setProperty('--bounce-height', `${config.distance}px`);
       }
 
       // Clean up function to remove animation class when component unmounts
       return () => {
-        if (elementRef.current) {
-          elementRef.current.classList.remove(animationClass);
+        if (node) {
+          node.classList.remove(animationClass);
         }
       };
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [config, key, config.opacity]);
 
   // Function to replay the animation

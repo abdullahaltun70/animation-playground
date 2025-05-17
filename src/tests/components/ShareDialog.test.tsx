@@ -1,6 +1,6 @@
 // src/app/(main)/playground/components/ShareDialog.test.tsx
 import { Theme } from '@radix-ui/themes'; // Import Theme
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { describe, it, expect, vi, beforeEach } from 'vitest';
 
@@ -20,11 +20,19 @@ if (typeof navigator !== 'undefined' && !navigator.clipboard) {
     writable: true,
   });
 } else if (typeof navigator !== 'undefined') {
-  // @ts-ignore
   navigator.clipboard.writeText = mockClipboardWriteText;
 } else {
-  // @ts-ignore
-  global.navigator = { clipboard: { writeText: mockClipboardWriteText } };
+  global.navigator = {
+    clipboard: {
+      writeText: mockClipboardWriteText,
+      read: vi.fn(),
+      readText: vi.fn(),
+      write: vi.fn(),
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+      dispatchEvent: vi.fn(),
+    },
+  } as unknown as Navigator;
 }
 
 describe('ShareDialog Component', () => {

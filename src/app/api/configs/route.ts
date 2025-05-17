@@ -6,7 +6,11 @@ import {
 } from '@/app/utils/actions/supabase/configs';
 import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 
-// GET /api/configs - Get all configurations for the current
+/**
+ * GET /api/configs
+ * Retrieves all public configurations.
+ * @returns NextResponse with all configurations or an error message.
+ */
 export async function GET() {
   try {
     const allConfigs = (await getAllConfigsAction()).data;
@@ -20,7 +24,12 @@ export async function GET() {
   }
 }
 
-// POST /api/configs - Create a new configuration
+/**
+ * POST /api/configs
+ * Creates a new configuration for the authenticated user.
+ * @param request - The NextRequest object containing the request body.
+ * @returns NextResponse with the created configuration or an error message.
+ */
 export async function POST(request: NextRequest) {
   try {
     // Authenticate the user
@@ -44,7 +53,7 @@ export async function POST(request: NextRequest) {
 
     const isPublic = typeof body.isPublic === 'boolean' ? body.isPublic : false;
 
-    // Call the server action
+    // Call the server action to save the configuration
     const result = await saveConfigAction(
       body.title,
       body.description || null,
@@ -55,10 +64,10 @@ export async function POST(request: NextRequest) {
 
     // Handle the server action's response
     if (result.success && result.data && result.data.length > 0) {
-      // Return the first created config from the data array
+      // Return the first created config from the data array (server action might return an array)
       return NextResponse.json(result.data[0], { status: 201 });
     } else {
-      // Return the error message from the server action
+      // Determine status code based on error message content
       const status =
         result.message?.includes('cannot exceed') ||
         result.message?.includes('enter a config title')
