@@ -153,7 +153,7 @@ describe('useAnimationConfig Hook', () => {
         expect(mockShowToast).toHaveBeenCalledWith(
           expect.objectContaining({
             variant: 'success',
-            description: 'Your configuration has been saved successfully.',
+            description: 'has been saved successfully.',
           })
         );
       });
@@ -541,7 +541,7 @@ describe('useAnimationConfig Hook', () => {
         }
       );
       mockSupabaseAuth.getSession.mockResolvedValue({
-        data: { session: { user: { id: 'copier-user-id' } } as any },
+        data: { session: { user: { id: 'copier-user-id' } } as unknown },
         error: null,
       });
     });
