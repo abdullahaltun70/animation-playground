@@ -31,8 +31,11 @@ jobs:
       - name: Lint
         run: yarn lint
 
+      - name: Prettier Fix
+        run: prettier . --write
+
       - name: Prettier Check
-        run: yarn prettier # Uitgaande van je package.json script
+        run: yarn prettier . --check
 
       - name: Type Check
         run: yarn typecheck
