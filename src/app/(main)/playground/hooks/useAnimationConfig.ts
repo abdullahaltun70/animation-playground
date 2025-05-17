@@ -69,9 +69,6 @@ export function useAnimationConfig() {
               description: errorMessage,
               variant: 'error',
             });
-            console.log(`data: ${JSON.stringify(data)}`);
-            console.log(`response: ${JSON.stringify(response)}`);
-            console.log(`errorMessage: ${errorMessage}`);
             setError(errorMessage);
             setAnimationConfig(DEFAULT_ANIMATION_CONFIG);
             setConfigLoaded(false);
