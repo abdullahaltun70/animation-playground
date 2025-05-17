@@ -22,7 +22,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.13.10' # Zorg dat dit overeenkomt met je project
+          node-version: '22.14.0'
           cache: 'yarn'
 
       - name: Install dependencies
@@ -53,7 +53,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '22.13.10'
+          node-version: '22.14.0'
           cache: 'yarn'
 
       - name: Install dependencies
