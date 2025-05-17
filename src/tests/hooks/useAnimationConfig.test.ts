@@ -6,7 +6,7 @@ import {
   useAnimationConfig,
 } from '@/app/(main)/playground/hooks/useAnimationConfig';
 
-import { mocks } from '../../vitest.setup';
+import { mocks } from '../../../vitest.setup';
 
 const { mockPush, mockSupabaseAuth } = mocks;
 

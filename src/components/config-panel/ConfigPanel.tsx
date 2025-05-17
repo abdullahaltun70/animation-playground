@@ -1,8 +1,7 @@
-'use client';
+// src/components/config-panel/ConfigPanel.tsx
+import React, { useEffect, useId, useState } from 'react'; // Added useId
 
-import React, { useEffect, useState } from 'react';
-
-import * as LabelPrimitive from '@radix-ui/react-label'; // Use Radix Label primitive
+import * as LabelPrimitive from '@radix-ui/react-label';
 import {
   Button,
   Flex,
@@ -59,41 +58,47 @@ export function ConfigPanel({
     }
   );
 
-  // Initialize isPublic state from config
   const [isPublic, setIsPublic] = useState<boolean>(config.isPublic || false);
+
+  // Unique IDs for associating labels
+  const nameInputId = React.useId();
+  const descriptionInputId = React.useId();
+
+  // Generate unique IDs for accessibility
+  const nameLabelId = useId();
+  const descriptionLabelId = useId();
+  const animationTypeLabelId = useId();
+  const easingFunctionLabelId = useId();
+  const durationLabelId = useId();
+  const delayLabelId = useId();
+  const startOpacityLabelId = useId();
+  const endOpacityLabelId = useId();
+  const distanceLabelId = useId();
+  const scaleLabelId = useId();
+  const rotationLabelId = useId();
+  const visibilityLabelId = useId();
 
   useEffect(() => {
     if (initialConfig) {
       setConfig(initialConfig);
-      // Update isPublic state when initialConfig changes
       setIsPublic(initialConfig.isPublic || false);
     }
   }, [initialConfig]);
 
   const handleChange = (
-    key: keyof AnimationConfig, // note: keyof is used for better type safety
+    key: keyof AnimationConfig,
     value: string | number | boolean | AnimationType | EasingFunction
   ) => {
-    // If in read-only mode, don't update
     if (isReadOnly) return;
-
-    const newConfig = {
-      ...config,
-      [key]: value,
-    };
-
+    const newConfig = { ...config, [key]: value };
     setConfig(newConfig);
-
-    // Propagate changes immediately unless it's name/description
     if (key !== 'name' && key !== 'description' && onConfigChange) {
       onConfigChange(newConfig);
     }
   };
 
   const handleOpacityChange = (key: 'start' | 'end', value: number) => {
-    // If in read-only mode, don't update
     if (isReadOnly) return;
-
     setConfig((prev) => ({
       ...prev,
       opacity: {
@@ -104,7 +109,6 @@ export function ConfigPanel({
   };
 
   const handleReset = () => {
-    // If in read-only mode, only allow reset to go to playground page
     if (!isReadOnly) {
       const resetConfig: AnimationConfig = {
         type: 'fade',
@@ -114,10 +118,7 @@ export function ConfigPanel({
         distance: 50,
         degrees: 360,
         scale: 0.8,
-        opacity: {
-          start: 0,
-          end: 1,
-        },
+        opacity: { start: 0, end: 1 },
         name: '',
         description: '',
         isPublic: false,
@@ -129,13 +130,8 @@ export function ConfigPanel({
   };
 
   const handleSave = () => {
-    // Ensure the latest isPublic state is included in the saved config
-    const updatedConfig = {
-      ...config,
-      isPublic,
-    };
-
-    if (!isReadOnly && onConfigChange) onConfigChange(updatedConfig); // Update parent met laatste wijzigingen
+    const updatedConfig = { ...config, isPublic };
+    if (!isReadOnly && onConfigChange) onConfigChange(updatedConfig);
     if (onSave) onSave(updatedConfig);
   };
 
@@ -143,10 +139,15 @@ export function ConfigPanel({
     <>
       <h2 className={styles.title}>Animation Configuration</h2>
       <div className={styles.configPanel}>
-        {/* Configuration Name */}
         <div className={styles.field}>
-          <Text weight="bold">Configuration Name</Text>
+          <LabelPrimitive.Root id={nameLabelId} htmlFor={nameInputId}>
+            {' '}
+            {/* Give Label an ID */}
+            <Text weight="bold">Configuration Name</Text>
+          </LabelPrimitive.Root>
           <TextField.Root
+            id={nameInputId}
+            aria-labelledby={nameLabelId} // Explicitly label
             placeholder="My Animation"
             value={config.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
@@ -154,10 +155,16 @@ export function ConfigPanel({
           />
         </div>
 
-        {/* Configuration Description */}
         <div className={styles.field}>
-          <Text weight="bold">Description</Text>
+          <LabelPrimitive.Root
+            id={descriptionLabelId}
+            htmlFor={descriptionInputId}
+          >
+            <Text weight="bold">Description</Text>
+          </LabelPrimitive.Root>
           <TextField.Root
+            id={descriptionInputId}
+            aria-labelledby={descriptionLabelId} // Explicitly label
             placeholder="Describe your animation"
             value={config.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
@@ -165,10 +172,13 @@ export function ConfigPanel({
           />
         </div>
 
-        {/* Animation Type Selection */}
         <div className={styles.field}>
           <Flex gap="1" direction={'column'}>
-            <Text weight="bold">Animation Type</Text>
+            <LabelPrimitive.Root id={animationTypeLabelId}>
+              {' '}
+              {/* ID for labelling */}
+              <Text weight="bold">Animation Type</Text>
+            </LabelPrimitive.Root>
             <Select.Root
               value={config.type}
               onValueChange={(value) =>
@@ -176,7 +186,11 @@ export function ConfigPanel({
               }
               disabled={isReadOnly}
             >
-              <Select.Trigger />
+              <Select.Trigger
+                aria-labelledby={animationTypeLabelId}
+                placeholder="Select animation type"
+              />{' '}
+              {/* Label trigger */}
               <Select.Content>
                 <Select.Item value="fade">Fade</Select.Item>
                 <Select.Item value="slide">Slide</Select.Item>
@@ -188,10 +202,11 @@ export function ConfigPanel({
           </Flex>
         </div>
 
-        {/* Easing Function Selection */}
         <div className={styles.field}>
           <Flex gap="1" direction={'column'}>
-            <Text weight="bold">Easing Function</Text>
+            <LabelPrimitive.Root id={easingFunctionLabelId}>
+              <Text weight="bold">Easing Function</Text>
+            </LabelPrimitive.Root>
             <Select.Root
               value={config.easing}
               onValueChange={(value) =>
@@ -199,7 +214,10 @@ export function ConfigPanel({
               }
               disabled={isReadOnly}
             >
-              <Select.Trigger />
+              <Select.Trigger
+                aria-labelledby={easingFunctionLabelId}
+                placeholder="Select easing function"
+              />
               <Select.Content>
                 <Select.Item value="ease">Ease</Select.Item>
                 <Select.Item value="ease-in">Ease In</Select.Item>
@@ -214,12 +232,16 @@ export function ConfigPanel({
           </Flex>
         </div>
 
-        {/* Duration and Delay */}
         <Heading size={'3'}>Animation Parameters</Heading>
         <Theme>
           <div className={styles.field}>
-            <label>Duration (seconds)</label>
+            <LabelPrimitive.Root id={durationLabelId}>
+              {' '}
+              {/* Label has ID */}
+              Duration (seconds)
+            </LabelPrimitive.Root>
             <Slider
+              aria-labelledby={durationLabelId} // Slider.Root is labelled by this
               value={[config.duration * 10]}
               min={1}
               max={30}
@@ -231,8 +253,11 @@ export function ConfigPanel({
           </div>
 
           <div className={styles.field}>
-            <label>Delay (seconds)</label>
+            <LabelPrimitive.Root id={delayLabelId}>
+              Delay (seconds)
+            </LabelPrimitive.Root>
             <Slider
+              aria-labelledby={delayLabelId}
               value={[config.delay * 10]}
               min={0}
               max={20}
@@ -243,12 +268,14 @@ export function ConfigPanel({
             <Text size="1">{config.delay.toFixed(1)}s</Text>
           </div>
 
-          {/* Type-specific parameters */}
           {config.type === 'fade' && (
             <>
               <div className={styles.field}>
-                <label>Start Opacity</label>
+                <LabelPrimitive.Root id={startOpacityLabelId}>
+                  Start Opacity
+                </LabelPrimitive.Root>
                 <Slider
+                  aria-labelledby={startOpacityLabelId}
                   value={[config.opacity ? config.opacity.start * 100 : 0]}
                   min={0}
                   max={100}
@@ -263,8 +290,11 @@ export function ConfigPanel({
                 </Text>
               </div>
               <div className={styles.field}>
-                <label>End Opacity</label>
+                <LabelPrimitive.Root id={endOpacityLabelId}>
+                  End Opacity
+                </LabelPrimitive.Root>
                 <Slider
+                  aria-labelledby={endOpacityLabelId}
                   value={[config.opacity ? config.opacity.end * 100 : 100]}
                   min={0}
                   max={100}
@@ -283,8 +313,11 @@ export function ConfigPanel({
 
           {(config.type === 'slide' || config.type === 'bounce') && (
             <div className={styles.field}>
-              <label>Distance (pixels)</label>
+              <LabelPrimitive.Root id={distanceLabelId}>
+                Distance (pixels)
+              </LabelPrimitive.Root>
               <Slider
+                aria-labelledby={distanceLabelId}
                 value={[config.distance || 50]}
                 min={-200}
                 max={200}
@@ -298,8 +331,11 @@ export function ConfigPanel({
 
           {config.type === 'scale' && (
             <div className={styles.field}>
-              <label>Scale Factor</label>
+              <LabelPrimitive.Root id={scaleLabelId}>
+                Scale Factor
+              </LabelPrimitive.Root>
               <Slider
+                aria-labelledby={scaleLabelId}
                 value={[config.scale ? config.scale * 100 : 80]}
                 min={10}
                 max={200}
@@ -315,8 +351,11 @@ export function ConfigPanel({
 
           {config.type === 'rotate' && (
             <div className={styles.field}>
-              <label>Rotation (degrees)</label>
+              <LabelPrimitive.Root id={rotationLabelId}>
+                Rotation (degrees)
+              </LabelPrimitive.Root>
               <Slider
+                aria-labelledby={rotationLabelId}
                 value={[config.degrees || 360]}
                 min={-360}
                 max={360}
@@ -328,20 +367,17 @@ export function ConfigPanel({
             </div>
           )}
 
-          {/* Visibility Section */}
           <Flex direction={'column'} className={styles.field} gap="1">
-            {/* Use Radix Label primitive */}
-            <LabelPrimitive.Root asChild>
-              <Text size="2" weight="bold">
-                Visibility
-              </Text>
+            <LabelPrimitive.Root id={visibilityLabelId}>
+              {' '}
+              {/* Changed ID to avoid clash if useId not scoped */}
+              Visibility
             </LabelPrimitive.Root>
-            {/* Use the new VisibilitySwitch component */}
             <VisibilitySwitch
+              aria-label={'Visibility'}
               isPublic={isPublic}
               onChange={(newIsPublicValue) => {
-                setIsPublic(newIsPublicValue); // Update local state
-                // Also update the main config state and notify parent
+                setIsPublic(newIsPublicValue);
                 handleChange('isPublic', newIsPublicValue);
               }}
               disabled={isReadOnly}
@@ -349,7 +385,6 @@ export function ConfigPanel({
           </Flex>
         </Theme>
 
-        {/* Buttons */}
         <div className={styles.configButtons}>
           <Button className={styles.button} onClick={handleReset}>
             {isReadOnly ? 'New Animation' : 'Reset'}

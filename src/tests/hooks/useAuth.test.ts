@@ -4,7 +4,7 @@ import { describe, expect, it } from 'vitest';
 
 import { useAuth } from '@/app/(auth)/hooks/useAuth';
 
-import { mocks } from '../../vitest.setup';
+import { mocks } from '../../../vitest.setup';
 
 const { mockPush, mockSupabaseAuth } = mocks; // Get the auth object
 

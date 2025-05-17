@@ -1,6 +1,6 @@
 // src/app/(main)/playground/hooks/useShareExport.test.ts
 import { act, renderHook, waitFor } from '@testing-library/react';
-import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, vi, beforeEach, afterEach, Mock } from 'vitest';
 
 import { useShareExport } from '@/app/(main)/playground/hooks/useShareExport';
 import * as animationUtils from '@/app/utils/animations'; // To mock generate functions
@@ -133,7 +133,7 @@ describe('useShareExport Hook', () => {
   describe('handleCopyCode', () => {
     it('should copy React component code and set copySuccess', async () => {
       const mockReactCode = '<Animate type="fade" />';
-      (animationUtils.generateReactComponent as vi.Mock).mockReturnValue(
+      (animationUtils.generateReactComponent as Mock).mockReturnValue(
         mockReactCode
       );
       mockWriteText.mockResolvedValueOnce(undefined);
@@ -161,7 +161,7 @@ describe('useShareExport Hook', () => {
 
     it('should copy CSS code and set copySuccess', async () => {
       const mockCssCode = '.animated { animation: fade 1s; }';
-      (animationUtils.generateCSSCode as vi.Mock).mockReturnValue(mockCssCode);
+      (animationUtils.generateCSSCode as Mock).mockReturnValue(mockCssCode);
       mockWriteText.mockResolvedValueOnce(undefined);
 
       const { result } = renderHook(() => useShareExport(null));
@@ -199,7 +199,7 @@ describe('useShareExport Hook', () => {
     });
 
     it('should set error if clipboard write fails for code', async () => {
-      (animationUtils.generateReactComponent as vi.Mock).mockReturnValue(
+      (animationUtils.generateReactComponent as Mock).mockReturnValue(
         '<Animate />'
       );
       mockWriteText.mockRejectedValueOnce(new Error('Clipboard error'));
