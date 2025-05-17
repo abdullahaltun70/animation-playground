@@ -151,10 +151,9 @@ describe('useShareExport Hook', () => {
       const { result } = renderHook(() => useShareExport(null));
       act(() => {
         result.current.setExportTab('react');
-      }); 
+      });
 
       await act(async () => {
-
         result.current.handleCopyCode(sampleAnimationConfig);
       });
 
@@ -181,7 +180,6 @@ describe('useShareExport Hook', () => {
       });
 
       await act(async () => {
-
         result.current.handleCopyCode(sampleAnimationConfig);
       });
 
@@ -219,7 +217,6 @@ describe('useShareExport Hook', () => {
       const { result } = renderHook(() => useShareExport(null));
 
       await act(async () => {
-
         return result.current.handleCopyCode(sampleAnimationConfig);
       });
       expect(result.current.error).toBe('Failed to copy code to clipboard');
