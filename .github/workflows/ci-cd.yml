@@ -65,17 +65,7 @@ jobs:
       - name: Build Next.js Application
         run: yarn build
         env:
-          # Voor de build stap in GitHub Actions zelf (los van Vercel's build):
-          # Als je build afhankelijk is van deze variabelen, moeten ze hier beschikbaar zijn.
-          # Vercel injecteert deze automatisch voor ZIJN EIGEN build-omgeving.
-          # Je kunt GitHub Secrets gebruiken als je build ze hier nodig heeft.
-          # Voorbeeld:
-          # NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL_FOR_CI_BUILD }}
-          # NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY_FOR_CI_BUILD }}
-          # DATABASE_URL: ${{ secrets.DATABASE_URL_FOR_CI_BUILD }} # Als je DB migraties/checks doet
-
-          # Voor nu, ervan uitgaande dat je build niet direct deze secrets nodig heeft
-          # om alleen te *bouwen* (zonder runtime data access).
-          # In je next.config.js heb je type- en ESLint-checks tijdens build uitgezet,
-          # wat deze stap eenvoudiger maakt.
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL_FOR_CI }}
           CI: true # Goede gewoonte om aan te geven dat dit een CI-omgeving is
