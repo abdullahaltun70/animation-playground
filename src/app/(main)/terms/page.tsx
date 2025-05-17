@@ -1,5 +1,11 @@
 import styles from './Terms.module.scss';
 
+/**
+ * Renders the Terms of Service page.
+ * Displays information regarding acceptance of terms, service description, user accounts,
+ * acceptable use, intellectual property, termination, changes to terms, and contact details.
+ * The "Last updated" date is dynamically generated based on the current date.
+ */
 export default function TermsPage() {
   return (
     <div className={styles.termsContainer}>

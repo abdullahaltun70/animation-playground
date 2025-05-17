@@ -1,4 +1,3 @@
-// src/components/profile/EditConfigDialog.tsx
 import React, { useState } from 'react';
 
 import * as Form from '@radix-ui/react-form';
@@ -12,6 +11,10 @@ interface EditConfigProps {
   onCancel: () => void;
 }
 
+/**
+ * A dialog component for editing an existing configuration.
+ * It allows users to modify the title, description, and configuration data.
+ */
 const EditConfigDialog = ({ config, onSave, onCancel }: EditConfigProps) => {
   const [formData, setFormData] = useState<Partial<Config>>({
     title: config.title,
@@ -29,18 +32,18 @@ const EditConfigDialog = ({ config, onSave, onCancel }: EditConfigProps) => {
 
   const handleSave = async () => {
     setIsSaving(true);
-    // Creëer een object met alleen de daadwerkelijk *gewijzigde* velden
+    // Create an object with only the fields that have actually *changed*
     const changedData: Partial<Config> = {};
 
     if (formData.title !== config.title) {
       changedData.title = formData.title;
     }
     if (formData.description !== (config.description ?? '')) {
-      // Stuur null als het leeg is gemaakt, of de nieuwe waarde
+      // Send null if it was cleared, or the new value
       changedData.description = formData.description || null;
     }
     if (formData.configData !== (config.configData ?? '')) {
-      // Stuur null als het leeg is gemaakt, of de nieuwe waarde
+      // Send null if it was cleared, or the new value
       changedData.configData = formData.configData || null;
     }
 
@@ -61,18 +64,17 @@ const EditConfigDialog = ({ config, onSave, onCancel }: EditConfigProps) => {
   return (
     <Form.Root
       onSubmit={(e) => {
-        e.preventDefault(); // Voorkom standaard form submit
+        e.preventDefault(); // Prevent default form submission
         handleSave();
       }}
     >
       <Flex direction="column" gap="3">
-        {' '}
-        {/* Gebruik Flex voor layout */}
+        {/* Using Flex for layout */}
         <Form.Field name="title" className="FormField">
           <Form.Label className="FormLabel">Title</Form.Label>
           <Form.Control asChild>
-            <TextField.Root // Gebruik Radix TextField
-              name="title" // Belangrijk voor state update
+            <TextField.Root // Using Radix TextField
+              name="title" // Important for state update
               value={formData.title}
               onChange={handleChange}
               required
@@ -86,13 +88,13 @@ const EditConfigDialog = ({ config, onSave, onCancel }: EditConfigProps) => {
         <Form.Field name="description" className="FormField">
           <Form.Label className="FormLabel">Description</Form.Label>
           <Form.Control asChild>
-            <TextArea // Gebruik Radix TextArea
-              name="description" // Belangrijk voor state update
+            <TextArea // Using Radix TextArea
+              name="description" // Important for state update
               value={formData.description ?? ''}
               onChange={handleChange}
               placeholder="Optional description"
-              rows={3} // Bepaal hoogte
-              style={{ minHeight: 80 }} // Zorgt voor minimale hoogte
+              rows={3} // Set initial height
+              style={{ minHeight: 80 }} // Ensures minimum height
             />
           </Form.Control>
         </Form.Field>
@@ -100,33 +102,33 @@ const EditConfigDialog = ({ config, onSave, onCancel }: EditConfigProps) => {
           <Form.Label className="FormLabel">Config Data</Form.Label>
           <Form.Control asChild>
             <TextArea
-              name="configData" // Belangrijk voor state update
+              name="configData" // Important for state update
               value={formData.configData ?? ''}
               onChange={handleChange}
               placeholder="Enter configuration data here..."
-              rows={6} // Meer ruimte voor data
-              style={{ minHeight: 120 }} // Zorgt voor minimale hoogte
+              rows={6} // More space for data
+              style={{ minHeight: 120 }} // Ensures minimum height
             />
           </Form.Control>
         </Form.Field>
       </Flex>
 
-      {/* Actie knoppen onderaan de dialog */}
+      {/* Action buttons at the bottom of the dialog */}
       <Flex gap="3" mt="4" justify="end">
         <Button
           variant="soft"
           color="gray"
           onClick={onCancel}
           type="button"
-          // Gebruik de isSaving state van DEZE component
+          // Use the isSaving state from THIS component
           disabled={isSaving}
         >
           Cancel
         </Button>
         <Form.Submit asChild>
-          {/* Gebruik de isSaving state van DEZE component */}
+          {/* Use the isSaving state from THIS component */}
           <Button disabled={isSaving} type="submit">
-            {/* Optioneel: Spinner tonen gebaseerd op isSaving */}
+            {/* Optional: Show spinner based on isSaving */}
             {isSaving && <Spinner size="1" mr="1" />}
             {isSaving ? 'Saving...' : 'Save Changes'}
           </Button>

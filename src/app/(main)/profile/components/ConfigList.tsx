@@ -11,25 +11,30 @@ import styles from '../styles/ConfigList.module.scss';
 /*  TYPES                                                             */
 /* ------------------------------------------------------------------ */
 export interface ConfigListProps {
-  /* data */
+  /** Animation configurations to display. */
   configs: ConfigModel[];
+  /** Loading state indicator. */
   loading: boolean;
+  /** Error message, if any. */
   error: string | null;
 
-  /* UX strings */
+  /** Message to display when no configurations are found. */
   emptyStateMessage: string;
+  /** Label for the loading state. Defaults to "Loading…". */
   loadingLabel?: string;
 
-  /* callbacks */
+  /** Callback function to retry fetching configurations. */
   onRetry: () => void;
+  /** Optional callback for deleting a configuration. */
   onDeleteAction?: (id: string) => void;
+  /** Callback for sharing a configuration. */
   onShareAction: (id: string) => void;
 
-  /* misc */
+  /** Optional author name to display (currently not used directly in this component but passed to ConfigCard). */
   authorName?: string;
   /**
-   * Optional element shown under empty‑state text (e.g. “Create first animation” button).
-   * Useful so the parent decides navigation logic.
+   * Optional React node to display as an action in the empty state.
+   * Example: A button to navigate to the playground to create a new animation.
    */
   emptyStateAction?: React.ReactNode;
 }
@@ -37,6 +42,12 @@ export interface ConfigListProps {
 /* ------------------------------------------------------------------ */
 /*  COMPONENT                                                         */
 /* ------------------------------------------------------------------ */
+/**
+ * `ConfigList` is a React functional component that displays a list of animation configurations.
+ * It handles loading states, error messages, and an empty state.
+ * Each configuration is rendered using the `ConfigCard` component.
+ * It also provides actions like retrying a failed fetch, deleting, and sharing configurations.
+ */
 export const ConfigList: React.FC<ConfigListProps> = ({
   configs,
   loading,
@@ -92,9 +103,9 @@ export const ConfigList: React.FC<ConfigListProps> = ({
         <ConfigCard
           key={cfg.id}
           config={cfg}
-          onDeleteAction={onDeleteAction}
-          onShareAction={onShareAction}
-          authorName={cfg.authorName || 'Unknown User'}
+          onDeleteAction={onDeleteAction} // Pass down the delete handler
+          onShareAction={onShareAction} // Pass down the share handler
+          authorName={cfg.authorName || 'Unknown User'} // Use authorName from individual config, fallback if needed
         />
       ))}
     </Flex>
@@ -103,6 +114,10 @@ export const ConfigList: React.FC<ConfigListProps> = ({
 
 export default ConfigList;
 
+/**
+ * `ConfigCardSkeleton` is a React functional component that renders a skeleton placeholder
+ * for a `ConfigCard`. This is used to indicate loading content before the actual data is available.
+ */
 const ConfigCardSkeleton = () => (
   <Box
     p="4"
@@ -115,33 +130,33 @@ const ConfigCardSkeleton = () => (
       <div
         className={styles.skeletonBar}
         style={{ height: '24px', width: '60%' }}
-      />{' '}
+      />
       {/* Title */}
       <div
         className={styles.skeletonBar}
         style={{ height: '16px', width: '90%' }}
-      />{' '}
+      />
       {/* Description line 1 */}
       <div
         className={styles.skeletonBar}
         style={{ height: '16px', width: '80%' }}
-      />{' '}
+      />
       {/* Description line 2 */}
       <div
         className={styles.skeletonBar}
         style={{ height: '16px', width: '40%' }}
-      />{' '}
+      />
       {/* Meta info */}
       <Flex justify="end" gap="2" mt="3">
         <div
           className={styles.skeletonBar}
           style={{ height: '32px', width: '70px' }}
-        />{' '}
+        />
         {/* Button */}
         <div
           className={styles.skeletonBar}
           style={{ height: '32px', width: '70px' }}
-        />{' '}
+        />
         {/* Button */}
       </Flex>
     </Flex>

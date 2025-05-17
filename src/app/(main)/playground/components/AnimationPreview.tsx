@@ -15,6 +15,9 @@ interface AnimationPreviewProps {
   onExport: () => void;
 }
 
+/**
+ * Renders the animation preview and action buttons for sharing and exporting.
+ */
 export function AnimationPreview({
   config,
   configId,
@@ -25,7 +28,7 @@ export function AnimationPreview({
     <Box className={styles.animationArea}>
       <AnimatedContainer config={config} />
 
-      {/* Action buttons */}
+      {/* Action buttons: Share (if configId is present) and Export animation */}
       <Flex className={styles.actionButtons} gap="2">
         {configId && (
           <Button onClick={onShare}>

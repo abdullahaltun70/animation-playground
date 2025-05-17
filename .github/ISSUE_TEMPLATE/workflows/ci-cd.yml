@@ -1,0 +1,78 @@
+name: Animation Playground CI
+
+on:
+  push:
+    branches:
+      - main
+      - dev
+  pull_request:
+    branches:
+      - main
+      - dev
+  workflow_dispatch: # Maakt handmatige triggering mogelijk
+
+jobs:
+  lint-typecheck-unit-tests:
+    name: Lint, Typecheck & Unit/Integration Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.10' # Zorg dat dit overeenkomt met je project
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn lint
+
+      - name: Prettier Check
+        run: yarn prettier # Uitgaande van je package.json script
+
+      - name: Type Check
+        run: yarn typecheck
+
+      - name: Run Unit & Integration Tests (Vitest)
+        run: yarn test # Dit draait `vitest run`
+        # Voeg hier later eventueel test rapportage of coverage upload toe
+        # bijv. Codecov zoals eerder besproken
+
+  build-app:
+    name: Build Next.js App
+    runs-on: ubuntu-latest
+    needs: lint-typecheck-unit-tests # Draai pas na succesvolle tests/linting
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22.13.10'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build Next.js Application
+        run: yarn build
+        env:
+          # Voor de build stap in GitHub Actions zelf (los van Vercel's build):
+          # Als je build afhankelijk is van deze variabelen, moeten ze hier beschikbaar zijn.
+          # Vercel injecteert deze automatisch voor ZIJN EIGEN build-omgeving.
+          # Je kunt GitHub Secrets gebruiken als je build ze hier nodig heeft.
+          # Voorbeeld:
+          # NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL_FOR_CI_BUILD }}
+          # NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY_FOR_CI_BUILD }}
+          # DATABASE_URL: ${{ secrets.DATABASE_URL_FOR_CI_BUILD }} # Als je DB migraties/checks doet
+
+          # Voor nu, ervan uitgaande dat je build niet direct deze secrets nodig heeft
+          # om alleen te *bouwen* (zonder runtime data access).
+          # In je next.config.js heb je type- en ESLint-checks tijdens build uitgezet,
+          # wat deze stap eenvoudiger maakt.
+          CI: true # Goede gewoonte om aan te geven dat dit een CI-omgeving is

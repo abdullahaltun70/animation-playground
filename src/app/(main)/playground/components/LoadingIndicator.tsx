@@ -6,6 +6,9 @@ interface LoadingIndicatorProps {
   message?: string;
 }
 
+/**
+ * Displays a loading indicator with an optional message.
+ */
 export function LoadingIndicator({
   message = 'Loading...',
 }: LoadingIndicatorProps) {
