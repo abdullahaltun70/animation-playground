@@ -32,7 +32,7 @@ jobs:
         run: yarn lint
 
       - name: Prettier Fix
-        run: prettier . --write
+        run: yarn prettier . --write
 
       - name: Prettier Check
         run: yarn prettier . --check
