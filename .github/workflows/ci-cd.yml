@@ -45,6 +45,12 @@ jobs:
         # Voeg hier later eventueel test rapportage of coverage upload toe
         # bijv. Codecov zoals eerder besproken
 
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          slug: abdullahaltun70/animation-playground
+
   build-app:
     name: Build Next.js App
     runs-on: ubuntu-latest
