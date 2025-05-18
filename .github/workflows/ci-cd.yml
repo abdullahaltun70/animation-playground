@@ -41,9 +41,7 @@ jobs:
         run: yarn typecheck
 
       - name: Run Unit & Integration Tests (Vitest)
-        run: yarn test # Dit draait `vitest run`
-        # Voeg hier later eventueel test rapportage of coverage upload toe
-        # bijv. Codecov zoals eerder besproken
+        run: yarn test:coverage
 
       - name: Upload coverage reports to Codecov
         uses: codecov/codecov-action@v5
