@@ -75,7 +75,6 @@ export function ConfigPanel({
   const endOpacityLabelId = useId();
   const distanceLabelId = useId();
   const scaleLabelId = useId();
-  const rotationLabelId = useId();
   const visibilityLabelId = useId();
   const axisLabelId = useId();
   const startRotationLabelId = useId(); // New ID for start rotation
