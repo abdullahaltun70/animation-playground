@@ -1,5 +1,4 @@
-// src/components/config-panel/ConfigPanel.tsx
-import React, { useEffect, useId, useState } from 'react'; // Added useId
+import React, { useEffect, useId, useState } from 'react';
 
 import * as LabelPrimitive from '@radix-ui/react-label';
 import {
@@ -52,6 +51,7 @@ export function ConfigPanel({
         start: 0,
         end: 1,
       },
+      axis: 'x',
       name: '',
       description: '',
       isPublic: false,
@@ -77,6 +77,9 @@ export function ConfigPanel({
   const scaleLabelId = useId();
   const rotationLabelId = useId();
   const visibilityLabelId = useId();
+  const axisLabelId = useId();
+  const startRotationLabelId = useId(); // New ID for start rotation
+  const endRotationLabelId = useId(); // New ID for end rotation
 
   useEffect(() => {
     if (initialConfig) {
@@ -85,27 +88,40 @@ export function ConfigPanel({
     }
   }, [initialConfig]);
 
+  // New useEffect to propagate config changes
+  useEffect(() => {
+    if (onConfigChange && !isReadOnly) {
+      // We only want to propagate changes that are not related to name and description,
+      // as those are typically handled by a save action.
+      // However, the original logic did this, so we'll replicate it.
+      // A more robust solution might involve a debounce or a specific "apply" button for live preview fields.
+      onConfigChange(config);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [config, isReadOnly]); // onConfigChange is a prop, could be included if it changes, but typically stable.
+
   const handleChange = (
     key: keyof AnimationConfig,
     value: string | number | boolean | AnimationType | EasingFunction
   ) => {
     if (isReadOnly) return;
-    const newConfig = { ...config, [key]: value };
-    setConfig(newConfig);
-    if (key !== 'name' && key !== 'description' && onConfigChange) {
-      onConfigChange(newConfig);
-    }
+    setConfig((prevConfig) => ({ ...prevConfig, [key]: value }));
+    // Removed direct onConfigChange call
   };
 
   const handleOpacityChange = (key: 'start' | 'end', value: number) => {
     if (isReadOnly) return;
-    setConfig((prev) => ({
-      ...prev,
-      opacity: {
-        ...(prev.opacity || { start: 0, end: 1 }),
-        [key]: value / 100,
-      },
-    }));
+    setConfig((prev) => {
+      const newConfig = {
+        ...prev,
+        opacity: {
+          ...(prev.opacity || { start: 0, end: 1 }),
+          [key]: value / 100,
+        },
+      };
+      // Removed direct onConfigChange call
+      return newConfig;
+    });
   };
 
   const handleReset = () => {
@@ -122,6 +138,7 @@ export function ConfigPanel({
         name: '',
         description: '',
         isPublic: false,
+        axis: 'x',
       };
       setConfig(resetConfig);
       setIsPublic(false);
@@ -131,8 +148,32 @@ export function ConfigPanel({
 
   const handleSave = () => {
     const updatedConfig = { ...config, isPublic };
-    if (!isReadOnly && onConfigChange) onConfigChange(updatedConfig);
+    // if (!isReadOnly && onConfigChange) onConfigChange(updatedConfig); // This line might also be problematic if onSave also triggers re-render of parent
     if (onSave) onSave(updatedConfig);
+  };
+
+  const handleDegreesChange = (key: 'start' | 'end', value: number) => {
+    if (isReadOnly) return;
+    setConfig((prev) => {
+      const currentDegrees = prev.degrees;
+      let newDegreesState: number | { start: number; end: number };
+
+      if (typeof currentDegrees === 'object') {
+        newDegreesState = { ...currentDegrees, [key]: value };
+      } else {
+        if (key === 'start') {
+          newDegreesState = {
+            start: value,
+            end: typeof currentDegrees === 'number' ? currentDegrees : 360,
+          };
+        } else {
+          newDegreesState = { start: 0, end: value };
+        }
+      }
+      const newConfig = { ...prev, degrees: newDegreesState };
+      // Removed direct onConfigChange call
+      return newConfig;
+    });
   };
 
   return (
@@ -305,66 +346,158 @@ export function ConfigPanel({
                   disabled={isReadOnly}
                 />
                 <Text size="1">
-                  {`${config.opacity ? (config.opacity.end * 100).toFixed(0) : 0}%`}
+                  {`${config.opacity ? (config.opacity.end * 100).toFixed(0) : 100}%`}
                 </Text>
               </div>
             </>
           )}
 
-          {(config.type === 'slide' || config.type === 'bounce') && (
-            <div className={styles.field}>
-              <LabelPrimitive.Root id={distanceLabelId}>
-                Distance (pixels)
-              </LabelPrimitive.Root>
-              <Slider
-                aria-labelledby={distanceLabelId}
-                value={[config.distance || 50]}
-                min={-200}
-                max={200}
-                step={1}
-                onValueChange={(value) => handleChange('distance', value[0])}
-                disabled={isReadOnly}
-              />
-              <Text size="1">{config.distance || 50}px</Text>
-            </div>
+          {config.type === 'slide' && (
+            <>
+              <div className={styles.field}>
+                <LabelPrimitive.Root id={distanceLabelId}>
+                  Distance (pixels)
+                </LabelPrimitive.Root>
+                <Slider
+                  aria-labelledby={distanceLabelId}
+                  value={[config.distance || 0]}
+                  min={-200}
+                  max={200}
+                  step={10}
+                  onValueChange={(value) => handleChange('distance', value[0])}
+                  disabled={isReadOnly}
+                />
+                <Text size="1">{`${config.distance || 0}px`}</Text>
+              </div>
+              <div className={styles.field}>
+                <Flex gap="1" direction={'column'}>
+                  <LabelPrimitive.Root id={axisLabelId}>
+                    <Text weight="bold">Axis</Text>
+                  </LabelPrimitive.Root>
+                  <Select.Root
+                    value={config.axis || 'x'}
+                    onValueChange={(value) =>
+                      handleChange('axis', value as 'x' | 'y')
+                    }
+                    disabled={isReadOnly}
+                  >
+                    <Select.Trigger
+                      aria-labelledby={axisLabelId}
+                      placeholder="Select axis"
+                    />
+                    <Select.Content>
+                      <Select.Item value="x">X-axis</Select.Item>
+                      <Select.Item value="y">Y-axis</Select.Item>
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </div>
+            </>
           )}
 
           {config.type === 'scale' && (
-            <div className={styles.field}>
-              <LabelPrimitive.Root id={scaleLabelId}>
-                Scale Factor
-              </LabelPrimitive.Root>
-              <Slider
-                aria-labelledby={scaleLabelId}
-                value={[config.scale ? config.scale * 100 : 80]}
-                min={10}
-                max={200}
-                step={1}
-                onValueChange={(value) => handleChange('scale', value[0] / 100)}
-                disabled={isReadOnly}
-              />
-              <Text size="1">
-                {config.scale ? (config.scale * 100).toFixed(0) : 80}%
-              </Text>
-            </div>
+            <>
+              <div className={styles.field}>
+                <LabelPrimitive.Root id={scaleLabelId}>
+                  Scale
+                </LabelPrimitive.Root>
+                <Slider
+                  aria-labelledby={scaleLabelId}
+                  value={[config.scale ? config.scale * 100 : 0]}
+                  min={0}
+                  max={200}
+                  step={1}
+                  onValueChange={(value) =>
+                    handleChange('scale', value[0] / 100)
+                  }
+                  disabled={isReadOnly}
+                />
+                <Text size="1">
+                  {`${config.scale ? (config.scale * 100).toFixed(0) : 0}%`}
+                </Text>
+              </div>
+            </>
           )}
 
           {config.type === 'rotate' && (
-            <div className={styles.field}>
-              <LabelPrimitive.Root id={rotationLabelId}>
-                Rotation (degrees)
-              </LabelPrimitive.Root>
-              <Slider
-                aria-labelledby={rotationLabelId}
-                value={[config.degrees || 360]}
-                min={-360}
-                max={360}
-                step={1}
-                onValueChange={(value) => handleChange('degrees', value[0])}
-                disabled={isReadOnly}
-              />
-              <Text size="1">{config.degrees || 360}°</Text>
-            </div>
+            <>
+              <div className={styles.field}>
+                <LabelPrimitive.Root id={startRotationLabelId}>
+                  Start Rotation (degrees)
+                </LabelPrimitive.Root>
+                <Slider
+                  aria-labelledby={startRotationLabelId}
+                  value={[
+                    typeof config.degrees === 'object'
+                      ? config.degrees.start
+                      : 0, // Default to 0 if not an object or if converting
+                  ]}
+                  min={0}
+                  max={360}
+                  step={1}
+                  onValueChange={(value) =>
+                    handleDegreesChange('start', value[0])
+                  }
+                  disabled={isReadOnly}
+                />
+                <Text size="1">
+                  {typeof config.degrees === 'object'
+                    ? config.degrees.start
+                    : 0}
+                  °
+                </Text>
+              </div>
+              <div className={styles.field}>
+                <LabelPrimitive.Root id={endRotationLabelId}>
+                  End Rotation (degrees)
+                </LabelPrimitive.Root>
+                <Slider
+                  aria-labelledby={endRotationLabelId}
+                  value={[
+                    typeof config.degrees === 'object'
+                      ? config.degrees.end
+                      : typeof config.degrees === 'number'
+                        ? config.degrees
+                        : 360, // Default to 360 or current number value
+                  ]}
+                  min={0}
+                  max={360}
+                  step={1}
+                  onValueChange={(value) =>
+                    handleDegreesChange('end', value[0])
+                  }
+                  disabled={isReadOnly}
+                />
+                <Text size="1">
+                  {typeof config.degrees === 'object'
+                    ? config.degrees.end
+                    : typeof config.degrees === 'number'
+                      ? config.degrees
+                      : 360}
+                  °
+                </Text>
+              </div>
+            </>
+          )}
+
+          {config.type === 'bounce' && (
+            <>
+              <div className={styles.field}>
+                <LabelPrimitive.Root id={distanceLabelId}>
+                  Distance (pixels)
+                </LabelPrimitive.Root>
+                <Slider
+                  aria-labelledby={distanceLabelId}
+                  value={[config.distance || 0]}
+                  min={-200}
+                  max={200}
+                  step={10}
+                  onValueChange={(value) => handleChange('distance', value[0])}
+                  disabled={isReadOnly}
+                />
+                <Text size="1">{`${config.distance || 0}px`}</Text>
+              </div>
+            </>
           )}
 
           <Flex direction={'column'} className={styles.field} gap="1">
@@ -386,10 +519,21 @@ export function ConfigPanel({
         </Theme>
 
         <div className={styles.configButtons}>
-          <Button className={styles.button} onClick={handleReset}>
+          <Button
+            onClick={handleReset}
+            disabled={isReadOnly}
+            variant="outline"
+            size="2"
+            className={styles.button}
+          >
             {isReadOnly ? 'New Animation' : 'Reset'}
           </Button>
-          <Button className={styles.copyButton} onClick={handleSave}>
+          <Button
+            onClick={handleSave}
+            disabled={isReadOnly}
+            size="2"
+            className={styles.button}
+          >
             {saveButtonText}
           </Button>
         </div>

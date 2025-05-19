@@ -2704,9 +2704,9 @@ ajv@^6.12.4:
     uri-js "^4.2.2"
 
 animation-library-test-abdullah-altun@^1.0.22:
-  version "1.0.24"
-  resolved "https://registry.yarnpkg.com/animation-library-test-abdullah-altun/-/animation-library-test-abdullah-altun-1.0.24.tgz#ff229e6773883f224aa1f816ffb8b054ab6b45a2"
-  integrity sha512-kqZ6t95QMyzqimUUckrH8a9O3uAGQVdYSnFnB0uT7qdJ9PCjumfCjjm2IE8HidmOrv3JEO2u4XWMLxfqtos6zQ==
+  version "1.0.28"
+  resolved "https://registry.yarnpkg.com/animation-library-test-abdullah-altun/-/animation-library-test-abdullah-altun-1.0.28.tgz#de2ab522ca4ca3c917648577041f8037fdcdd6b0"
+  integrity sha512-uv8l6A1XRoL6QHLYF4D7UCwjBqbf4srCFx9PN71EVyjs50dHM2+st3s4IYz/aHws3cbyo6oWfI9BlebVn9M9oQ==
 
 ansi-colors@^4.1.1:
   version "4.1.3"
