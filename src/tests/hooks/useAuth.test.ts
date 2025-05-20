@@ -6,7 +6,7 @@ import { useAuth } from '@/app/(auth)/hooks/useAuth';
 
 import { mocks } from '../../../vitest.setup';
 
-const { mockPush, mockSupabaseAuth } = mocks; // Get the auth object
+const { mockPush, mockSupabaseAuth, mockReplace } = mocks; // Get the auth object
 
 describe('useAuth', () => {
   // beforeEach and afterEach are now handled globally by vitest.setup.ts
@@ -30,7 +30,7 @@ describe('useAuth', () => {
       email: 'test@example.com',
       password: 'password123',
     });
-    expect(mockPush).toHaveBeenCalledWith(
+    expect(mockReplace).toHaveBeenCalledWith(
       `${window.location.origin}/auth/callback`
     );
     await waitFor(() => {
@@ -142,7 +142,7 @@ describe('useAuth', () => {
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(mockPush).toHaveBeenCalledWith(
+      expect(mockReplace).toHaveBeenCalledWith(
         `${window.location.origin}/auth/callback`
       );
       expect(result.current.loading).toBe(false);

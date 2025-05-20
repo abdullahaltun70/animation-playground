@@ -212,7 +212,7 @@ export const useAuth = (): UseAuthReturn => {
             console.log(
               'Password sign-in successful. AuthProvider will handle state and redirect.'
             );
-            // router.replace(`${window.location.origin}/auth/callback`); // Ensure this line is removed or commented out
+            router.replace(`${window.location.origin}/auth/callback`);
           }
         )
       );
