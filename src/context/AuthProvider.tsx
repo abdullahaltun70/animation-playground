@@ -85,7 +85,8 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
               console.log(
                 'AuthProvider: Redirecting to / from login or auth page'
               );
-              router.push(`${window.location.origin}/auth/callback`);
+              // router.push(`${window.location.origin}/auth/callback`);
+              router.push('/');
             } else {
               // If already on another page (e.g., user was on /dashboard and session got refreshed)
               // just refresh the router to update server components if necessary.
