@@ -193,7 +193,7 @@ export const useAuth = (): UseAuthReturn => {
         },
       })
     );
-  }, [handleAuthAction, supabase.auth]); // Removed router from dependencies
+  }, [handleAuthAction, supabase.auth]);
 
   /**
    * Email/password sign in handler
@@ -208,16 +208,16 @@ export const useAuth = (): UseAuthReturn => {
           () => supabase.auth.signInWithPassword(data),
           () => {
             // SUCCESS CALLBACK FOR signInWithPassword
-            // The redirect is now handled by AuthProvider's onAuthStateChange
+            // AuthProvider's onAuthStateChange will handle the redirect
             console.log(
               'Password sign-in successful. AuthProvider will handle state and redirect.'
             );
-            router.replace(`${window.location.origin}/auth/callback`);
+            // router.replace(`${window.location.origin}/auth/callback`); // Line removed
           }
         )
       );
     },
-    [validateAndExecute, handleAuthAction, supabase.auth, router]
+    [validateAndExecute, handleAuthAction, supabase.auth, router] // router is kept in deps as good practice if other logic in this callback or hook might use it.
   );
 
   /**
