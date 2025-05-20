@@ -207,7 +207,10 @@ export const useAuth = (): UseAuthReturn => {
       await validateAndExecute(data, async () =>
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
-          () => router.push(`${window.location.origin}/auth/callback`)
+          () => {
+            console.log('Redirecting to /auth/callback after sign-in');
+            router.push(`${window.location.origin}/auth/callback`);
+          }
         )
       );
     },
