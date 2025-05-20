@@ -19,6 +19,7 @@ export const DEFAULT_ANIMATION_CONFIG: AnimationConfig = {
     start: 0,
     end: 1,
   },
+  axis: 'x',
   name: '',
   description: '',
 };
@@ -113,6 +114,7 @@ export function useAnimationConfig() {
                     : DEFAULT_ANIMATION_CONFIG.scale,
                 opacity:
                   parsedConfig.opacity || DEFAULT_ANIMATION_CONFIG.opacity,
+                axis: parsedConfig.axis || DEFAULT_ANIMATION_CONFIG.axis,
                 name: parsedConfig.name || data.title || '',
                 description: parsedConfig.description || data.description || '',
                 isPublic: isPublicStatus,
@@ -136,12 +138,12 @@ export function useAnimationConfig() {
               });
               setError(message);
               setAnimationConfig(DEFAULT_ANIMATION_CONFIG);
-              setConfigLoaded(true); // Should still be true as we attempted to load
+              setConfigLoaded(true);
               setLoading(false);
               return;
             }
           } else {
-            // Handles case where configData might be null/missing but we still have top-level fields
+            // Handles case where configData might be null/missing but other data is present
             const fallbackConfig: AnimationConfig = {
               ...DEFAULT_ANIMATION_CONFIG,
               name: data.title || '',
@@ -172,7 +174,7 @@ export function useAnimationConfig() {
           setLoading(false);
         });
     }
-  }, [configId, showToast]); // Added showToast to dependency array
+  }, [configId, showToast]);
 
   const handleConfigChange = useCallback((newConfig: AnimationConfig) => {
     setAnimationConfig(newConfig);

@@ -1,10 +1,19 @@
 /// <reference types="vitest" />
+import { codecovVitePlugin } from '@codecov/vite-plugin';
 import react from '@vitejs/plugin-react';
 import { resolve } from 'path';
 import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
-  plugins: [react()],
+  plugins: [
+    react(),
+    // Put the Codecov vite plugin after all other plugins
+    codecovVitePlugin({
+      enableBundleAnalysis: process.env.CODECOV_TOKEN !== undefined,
+      bundleName: 'animation-playground',
+      uploadToken: process.env.CODECOV_TOKEN,
+    }),
+  ],
   test: {
     globals: true,
     environment: 'jsdom',

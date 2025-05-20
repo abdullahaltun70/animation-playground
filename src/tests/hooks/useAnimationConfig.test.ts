@@ -219,6 +219,7 @@ describe('useAnimationConfig Hook', () => {
       name: 'Fetched Slide Animation',
       description: 'A fetched animation.',
       isPublic: true,
+      axis: 'x',
     };
     const mockOwnedApiResponse = {
       id: mockConfigId,

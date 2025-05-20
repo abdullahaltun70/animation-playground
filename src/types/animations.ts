@@ -5,12 +5,13 @@ export interface AnimationConfig {
   delay: number;
   easing: EasingFunction;
   distance?: number;
-  degrees?: number;
+  degrees?: number | { start: number; end: number }; // Updated to allow object for start/end degrees
   scale?: number;
   opacity?: {
     start: number;
     end: number;
   };
+  axis?: 'x' | 'y';
   name?: string;
   description?: string;
   isPublic?: boolean;
