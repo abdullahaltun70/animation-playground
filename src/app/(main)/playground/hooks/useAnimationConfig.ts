@@ -114,7 +114,7 @@ export function useAnimationConfig() {
                     : DEFAULT_ANIMATION_CONFIG.scale,
                 opacity:
                   parsedConfig.opacity || DEFAULT_ANIMATION_CONFIG.opacity,
-                axis: parsedConfig.axis || DEFAULT_ANIMATION_CONFIG.axis, 
+                axis: parsedConfig.axis || DEFAULT_ANIMATION_CONFIG.axis,
                 name: parsedConfig.name || data.title || '',
                 description: parsedConfig.description || data.description || '',
                 isPublic: isPublicStatus,
@@ -174,7 +174,7 @@ export function useAnimationConfig() {
           setLoading(false);
         });
     }
-  }, [configId, showToast]); 
+  }, [configId, showToast]);
 
   const handleConfigChange = useCallback((newConfig: AnimationConfig) => {
     setAnimationConfig(newConfig);
