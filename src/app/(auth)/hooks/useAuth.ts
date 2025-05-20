@@ -111,7 +111,8 @@ export const useAuth = (): UseAuthReturn => {
   });
 
   const supabase = createClient();
-  const router = useRouter();
+  // const router = useRouter(); // router is not directly used in this hook after previous changes.
+                                // It was only part of handleSignIn's dependency array.
 
   // Validate email and execute action if valid
   const validateAndExecute = useCallback(
@@ -161,7 +162,7 @@ export const useAuth = (): UseAuthReturn => {
         setLoading(false);
       }
     },
-    [setLoading, setError]
+    [setLoading, setError] // Removed router from here as well, if it was ever implicitly used by successCallback
   );
 
   // Display an alert with the specified title and message
@@ -217,7 +218,8 @@ export const useAuth = (): UseAuthReturn => {
         )
       );
     },
-    [validateAndExecute, handleAuthAction, supabase.auth, router] // router is kept in deps as good practice if other logic in this callback or hook might use it.
+    // router removed from dependencies as it's not used in the callback for navigation.
+    [validateAndExecute, handleAuthAction, supabase.auth]
   );
 
   /**
