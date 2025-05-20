@@ -193,7 +193,6 @@ export const useAuth = (): UseAuthReturn => {
         },
       })
     );
-    // router.push('/'); // Removed: Let Supabase handle the redirect after OAuth
   }, [handleAuthAction, supabase.auth]); // Removed router from dependencies
 
   /**
@@ -207,7 +206,14 @@ export const useAuth = (): UseAuthReturn => {
       await validateAndExecute(data, async () =>
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
-          () => router.push(`${window.location.origin}/auth/callback`)
+          () => {
+            // SUCCESS CALLBACK FOR signInWithPassword
+            // The redirect is now handled by AuthProvider's onAuthStateChange
+            console.log(
+              'Password sign-in successful. AuthProvider will handle state and redirect.'
+            );
+            router.replace(`${window.location.origin}/auth/callback`);
+          }
         )
       );
     },

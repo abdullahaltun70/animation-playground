@@ -50,6 +50,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         } = await supabase.auth.getUser();
         setUser(user);
         setIsAuthenticated(!!user);
+        // If user is already available on init and not on an auth page, consider redirecting or refreshing
+        // This part might need adjustment based on initial load behavior desired
+        if (
+          user &&
+          !window.location.pathname.startsWith('/login') &&
+          !window.location.pathname.startsWith('/auth')
+        ) {
+          // Potentially router.refresh() if needed for server components
+          console.log(
+            'AuthProvider: User already authenticated, refreshing router.'
+          );
+          router.refresh();
+        }
 
         // Luister naar auth state changes
         const {
@@ -60,11 +73,39 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           setIsAuthenticated(!!currentUser);
 
           if (event === 'SIGNED_IN') {
-            // Reverted: No longer pushing here, let Supabase handle redirect
-            router.refresh(); // Keep refresh for state consistency if needed
+            console.log(
+              'AuthProvider: SIGNED_IN event detected, current path:',
+              window.location.pathname
+            );
+            // Only redirect if we are on an auth-related page or login page.
+            if (
+              window.location.pathname.includes('/login') ||
+              window.location.pathname.includes('/auth')
+            ) {
+              console.log(
+                'AuthProvider: Redirecting to / from login or auth page'
+              );
+              // router.push(`${window.location.origin}/auth/callback`);
+              router.push('/');
+            } else {
+              // If already on another page (e.g., user was on /dashboard and session got refreshed)
+              // just refresh the router to update server components if necessary.
+              console.log(
+                'AuthProvider: SIGNED_IN on a non-auth page, refreshing router.'
+              );
+              router.refresh();
+            }
           } else if (event === 'SIGNED_OUT') {
-            router.push('/login');
-            router.refresh(); // Keep refresh for state consistency if needed
+            console.log(
+              'AuthProvider: SIGNED_OUT event detected, current path:',
+              window.location.pathname
+            );
+            if (!window.location.pathname.includes('/login')) {
+              console.log('AuthProvider: Redirecting to /login');
+              router.push('/login');
+            }
+            // Always refresh after push to ensure server components are updated for logged-out state
+            router.refresh();
           }
         });
 
