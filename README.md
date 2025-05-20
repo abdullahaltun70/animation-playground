@@ -2,6 +2,11 @@ This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-
 
 ## Getting Started
 
+Scripts:
+
+- run `yarn checks` to run `typecheck && lint && prettier && test`
+- run `yarn checks:fix` to run `typecheck && lint:fix && prettier:fix && test`
+
 First, run the development server:
 
 ```bash

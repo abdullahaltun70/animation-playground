@@ -189,7 +189,7 @@ export const useAuth = (): UseAuthReturn => {
         provider: 'google',
         options: {
           //first refresh windows and then redirect to home page
-          redirectTo: `${window.location.origin}/auth/callback`, // Example callback url (recommended)
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
     );
@@ -207,7 +207,7 @@ export const useAuth = (): UseAuthReturn => {
       await validateAndExecute(data, async () =>
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
-          () => router.push('/') // Changed from '/profile' to '/'
+          () => router.push(`${window.location.origin}/auth/callback`)
         )
       );
     },
