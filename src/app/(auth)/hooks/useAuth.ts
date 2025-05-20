@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
 import { AuthError } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/app/utils/supabase/client';
 
