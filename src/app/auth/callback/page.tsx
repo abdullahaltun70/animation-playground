@@ -18,9 +18,9 @@ export default function AuthCallbackPage() {
       } = await supabase.auth.getUser();
 
       if (user) {
-        router.replace('/');
+        router.push(`${window.location.origin}/`);
       } else {
-        router.replace('/login');
+        router.replace(`${window.location.origin}/login`);
       }
     };
     syncSessionAndRedirect();
