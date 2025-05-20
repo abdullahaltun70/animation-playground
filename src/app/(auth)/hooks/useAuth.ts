@@ -207,8 +207,12 @@ export const useAuth = (): UseAuthReturn => {
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
           () => {
-            console.log('Redirecting to /auth/callback after password sign-in');
-            router.replace(`${window.location.origin}/auth/callback`);
+            // SUCCESS CALLBACK FOR signInWithPassword
+            // The redirect is now handled by AuthProvider's onAuthStateChange
+            console.log(
+              'Password sign-in successful. AuthProvider will handle state and redirect.'
+            );
+            // router.replace(`${window.location.origin}/auth/callback`); // Ensure this line is removed or commented out
           }
         )
       );
