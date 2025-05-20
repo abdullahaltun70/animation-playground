@@ -30,7 +30,9 @@ describe('useAuth', () => {
       email: 'test@example.com',
       password: 'password123',
     });
-    expect(mockPush).toHaveBeenCalledWith('/');
+    expect(mockPush).toHaveBeenCalledWith(
+      `${window.location.origin}/auth/callback`
+    );
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
       expect(result.current.error).toBeNull();
@@ -140,7 +142,9 @@ describe('useAuth', () => {
         email: 'test@example.com',
         password: 'password123',
       });
-      expect(mockPush).toHaveBeenCalledWith('/');
+      expect(mockPush).toHaveBeenCalledWith(
+        `${window.location.origin}/auth/callback`
+      );
       expect(result.current.loading).toBe(false);
       expect(result.current.error).toBeNull();
     });
