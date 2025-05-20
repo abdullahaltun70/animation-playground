@@ -208,8 +208,8 @@ export const useAuth = (): UseAuthReturn => {
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
           () => {
-            console.log('Redirecting to /auth/callback after sign-in');
-            router.push(`${window.location.origin}/auth/callback`);
+            console.log('Redirecting to / after sign-in');
+            router.replace('/');
           }
         )
       );
