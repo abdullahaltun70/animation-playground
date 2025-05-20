@@ -18,6 +18,9 @@ interface ShareDialogProps {
   copySuccess: boolean;
 }
 
+/**
+ * Dialog for sharing the animation configuration URL.
+ */
 export function ShareDialog({
   open,
   onOpenChange,
@@ -35,7 +38,7 @@ export function ShareDialog({
 
         <Flex gap="3" mt="4">
           <TextField.Root value={shareUrl} readOnly style={{ flexGrow: 1 }} />
-          <IconButton onClick={onCopyUrl}>
+          <IconButton onClick={onCopyUrl} aria-label="Copy URL">
             <CopyIcon />
           </IconButton>
         </Flex>

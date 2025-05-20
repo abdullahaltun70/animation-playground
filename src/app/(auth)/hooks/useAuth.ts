@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
 import { AuthError } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/app/utils/supabase/client';
 
@@ -27,9 +26,9 @@ interface AlertState {
 }
 
 /**
- * Validates an email address format
- * @param email - The email address to validate
- * @returns True if the email format is valid, false otherwise
+ * Validates an email address format.
+ * @param {string} email - The email address to validate.
+ * @returns {boolean} True if the email format is valid, false otherwise.
  */
 const isValidEmail = (email: string): boolean => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -37,9 +36,9 @@ const isValidEmail = (email: string): boolean => {
 };
 
 /**
- * Translates authentication error messages to user-friendly messages
- * @param errorMessage - Original error message from auth provider
- * @returns User-friendly error message
+ * Translates authentication error messages to user-friendly messages.
+ * @param {string} errorMessage - Original error message from the authentication provider.
+ * @returns {string} User-friendly error message.
  */
 const getErrorMessage = (errorMessage: string): string => {
   if (errorMessage.includes('Invalid login credentials')) {
@@ -68,30 +67,38 @@ interface UseAuthReturn {
 
 /**
  * Custom hook for handling authentication operations with Supabase.
- * Provides authentication state management and methods for sign-in, sign-up,
- * password reset, and Google OAuth.
  *
- * @returns {UseAuthReturn} Object containing:
- *  - loading: boolean - Current loading state of auth operations
- *  - error: string | null - Current error message if any
- *  - showAlert: boolean - Alert visibility state
- *  - alertTitle: string - Title for alert messages
- *  - alertMessage: string - Content for alert messages
- *  - setError: Function - Error state setter
- *  - setShowAlert: Function - Alert visibility setter
- *  - handleGoogleSignIn: () => Promise<void> - Google OAuth handler
- *  - handleSignIn: (data: SignInFormData) => Promise<void> - Email/password sign in
- *  - handleSignUp: (data: SignUpFormData) => Promise<boolean> - New user registration
- *  - handlePasswordReset: (data: { email: string }) => Promise<boolean> - Password reset
+ * This hook encapsulates the logic for user sign-in (including Google OAuth),
+ * sign-up, and password reset. It manages loading states, error handling,
+ * and displays alerts for feedback to the user.
+ *
+ * @returns {UseAuthReturn} An object containing:
+ *  - `loading`: A boolean indicating if an authentication operation is in progress.
+ *  - `error`: A string containing the latest error message, or null if no error.
+ *  - `showAlert`: A boolean to control the visibility of an alert message.
+ *  - `alertTitle`: The title for the alert message.
+ *  - `alertMessage`: The main content of the alert message.
+ *  - `setError`: Function to manually set the error state.
+ *  - `setShowAlert`: Function to manually control the alert's visibility.
+ *  - `handleGoogleSignIn`: An async function to initiate Google Sign-In.
+ *  - `handleSignIn`: An async function to sign in a user with email and password.
+ *  - `handleSignUp`: An async function to register a new user.
+ *  - `handlePasswordReset`: An async function to initiate a password reset process for a given email.
  *
  * @example
- * const {
- *   loading,
- *   error,
- *   handleSignIn
- * } = useAuth();
+ * // To use the hook in a component:
+ * const { loading, error, handleSignIn, showAlert, alertTitle, alertMessage } = useAuth();
  *
- * await handleSignIn({ email: 'user@example.com', password: '********' });
+ * // Example of signing in a user:
+ * const onSignIn = async (formData) => {
+ *   await handleSignIn(formData);
+ *   // Handle post-sign-in logic, e.g., redirecting the user
+ * };
+ *
+ * // Displaying an alert:
+ * if (showAlert) {
+ *   // Render an alert component with alertTitle and alertMessage
+ * }
  */
 export const useAuth = (): UseAuthReturn => {
   const [error, setError] = useState<string | null>(null);
@@ -103,7 +110,8 @@ export const useAuth = (): UseAuthReturn => {
   });
 
   const supabase = createClient();
-  const router = useRouter();
+  // const router = useRouter(); // router is not directly used in this hook after previous changes.
+                                // It was only part of handleSignIn's dependency array.
 
   // Validate email and execute action if valid
   const validateAndExecute = useCallback(
@@ -153,7 +161,7 @@ export const useAuth = (): UseAuthReturn => {
         setLoading(false);
       }
     },
-    [setLoading, setError]
+    [setLoading, setError] // Removed router from here as well, if it was ever implicitly used by successCallback
   );
 
   // Display an alert with the specified title and message
@@ -181,12 +189,11 @@ export const useAuth = (): UseAuthReturn => {
         provider: 'google',
         options: {
           //first refresh windows and then redirect to home page
-          redirectTo: `${window.location.origin}/auth/callback`, // Example callback url (recommended)
+          redirectTo: `${window.location.origin}/auth/callback`,
         },
       })
     );
-    // router.push('/'); // Removed: Let Supabase handle the redirect after OAuth
-  }, [handleAuthAction, supabase.auth]); // Removed router from dependencies
+  }, [handleAuthAction, supabase.auth]);
 
   /**
    * Email/password sign in handler
@@ -199,11 +206,19 @@ export const useAuth = (): UseAuthReturn => {
       await validateAndExecute(data, async () =>
         handleAuthAction(
           () => supabase.auth.signInWithPassword(data),
-          () => router.push('/') // Changed from '/profile' to '/'
+          () => {
+            // SUCCESS CALLBACK FOR signInWithPassword
+            // AuthProvider's onAuthStateChange will handle the redirect
+            console.log(
+              'Password sign-in successful. AuthProvider will handle state and redirect.'
+            );
+            // router.replace(`${window.location.origin}/auth/callback`); // Line removed
+          }
         )
       );
     },
-    [validateAndExecute, handleAuthAction, supabase.auth, router]
+    // router removed from dependencies as it's not used in the callback for navigation.
+    [validateAndExecute, handleAuthAction, supabase.auth]
   );
 
   /**

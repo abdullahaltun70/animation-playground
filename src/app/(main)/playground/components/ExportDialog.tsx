@@ -21,6 +21,9 @@ interface ExportDialogProps {
   animationConfig: AnimationConfig;
 }
 
+/**
+ * Dialog for exporting animation code as a React component or CSS.
+ */
 export function ExportDialog({
   open,
   onOpenChange,

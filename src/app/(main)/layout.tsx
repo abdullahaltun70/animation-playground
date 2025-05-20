@@ -1,5 +1,3 @@
-// app/(main)/layout.tsx
-
 import React, { Suspense } from 'react';
 
 import Loading from '@/app/(main)/playground/loading';

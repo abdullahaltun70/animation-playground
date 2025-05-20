@@ -9,6 +9,9 @@ interface ErrorNotificationProps {
   onDismiss: () => void;
 }
 
+/**
+ * Displays an error message with a dismiss button.
+ */
 export function ErrorNotification({
   message,
   onDismiss,

@@ -10,6 +10,7 @@ interface VisibilitySwitchProps {
   isPublic: boolean;
   onChange: (isPublic: boolean) => void;
   disabled?: boolean;
+  'aria-label'?: string;
 }
 
 /**
@@ -23,6 +24,7 @@ export function VisibilitySwitch({
   isPublic,
   onChange,
   disabled = false,
+  'aria-label': ariaLabel,
 }: VisibilitySwitchProps) {
   const currentValue = isPublic ? 'public' : 'private';
 
@@ -39,6 +41,7 @@ export function VisibilitySwitch({
       radius="full"
       style={{ width: 'fit-content' }}
       className={styles.visibilitySwitchRoot}
+      aria-label={ariaLabel}
     >
       {/* Private Option */}
       <SegmentedControl.Item value="private">

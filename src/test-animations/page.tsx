@@ -19,11 +19,52 @@ export default function TestPage() {
         color: 'blue',
       }}
     >
+      <Animate type="rotate" degrees={180}>
+        <Card
+          style={{
+            padding: '20px',
+            background: '#f0f0f0',
+            borderRadius: '8px',
+            width: '200px',
+            marginBottom: '10px',
+            margin: '0 auto',
+            color: 'blue',
+          }}
+        >
+          I will rotate 90 degrees
+        </Card>
+      </Animate>
+
+      <h2>Slide Up</h2>
+      <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
+        <Animate type="slide" axis="y" distance={50} duration={0.5}>
+          <Card
+            style={{
+              padding: '20px',
+              background: '#f0f0f0',
+              borderRadius: '8px',
+              width: '200px',
+              marginBottom: '10px',
+              margin: '0 auto',
+              color: 'blue',
+            }}
+          >
+            Slide Up
+          </Card>
+        </Animate>
+      </div>
       <h2>Using Animate comp directly</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
-        <Animate type="bounce" duration={0.5} distance={50}>
-          <Animate type="slide" duration={1} distance={-200}>
-            <Animate type="rotate" duration={0.4} degrees={180}>
+        <Animate type="bounce" distance={50}>
+          <Animate type="slide" distance={-200}>
+            <Animate
+              type="scale"
+              degrees={180}
+              scale={0.5}
+              duration={0.5}
+              delay={1}
+              easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+            >
               <div
                 style={{
                   padding: '20px',
@@ -38,6 +79,30 @@ export default function TestPage() {
           </Animate>
         </Animate>
       </div>
+
+      <h2>Staggered Animation</h2>
+      {Array.from({ length: 5 }, (_, index) => (
+        <Animate
+          key={index}
+          type="fade"
+          duration={0.5}
+          delay={index * 0.2}
+          opacity={{ start: 0, end: 1 }}
+        >
+          <Card
+            style={{
+              padding: '20px',
+              background: '#f0f0f0',
+              borderRadius: '8px',
+              width: '200px',
+              marginBottom: '10px',
+            }}
+          >
+            Staggered Fade In {index + 1}
+          </Card>
+        </Animate>
+      ))}
+      <Card></Card>
 
       <h2>Using Wrappers (composition not working!)</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
@@ -58,13 +123,11 @@ export default function TestPage() {
           </SlideAnimationWrapper>
         </ScaleAnimationWrapper>
       </div>
-
       <h1>Enhanced Animation Component Test</h1>
       <p>
         This page demonstrates the simplified API and improved directional logic
         for animations.
       </p>
-
       <h2>Fade Animation</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate
@@ -85,7 +148,6 @@ export default function TestPage() {
           </Card>
         </Animate>
       </div>
-
       <h2>Slide Animation (Direction by sign)</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate
@@ -124,7 +186,6 @@ export default function TestPage() {
           </div>
         </Animate>
       </div>
-
       <h2>Scale Animation</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate type="scale" duration={1} delay={0.2} scale={0.5}>
@@ -140,7 +201,6 @@ export default function TestPage() {
           </div>
         </Animate>
       </div>
-
       <h2>Rotate Animation (Direction by sign)</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate
@@ -179,7 +239,6 @@ export default function TestPage() {
           </div>
         </Animate>
       </div>
-
       <h2>Bounce Animation (Direction by sign)</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate
@@ -218,7 +277,6 @@ export default function TestPage() {
           </div>
         </Animate>
       </div>
-
       <h2>Custom Easing Example</h2>
       <div style={{ display: 'flex', gap: '20px', marginBottom: '40px' }}>
         <Animate
@@ -265,8 +323,10 @@ export const ScaleAnimationWrapper = ({
 // Example component using the generated animation: slide
 export const SlideAnimationWrapper = ({
   children,
+  axis = 'x', // Default to x-axis
 }: {
   children: React.ReactNode;
+  axis?: 'x' | 'y'; // Add axis prop
 }) => {
   // Wrap the content you want to animate with the <Animate> component.
   // Make sure the direct child can accept a ref (like a standard HTML element or forwardRef component).
@@ -275,6 +335,7 @@ export const SlideAnimationWrapper = ({
       type="slide"
       easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
       distance={-158}
+      axis={axis} // Pass axis to Animate component
     >
       {children}
     </Animate>

@@ -1,4 +1,3 @@
-// src/components/profile/SignOutButton.tsx
 'use client';
 
 import { useState } from 'react';
@@ -10,6 +9,10 @@ import { createClient } from '@/app/utils/supabase/client';
 
 import styles from '../styles/components.module.scss';
 
+/**
+ * Renders a button that signs out the current user.
+ * It handles the sign-out process with Supabase and redirects to the home page.
+ */
 export function SignOutButton() {
   const [isLoading, setIsLoading] = useState(false);
 

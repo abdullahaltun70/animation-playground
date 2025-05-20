@@ -3,7 +3,7 @@ import React, { ReactNode, Suspense } from 'react';
 import { ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 
-import Loading from '@/app/(auth)/loading'; // Gebruik de layout specifieke styles
+import Loading from '@/app/(auth)/loading';
 
 import styles from './login/styles/Login.module.scss';
 

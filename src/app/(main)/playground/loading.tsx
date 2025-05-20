@@ -7,7 +7,7 @@ import styles from './styles/loading.module.scss';
 export default function Loading() {
   return (
     <Flex className={styles.container}>
-      {/* ---------- LEFT : animation preview ---------- */}
+      {/* LEFT : animation preview */}
       <Box className={styles.previewArea}>
         <Box className={`${styles.skeleton} ${styles.preview}`} />
 
@@ -18,7 +18,7 @@ export default function Loading() {
         </Flex>
       </Box>
 
-      {/* ---------- RIGHT : config‑panel ---------- */}
+      {/* RIGHT : config‑panel */}
       <Box className={styles.panelWrapper}>
         <Box className={`${styles.skeleton} ${styles.panelHeader}`} />
 

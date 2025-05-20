@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 
 import { CopyIcon } from '@radix-ui/react-icons';
 import { Box, Button, Dialog, Flex, Tabs, Text } from '@radix-ui/themes';
@@ -14,8 +14,6 @@ import { ConfigModel } from '@/types/animations';
 import ConfigList from './components/ConfigList';
 import styles from './Profile.module.scss';
 
-// TODO: REFACTOR THIS COMPONENT AND IMPLEMENT THE
-//  CONFIGLIST COMPONENT
 export default function ProfilePage() {
   const router = useRouter();
   const [allConfigs, setAllConfigs] = useState<ConfigModel[]>([]);
@@ -31,7 +29,10 @@ export default function ProfilePage() {
   const [configToDeleteId, setConfigToDeleteId] = useState<string | null>(null);
   const { showToast } = useToast();
 
-  const fetchAllConfigs = async () => {
+  /**
+   * Fetches all publicly available animation configurations.
+   */
+  const fetchAllConfigs = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -65,15 +66,19 @@ export default function ProfilePage() {
         );
         setAllConfigs([]); // Set to empty array to avoid errors in UI
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching All configurations:', err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
-  const fetchUserConfigs = async () => {
+  /**
+   * Fetches configurations created by the currently authenticated user.
+   * Redirects to login if the user is not authenticated.
+   */
+  const fetchUserConfigs = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -107,21 +112,27 @@ export default function ProfilePage() {
         console.warn('Unexpected response structure:', data);
         setUserConfigs(Array.isArray(data) ? data : []);
       }
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error fetching User configurations:', err);
-      setError(err.message);
+      setError(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
     }
-  };
+  }, [router]);
 
-  // Handler to prepare deletion and show confirmation
+  /**
+   * Sets the configuration ID to be deleted and opens the confirmation dialog.
+   * @param {string} id - The ID of the configuration to delete.
+   */
   const handleDeleteRequest = (id: string) => {
     setConfigToDeleteId(id);
     setShowDeleteConfirm(true);
   };
 
-  // Function to actually delete the config after confirmation
+  /**
+   * Confirms and executes the deletion of a configuration.
+   * Shows success or error toasts based on the outcome.
+   */
   const handleConfirmDelete = async () => {
     if (!configToDeleteId) return;
 
@@ -153,13 +164,15 @@ export default function ProfilePage() {
         title: 'Configuration deleted successfully',
         variant: 'success',
       });
-    } catch (err: any) {
+    } catch (err) {
       console.error('Error deleting config:', err);
-      setError(err.message);
+      const errorMessage =
+        err instanceof Error ? err.message : 'An unknown error occurred';
+      setError(errorMessage);
 
       showToast({
         title: 'Error Deleting Configuration',
-        description: err.message,
+        description: errorMessage,
         variant: 'error',
       });
     } finally {
@@ -168,6 +181,10 @@ export default function ProfilePage() {
     }
   };
 
+  /**
+   * Generates a shareable URL for a given configuration ID and opens the share dialog.
+   * @param {string} id - The ID of the configuration to share.
+   */
   const handleShare = (id: string) => {
     // Generate shareable URL
     const url = new URL(window.location.origin);
@@ -191,6 +208,9 @@ export default function ProfilePage() {
       });
   };
 
+  /**
+   * Retries fetching both all configurations and user-specific configurations.
+   */
   const handleRetry = () => {
     fetchAllConfigs();
     fetchUserConfigs();
@@ -200,9 +220,9 @@ export default function ProfilePage() {
     // Fetch all configurations and user configurations on component mount
     fetchAllConfigs();
     fetchUserConfigs();
-  }, []);
+  }, [fetchAllConfigs, fetchUserConfigs]);
 
-  // Set up auth state change listener
+  // Set up auth state change listener to redirect to login if user signs out.
   useEffect(() => {
     const supabase = createClient();
 

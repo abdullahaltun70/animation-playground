@@ -1,18 +1,18 @@
+import { renderHook, act, waitFor } from '@testing-library/react';
 /// <reference types="vitest/globals" />
-import { renderHook, act } from '@testing-library/react';
-import { vitest } from 'vitest';
+import { describe, expect, it } from 'vitest';
 
 import { useAuth } from '@/app/(auth)/hooks/useAuth';
 
-import { mocks } from '../../vitest.setup';
+import { mocks } from '../../../vitest.setup';
 
-const { mockPush, mockSupabaseAuth } = mocks; // Get the auth object
+const { mockPush, mockSupabaseAuth, mockReplace } = mocks; // Get the auth object
 
 describe('useAuth', () => {
   // beforeEach and afterEach are now handled globally by vitest.setup.ts
 
   // Test successful authentication
-  it('should authenticate user and redirect to profile when credentials are valid', async () => {
+  it('should successfully call signInWithPassword and update state', async () => {
     const { result } = renderHook(() => useAuth());
 
     // Act
@@ -30,9 +30,12 @@ describe('useAuth', () => {
       email: 'test@example.com',
       password: 'password123',
     });
-    expect(mockPush).toHaveBeenCalledWith('/profile');
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    // Ensure router.replace is not called by the hook for this scenario
+    expect(mockReplace).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
   });
 
   // handleGoogleSignIn initiates Google OAuth flow correctly
@@ -47,9 +50,14 @@ describe('useAuth', () => {
     // Assert
     expect(mockSupabaseAuth.signInWithOAuth).toHaveBeenCalledWith({
       provider: 'google',
+      options: {
+        redirectTo: 'http://localhost:3000/auth/callback', // Adjust this URL as needed
+      },
     });
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
   });
 
   // Test invalid credentials
@@ -57,15 +65,11 @@ describe('useAuth', () => {
     // Arrange: Override the default mock for THIS test to return an error
     const mockApiError = { message: 'Invalid login credentials' }; // Simulate Supabase error object structure
     mockSupabaseAuth.signInWithPassword.mockResolvedValueOnce({
-      data: { user: null, session: null }, // Or whatever Supabase returns on failure
-      error: mockApiError,
+      data: { user: null, session: null },
+      error: mockApiError as unknown as { message: string }, // Cast to a specific error type
     });
-    // Mock console.error used inside handleAuthAction's catch block
-    const consoleErrorSpy = vitest
-      .spyOn(console, 'error')
-      .mockImplementation(() => {});
-
-    const { result } = renderHook(() => useAuth());
+    // Inject a logger into useAuth and mock it in tests
+    const { result } = renderHook(() => useAuth()); // Call useAuth without logger
 
     // Act
     await act(async () => {
@@ -81,11 +85,11 @@ describe('useAuth', () => {
       password: 'wrongpassword',
     });
     expect(mockPush).not.toHaveBeenCalled();
-    expect(result.current.loading).toBe(false);
-    // Check the user-friendly error message set by the hook's getErrorMessage
-    expect(result.current.error).toBe('Invalid email or password.');
-
-    consoleErrorSpy.mockRestore(); // Clean up the spy
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+      // Check the user-friendly error message set by the hook's getErrorMessage
+      expect(result.current.error).toBe('Invalid email or password.');
+    });
   });
 
   // handleSignUp successfully registers a new user
@@ -107,17 +111,19 @@ describe('useAuth', () => {
       password: 'password123',
     });
     expect(success).toBe(true);
-    expect(result.current.showAlert).toBe(true);
-    expect(result.current.alertTitle).toBe('Verification Sent');
-    expect(result.current.alertMessage).toBe(
-      'Verification email has been sent. Please check your inbox.'
-    );
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    await waitFor(() => {
+      expect(result.current.showAlert).toBe(true);
+      expect(result.current.alertTitle).toBe('Verification Sent');
+      expect(result.current.alertMessage).toBe(
+        'Verification email has been sent. Please check your inbox.'
+      );
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
   });
 
   // handleSignIn with email and password
-  it('should sign in with email and password correctly', async () => {
+  it('should successfully call signInWithPassword and update state on sign in', async () => {
     const { result } = renderHook(() => useAuth());
 
     // Act
@@ -129,14 +135,16 @@ describe('useAuth', () => {
     });
 
     // Assert
-    expect(result.current.error).toBeNull();
     expect(mockSupabaseAuth.signInWithPassword).toHaveBeenCalledWith({
       email: 'test@example.com',
       password: 'password123',
     });
-    expect(mockPush).toHaveBeenCalledWith('/profile');
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    // Ensure router.replace is not called by the hook for this scenario
+    expect(mockReplace).not.toHaveBeenCalled();
+    await waitFor(() => {
+      expect(result.current.error).toBeNull();
+      expect(result.current.loading).toBe(false);
+    });
   });
 
   // handlePasswordReset successfully sends reset instructions
@@ -160,12 +168,14 @@ describe('useAuth', () => {
       { redirectTo: expect.any(String) }
     );
     expect(success).toBe(true);
-    expect(result.current.showAlert).toBe(true);
-    expect(result.current.alertTitle).toBe('Reset Instructions Sent');
-    expect(result.current.alertMessage).toBe(
-      'Password reset instructions have been sent to your email.'
-    );
-    expect(result.current.loading).toBe(false);
-    expect(result.current.error).toBeNull();
+    await waitFor(() => {
+      expect(result.current.showAlert).toBe(true);
+      expect(result.current.alertTitle).toBe('Reset Instructions Sent');
+      expect(result.current.alertMessage).toBe(
+        'Password reset instructions have been sent to your email.'
+      );
+      expect(result.current.loading).toBe(false);
+      expect(result.current.error).toBeNull();
+    });
   });
 });

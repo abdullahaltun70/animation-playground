@@ -1,9 +1,6 @@
-// component to illustrate its client-side nature.">
-
-
 import AnimatedPostItem from '@/components/animated-post-item';
 
-// Interface voor de mock data
+// Interface for the mock post data
 interface Post {
   userId: number;
   id: number;
@@ -11,10 +8,10 @@ interface Post {
   body: string;
 }
 
-// Functie om mock data op te halen
+// Function to fetch mock posts
 async function getMockPosts(): Promise<Post[]> {
   try {
-    // We halen slechts 5 posts voor dit voorbeeld
+    // Fetching only 5 posts for this example
     const response = await fetch(
       'https://jsonplaceholder.typicode.com/posts?_limit=5'
     );
@@ -24,64 +21,67 @@ async function getMockPosts(): Promise<Post[]> {
     return response.json();
   } catch (error) {
     console.error('Error fetching mock posts:', error);
-    return []; // Geef een lege array terug bij een fout
+    return []; // Return an empty array in case of an error
   }
 }
 
-// Dit is de Server Component pagina
+// This is the Server Component page
 export default async function ServerComponentTestPage() {
   const posts = await getMockPosts();
 
   return (
     <div style={{ padding: '20px' }}>
       <h1>
-        Server Component Test met <code>&lt;Animate /&gt;</code> (Correcte Aanpak)
+        Server Component Test with <code>&lt;Animate /&gt;</code> (Correct
+        Approach)
       </h1>
       <p>
-        Deze pagina is een Server Component. We halen data op de server op en geven
-        deze vervolgens door aan een <strong>Client Component</strong> (`AnimatedPostItem`)
-        die de <code>&lt;Animate /&gt;</code> component gebruikt voor de animaties.
+        This page is a Server Component. We fetch data on the server and then
+        pass it to a <strong>Client Component</strong> (`AnimatedPostItem`)
+        which uses the <code>&lt;Animate /&gt;</code> component for animations.
       </p>
       <p>
-        <strong>Verwachte uitkomst:</strong> De posts worden nu correct geanimeerd
-        omdat de <code>&lt;Animate /&gt;</code> component binnen een Client Component
-        wordt uitgevoerd.
+        <strong>Expected outcome:</strong> The posts will now be correctly
+        animated because the <code>&lt;Animate /&gt;</code> component is
+        executed within a Client Component.
       </p>
 
-      <h2>Mock Posts (Geanimeerd via Client Component):</h2>
+      <h2>Mock Posts (Animated via Client Component):</h2>
       {posts.length > 0 ? (
         posts.map((post, index) => (
-          // Gebruik de AnimatedPostItem Client Component
+          // Use the AnimatedPostItem Client Component
           <AnimatedPostItem
             key={post.id}
             post={post}
-            animationDelay={index * 0.2}
+            animationDelay={index * 0.2} // Stagger animation for each post
           />
         ))
       ) : (
-        <p>Geen posts opgehaald of er is een fout opgetreden.</p>
+        <p>No posts fetched or an error occurred.</p>
       )}
 
       <hr style={{ margin: '30px 0' }} />
 
-      <h2>Uitleg</h2>
+      <h2>Explanation</h2>
       <p>
-        De <code>&lt;Animate /&gt;</code> component van{' '}
+        The <code>&lt;Animate /&gt;</code> component from{' '}
         <code>animation-library-test-abdullah-altun</code>
-        is ontworpen voor Client Components omdat het React hooks (
-        <code>useEffect</code>, <code>useRef</code>, <code>useState</code>) gebruikt voor zijn
-        functionaliteit. Server Components ondersteunen deze hooks niet.
+        is designed for Client Components because it uses React hooks (
+        <code>useEffect</code>, <code>useRef</code>, <code>useState</code>) for
+        its functionality. Server Components do not support these hooks.
       </p>
       <p>
-        Door de data (<code>posts</code>) die in de Server Component is opgehaald,
-        door te geven aan een specifieke Client Component (`AnimatedPostItem`),
-        kan de animatielogica correct worden uitgevoerd in de browser.
-        De `AnimatedPostItem` component is gemarkeerd met <code>'use client';</code>,
-        waardoor het gebruik van hooks binnen die component (en dus binnen de
-        geneste <code>&lt;Animate /&gt;</code>) is toegestaan.
+        By passing the data (<code>posts</code>) fetched in the Server Component
+        to a specific Client Component (`AnimatedPostItem`), the animation logic
+        can be correctly executed in the browser. The `AnimatedPostItem`
+        component is marked with <code>&apos;use client&apos;;</code>, which
+        allows the use of hooks within that component (and thus within the
+        nested <code>&lt;Animate /&gt;</code>).
       </p>
       <p>
-        De Client Component <code>AnimatedPostItem</code> ziet er zo uit (zorg ervoor dat deze bestaat, bijvoorbeeld in <code>src/components/animated-post-item.tsx</code>):
+        The Client Component <code>AnimatedPostItem</code> looks like this
+        (ensure it exists, for example, in{' '}
+        <code>src/components/animated-post-item.tsx</code>):
       </p>
       <pre
         style={{
@@ -93,7 +93,7 @@ export default async function ServerComponentTestPage() {
       >
         {`
 // src/components/animated-post-item.tsx
-'use client'; // Markeer als Client Component
+'use client'; // Mark as Client Component
 
 import { Animate } from 'animation-library-test-abdullah-altun';
 

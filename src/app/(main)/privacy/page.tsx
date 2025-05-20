@@ -1,5 +1,10 @@
 import styles from './Privacy.module.scss';
 
+/**
+ * Renders the Privacy Policy page.
+ * Displays information about data collection, usage, storage, cookies, user rights, and contact details.
+ * The "Last updated" date is dynamically generated based on the current date.
+ */
 export default function PrivacyPage() {
   return (
     <div className={styles.privacyContainer}>

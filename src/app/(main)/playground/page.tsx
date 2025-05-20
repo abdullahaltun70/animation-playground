@@ -17,7 +17,7 @@ import { ConfigPanel } from '@/components/config-panel/ConfigPanel';
 import styles from './styles/Playground.module.scss';
 
 export default function PlaygroundPage() {
-  // Use custom hooks to manage state
+  // Custom hooks for state management
   const {
     animationConfig,
     setAnimationConfig,
@@ -49,6 +49,10 @@ export default function PlaygroundPage() {
   const [isCopying, setIsCopying] = useState(false);
   const [copyCompleted, setCopyCompleted] = useState(false);
 
+  /**
+   * Handles copying the current animation configuration.
+   * Sets loading and success states for UI feedback.
+   */
   const handleCopyConfig = async () => {
     setIsCopying(true);
     try {
@@ -70,7 +74,7 @@ export default function PlaygroundPage() {
 
       {loading && <LoadingIndicator />}
 
-      {/* Read only banner if the user is viewing someone else's configuration */}
+      {/* Display a banner if the user is viewing a read-only configuration */}
       {isReadOnly && (
         <Card className={styles.readOnlyBanner}>
           <Flex align="center" gap="2">
@@ -99,7 +103,7 @@ export default function PlaygroundPage() {
       )}
 
       <Flex className={styles.container}>
-        {/* Left side - Animation Preview Area */}
+        {/* Left side: Animation Preview Area */}
         <AnimationPreview
           config={animationConfig}
           configId={configId}
@@ -107,7 +111,7 @@ export default function PlaygroundPage() {
           onExport={handleExport}
         />
 
-        {/* Right side - Config Panel */}
+        {/* Right side: Config Panel */}
         <Box className={styles.configAreaWrapper}>
           <ConfigPanel
             initialConfig={animationConfig}
@@ -120,7 +124,7 @@ export default function PlaygroundPage() {
         </Box>
       </Flex>
 
-      {/* Share Dialog */}
+      {/* Share Dialog Modal */}
       <ShareDialog
         open={shareDialogOpen}
         onOpenChange={setShareDialogOpen}
@@ -129,7 +133,7 @@ export default function PlaygroundPage() {
         copySuccess={copySuccess}
       />
 
-      {/* Export Dialog */}
+      {/* Export Dialog Modal */}
       <ExportDialog
         open={exportDialogOpen}
         onOpenChange={setExportDialogOpen}

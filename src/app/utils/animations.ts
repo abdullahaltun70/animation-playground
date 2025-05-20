@@ -1,6 +1,6 @@
-// Utility functions for animations
-
 import { AnimationConfig } from '@/types/animations';
+
+// Utility functions for animations
 
 /**
  * Animation configuration definitions for generating keyframes
@@ -76,6 +76,7 @@ const DEFAULTS = {
   distance: 50,
   degrees: 360,
   scale: 0.8,
+  axis: 'x', // Added default axis
 };
 
 /**
@@ -102,7 +103,6 @@ export function generateCSSCode(config: AnimationConfig): string {
 
 `;
 
-  // Add keyframes based on type
   const definition = ANIMATION_DEFINITIONS[config.type];
   css += definition.getKeyframes(config);
 
@@ -110,94 +110,16 @@ export function generateCSSCode(config: AnimationConfig): string {
 }
 
 /**
- * Generates React component code for the animation configuration
- * using the new AnimateElement component that preserves DOM structure
- */
-// export function generateReactComponent(config: AnimationConfig): string {
-//   const { type, duration, delay, easing } = config;
-//   const definition = ANIMATION_DEFINITIONS[config.type];
-
-//   let component = `import React from 'react';\n`;
-//   component += `import { AnimateElement } from '@/components/AnimateElement';\n\n`;
-//   component += `// Animation component generated from ${config.name || 'Animation Playground'}\n`;
-//   component += `export const ${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
-//   component += `    children, \n`;
-//   component += `}: {\n`;
-//   component += `    children: React.ReactElement; \n`;
-//   component += `}) => {\n`;
-//   component += `  const animationConfig = {\n`;
-//   component += `    type: '${type}',\n`;
-//   component += `    duration: ${duration},\n`;
-//   component += `    delay: ${delay},\n`;
-//   component += `    easing: '${easing}',\n`;
-
-//   // Add type-specific properties
-//   if (type === 'fade' && config.opacity) {
-//     component += `    opacity: {\n`;
-//     component += `      start: ${config.opacity.start},\n`;
-//     component += `      end: ${config.opacity.end},\n`;
-//     component += `    },\n`;
-//   }
-
-//   if (
-//     (type === 'slide' || type === 'bounce') &&
-//     config.distance !== undefined
-//   ) {
-//     component += `    distance: ${config.distance},\n`;
-//   }
-
-//   if (type === 'scale' && config.scale !== undefined) {
-//     component += `    scale: ${config.scale},\n`;
-//   }
-
-//   if (type === 'rotate' && config.degrees !== undefined) {
-//     component += `    degrees: ${config.degrees},\n`;
-//   }
-
-//   component += `  };\n\n`;
-
-//   component += `  return (\n`;
-//   component += `    <AnimateElement config={animationConfig}>\n`;
-//   component += `      {children}\n`;
-//   component += `    </AnimateElement>\n`;
-//   component += `  );\n`;
-//   component += `};\n\n`;
-
-//   // Add hook example
-//   component += `// Alternative implementation using hook\n`;
-//   component += `export const Use${type.charAt(0).toUpperCase() + type.slice(1)}Animation = ({ \n`;
-//   component += `    children, \n`;
-//   component += `}: {\n`;
-//   component += `    children: React.ReactElement; \n`;
-//   component += `}) => {\n`;
-//   component += `  const { ref, key, replay } = useAnimation(animationConfig);\n\n`;
-//   component += `  // Clone the child element and add the ref\n`;
-//   component += `  return React.cloneElement(children, { ref, key });\n`;
-//   component += `};\n\n`;
-
-//   // Add CSS comment
-//   component += `// Add this CSS to your stylesheet or import the animation library:\n`;
-//   const keyframes = definition
-//     .getKeyframes(config)
-//     .split('\n')
-//     .map((line) => `// ${line}`)
-//     .join('\n');
-//   component += keyframes + '\n';
-
-//   return component;
-// }
-
-/**
  * Generates a concise React code snippet using the <Animate> component.
  * Only includes props that differ from the library's defaults.
  */
 export function generateReactComponent(config: AnimationConfig): string {
-  const { type, name } = config;
+  const { type } = config;
   const componentName = `// ${type.charAt(0).toUpperCase() + type.slice(1)} Animation \n`;
 
-  // Build props string, ONLY including non-default values
   const propsArray: string[] = [`type="${type}"`]; // Type is always required
 
+  // Common props
   if (config.duration !== undefined && config.duration !== DEFAULTS.duration) {
     propsArray.push(`duration={${config.duration}}`);
   }
@@ -208,52 +130,88 @@ export function generateReactComponent(config: AnimationConfig): string {
     propsArray.push(`easing="${config.easing}"`);
   }
 
-  if (type === 'fade' && config.opacity) {
-    const { start, end } = config.opacity;
-    const startProp =
-      start !== undefined && start !== DEFAULTS.opacityStart
-        ? `start: ${start}`
-        : '';
-    const endProp =
-      end !== undefined && end !== DEFAULTS.opacityEnd ? `end: ${end}` : '';
-    if (startProp || endProp) {
-      propsArray.push(
-        `opacity={{ ${startProp}${startProp && endProp ? ', ' : ''}${endProp} }}`
-      );
+  // Type-specific props
+  if (type === 'fade') {
+    if (config.opacity) {
+      const startVal =
+        config.opacity.start !== undefined
+          ? config.opacity.start
+          : DEFAULTS.opacityStart;
+      const endVal =
+        config.opacity.end !== undefined
+          ? config.opacity.end
+          : DEFAULTS.opacityEnd;
+      if (
+        startVal !== DEFAULTS.opacityStart ||
+        endVal !== DEFAULTS.opacityEnd
+      ) {
+        propsArray.push(`opacity={{ start: ${startVal}, end: ${endVal} }}`);
+      }
+    }
+  } else if (type === 'slide') {
+    if (
+      config.distance !== undefined &&
+      config.distance !== DEFAULTS.distance
+    ) {
+      propsArray.push(`distance={${config.distance}}`);
+    }
+    if (config.axis !== undefined && config.axis !== DEFAULTS.axis) {
+      propsArray.push(`axis="${config.axis}"`);
+    }
+  } else if (type === 'scale') {
+    if (config.scale !== undefined && config.scale !== DEFAULTS.scale) {
+      propsArray.push(`scale={${config.scale}}`);
+    }
+  } else if (type === 'rotate') {
+    if (config.degrees !== undefined) {
+      if (
+        typeof config.degrees === 'object' &&
+        config.degrees !== null &&
+        !Array.isArray(config.degrees)
+      ) {
+        // Properly format object-based degrees, e.g., { start: 0, end: 360 }
+        // Ensures that we only include start/end if they are valid numbers.
+        const startVal =
+          typeof config.degrees.start === 'number'
+            ? `start: ${config.degrees.start}`
+            : null;
+        const endVal =
+          typeof config.degrees.end === 'number'
+            ? `end: ${config.degrees.end}`
+            : null;
+
+        const degreeParts = [startVal, endVal].filter((part) => part !== null);
+
+        if (degreeParts.length > 0) {
+          const degreePropsString = degreeParts.join(', ');
+          // This generates a string like: degrees={{ start: 0, end: 360 }} or degrees={{ start: 0 }}
+          propsArray.push(`degrees={{ ${degreePropsString} }}`);
+        }
+        // If config.degrees is an object but doesn't have valid start/end numbers,
+        // no 'degrees' prop will be added, which is cleaner than an empty or malformed one.
+      } else if (
+        typeof config.degrees === 'number' &&
+        config.degrees !== DEFAULTS.degrees
+      ) {
+        // Handle if degrees is a simple number and different from the default.
+        propsArray.push(`degrees={${config.degrees}}`);
+      }
+    }
+  } else if (type === 'bounce') {
+    if (
+      config.distance !== undefined &&
+      config.distance !== DEFAULTS.distance
+    ) {
+      propsArray.push(`distance={${config.distance}}`);
     }
   }
-  if (
-    (type === 'slide' || type === 'bounce') &&
-    config.distance !== undefined &&
-    config.distance !== DEFAULTS.distance
-  ) {
-    propsArray.push(`distance={${config.distance}}`);
-  }
-  if (
-    type === 'scale' &&
-    config.scale !== undefined &&
-    config.scale !== DEFAULTS.scale
-  ) {
-    propsArray.push(`scale={${config.scale}}`);
-  }
-  if (
-    type === 'rotate' &&
-    config.degrees !== undefined &&
-    config.degrees !== DEFAULTS.degrees
-  ) {
-    propsArray.push(`degrees={${config.degrees}}`);
+
+  let propsString = '';
+  if (propsArray.length > 1) {
+    propsString = `\n      ${propsArray.slice(1).join('\n      ')}\n    `;
+  } else {
+    propsString = ' ';
   }
 
-  // Format props nicely indented
-  const propsString = propsArray.map((p) => `      ${p}`).join('\n');
-
-  // --- Generate Code Snippet ---
-
-  let component = `${componentName}`;
-  component += `<Animate\n`;
-  component += `${propsString}\n    >\n`;
-  component += `    {children}\n`;
-  component += `</Animate>\n`;
-
-  return component;
+  return `${componentName}<Animate ${propsArray[0]}${propsString}>\n    {children}\n</Animate>`;
 }
