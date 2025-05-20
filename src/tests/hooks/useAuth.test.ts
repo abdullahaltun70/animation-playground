@@ -12,7 +12,7 @@ describe('useAuth', () => {
   // beforeEach and afterEach are now handled globally by vitest.setup.ts
 
   // Test successful authentication
-  it('should authenticate user and redirect to profile when credentials are valid', async () => {
+  it('should successfully call signInWithPassword and update state', async () => {
     const { result } = renderHook(() => useAuth());
 
     // Act
@@ -30,9 +30,8 @@ describe('useAuth', () => {
       email: 'test@example.com',
       password: 'password123',
     });
-    expect(mockReplace).toHaveBeenCalledWith(
-      `${window.location.origin}/auth/callback`
-    );
+    // Ensure router.replace is not called by the hook for this scenario
+    expect(mockReplace).not.toHaveBeenCalled();
     await waitFor(() => {
       expect(result.current.loading).toBe(false);
       expect(result.current.error).toBeNull();
@@ -124,7 +123,7 @@ describe('useAuth', () => {
   });
 
   // handleSignIn with email and password
-  it('should sign in with email and password correctly', async () => {
+  it('should successfully call signInWithPassword and update state on sign in', async () => {
     const { result } = renderHook(() => useAuth());
 
     // Act
@@ -136,17 +135,15 @@ describe('useAuth', () => {
     });
 
     // Assert
+    expect(mockSupabaseAuth.signInWithPassword).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+    // Ensure router.replace is not called by the hook for this scenario
+    expect(mockReplace).not.toHaveBeenCalled();
     await waitFor(() => {
       expect(result.current.error).toBeNull();
-      expect(mockSupabaseAuth.signInWithPassword).toHaveBeenCalledWith({
-        email: 'test@example.com',
-        password: 'password123',
-      });
-      expect(mockReplace).toHaveBeenCalledWith(
-        `${window.location.origin}/auth/callback`
-      );
       expect(result.current.loading).toBe(false);
-      expect(result.current.error).toBeNull();
     });
   });
 

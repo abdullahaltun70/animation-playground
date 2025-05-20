@@ -1,7 +1,6 @@
 import React, { useCallback, useState } from 'react';
 
 import { AuthError } from '@supabase/supabase-js';
-import { useRouter } from 'next/navigation';
 
 import { createClient } from '@/app/utils/supabase/client';
 
@@ -111,7 +110,8 @@ export const useAuth = (): UseAuthReturn => {
   });
 
   const supabase = createClient();
-  const router = useRouter();
+  // const router = useRouter(); // router is not directly used in this hook after previous changes.
+                                // It was only part of handleSignIn's dependency array.
 
   // Validate email and execute action if valid
   const validateAndExecute = useCallback(
@@ -161,7 +161,7 @@ export const useAuth = (): UseAuthReturn => {
         setLoading(false);
       }
     },
-    [setLoading, setError]
+    [setLoading, setError] // Removed router from here as well, if it was ever implicitly used by successCallback
   );
 
   // Display an alert with the specified title and message
@@ -193,7 +193,7 @@ export const useAuth = (): UseAuthReturn => {
         },
       })
     );
-  }, [handleAuthAction, supabase.auth]); // Removed router from dependencies
+  }, [handleAuthAction, supabase.auth]);
 
   /**
    * Email/password sign in handler
@@ -208,16 +208,17 @@ export const useAuth = (): UseAuthReturn => {
           () => supabase.auth.signInWithPassword(data),
           () => {
             // SUCCESS CALLBACK FOR signInWithPassword
-            // The redirect is now handled by AuthProvider's onAuthStateChange
+            // AuthProvider's onAuthStateChange will handle the redirect
             console.log(
               'Password sign-in successful. AuthProvider will handle state and redirect.'
             );
-            router.replace(`${window.location.origin}/auth/callback`);
+            // router.replace(`${window.location.origin}/auth/callback`); // Line removed
           }
         )
       );
     },
-    [validateAndExecute, handleAuthAction, supabase.auth, router]
+    // router removed from dependencies as it's not used in the callback for navigation.
+    [validateAndExecute, handleAuthAction, supabase.auth]
   );
 
   /**
