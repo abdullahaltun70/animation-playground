@@ -18,7 +18,8 @@ export default function ProfilePage() {
   const router = useRouter();
   const [allConfigs, setAllConfigs] = useState<ConfigModel[]>([]);
   const [userConfigs, setUserConfigs] = useState<ConfigModel[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [userConfigsLoading, setUserConfigsLoading] = useState(true);
+  const [allConfigsLoading, setAllConfigsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
   const [shareUrl, setShareUrl] = useState('');
@@ -33,11 +34,10 @@ export default function ProfilePage() {
    * Fetches all publicly available animation configurations.
    */
   const fetchAllConfigs = useCallback(async () => {
-    setLoading(true);
+    setAllConfigsLoading(true);
     setError(null);
 
     try {
-      // Include credentials to ensure cookies are sent with the request
       const response = await fetch('/api/configs', {
         credentials: 'include',
         headers: {
@@ -50,27 +50,22 @@ export default function ProfilePage() {
       }
 
       const data = await response.json();
-
-      // Check if the data is directly an array or has a configs property
       if (Array.isArray(data)) {
-        // API is returning an array directly
         setAllConfigs(data);
       } else if (data.configs && Array.isArray(data.configs)) {
-        // API is returning an object with a configs property
         setAllConfigs(data.configs);
       } else {
-        // Unexpected format, log but don't error
         console.warn(
-          'Unexpected response structure, but trying to handle gracefully:',
+          'Unexpected response structure for all configs, but trying to handle gracefully:',
           data
         );
-        setAllConfigs([]); // Set to empty array to avoid errors in UI
+        setAllConfigs([]);
       }
     } catch (err) {
       console.error('Error fetching All configurations:', err);
       setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false);
+      setAllConfigsLoading(false);
     }
   }, []);
 
@@ -79,11 +74,10 @@ export default function ProfilePage() {
    * Redirects to login if the user is not authenticated.
    */
   const fetchUserConfigs = useCallback(async () => {
-    setLoading(true);
+    setUserConfigsLoading(true);
     setError(null);
 
     try {
-      // Include credentials to ensure cookies are sent with the request
       const response = await fetch('/api/configs/my-configs', {
         credentials: 'include',
         headers: {
@@ -92,7 +86,6 @@ export default function ProfilePage() {
       });
 
       if (response.status === 401) {
-        // If unauthorized, redirect to login
         router.push('/login');
         return;
       }
@@ -102,21 +95,19 @@ export default function ProfilePage() {
       }
 
       const data = await response.json();
-      // Extract the configs array from the response
       if (data.configs && Array.isArray(data.configs)) {
         setUserConfigs(data.configs);
       } else if (Array.isArray(data)) {
         setUserConfigs(data);
       } else {
-        // If the response structure is different than expected
-        console.warn('Unexpected response structure:', data);
-        setUserConfigs(Array.isArray(data) ? data : []);
+        console.warn('Unexpected response structure for user configs:', data);
+        setUserConfigs([]);
       }
     } catch (err) {
       console.error('Error fetching User configurations:', err);
       setError(err instanceof Error ? err.message : String(err));
     } finally {
-      setLoading(false);
+      setUserConfigsLoading(false);
     }
   }, [router]);
 
@@ -150,7 +141,6 @@ export default function ProfilePage() {
         throw new Error(errorData.error || 'Failed to delete configuration');
       }
 
-      // Remove the deleted config from both userConfigs and allConfigs state
       setUserConfigs((prev) =>
         prev.filter((config) => config.id !== configToDeleteId)
       );
@@ -159,7 +149,6 @@ export default function ProfilePage() {
       );
 
       setShowDeleteConfirm(false);
-
       showToast({
         title: 'Configuration deleted successfully',
         variant: 'success',
@@ -169,7 +158,6 @@ export default function ProfilePage() {
       const errorMessage =
         err instanceof Error ? err.message : 'An unknown error occurred';
       setError(errorMessage);
-
       showToast({
         title: 'Error Deleting Configuration',
         description: errorMessage,
@@ -186,11 +174,9 @@ export default function ProfilePage() {
    * @param {string} id - The ID of the configuration to share.
    */
   const handleShare = (id: string) => {
-    // Generate shareable URL
     const url = new URL(window.location.origin);
     url.pathname = '/playground';
     url.searchParams.set('id', id);
-
     setShareUrl(url.toString());
     setShareDialogOpen(true);
   };
@@ -208,34 +194,20 @@ export default function ProfilePage() {
       });
   };
 
-  /**
-   * Retries fetching both all configurations and user-specific configurations.
-   */
-  const handleRetry = () => {
-    fetchAllConfigs();
-    fetchUserConfigs();
-  };
-
   useEffect(() => {
-    // Fetch all configurations and user configurations on component mount
     fetchAllConfigs();
     fetchUserConfigs();
   }, [fetchAllConfigs, fetchUserConfigs]);
 
-  // Set up auth state change listener to redirect to login if user signs out.
   useEffect(() => {
     const supabase = createClient();
-
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_OUT' || !session) {
-        // If signed out during the session, redirect to login
         router.push('/login');
       }
     });
-
-    // Clean up subscription
     return () => {
       subscription.unsubscribe();
     };
@@ -253,14 +225,13 @@ export default function ProfilePage() {
           <Tabs.Content value="my-configs">
             <ConfigList
               configs={userConfigs}
-              loading={loading}
+              loading={userConfigsLoading}
               error={error}
               emptyStateMessage="You don’t have any saved configurations yet."
               loadingLabel="Loading your configurations…"
-              onRetry={handleRetry}
+              onRetry={fetchUserConfigs}
               onDeleteAction={handleDeleteRequest}
               onShareAction={handleShare}
-              // authorName={authorName}
               emptyStateAction={
                 <Button onClick={() => router.push('/playground')}>
                   Create Your First Animation
@@ -272,13 +243,12 @@ export default function ProfilePage() {
           <Tabs.Content value="all-configs">
             <ConfigList
               configs={allConfigs}
-              loading={loading}
+              loading={allConfigsLoading}
               error={error}
               emptyStateMessage="No configurations found yet 😢 — be the first to share!"
               loadingLabel="Loading all configurations…"
-              onRetry={handleRetry}
+              onRetry={fetchAllConfigs}
               onShareAction={handleShare}
-              // authorName={authorName}
               emptyStateAction={
                 <Button onClick={() => router.push('/playground')}>
                   Create Your First Animation
@@ -289,14 +259,12 @@ export default function ProfilePage() {
         </Box>
       </Tabs.Root>
 
-      {/* Share Dialog */}
       <Dialog.Root open={shareDialogOpen} onOpenChange={setShareDialogOpen}>
         <Dialog.Content>
           <Dialog.Title>Share Animation Configuration</Dialog.Title>
           <Dialog.Description>
             Anyone with this link can view this animation configuration.
           </Dialog.Description>
-
           <Flex gap="3" mt="4">
             <input
               type="text"
@@ -313,13 +281,11 @@ export default function ProfilePage() {
               <CopyIcon /> Copy
             </Button>
           </Flex>
-
           {copySuccess && (
             <Text color="green" mt="2">
               URL copied to clipboard!
             </Text>
           )}
-
           <Flex gap="3" mt="4" justify="end">
             <Dialog.Close>
               <Button variant="soft">Close</Button>
@@ -327,11 +293,12 @@ export default function ProfilePage() {
           </Flex>
         </Dialog.Content>
       </Dialog.Root>
+
       <AlertNotification
         showAlert={showDeleteConfirm}
         setShowAlert={setShowDeleteConfirm}
         alertTitle="Confirm Deletion"
-        alertMessage={`Are you sure you want to delete the configuration: ${userConfigs.find((c) => c.id === configToDeleteId)?.title ?? ''} ? This action cannot be undone.`}
+        alertMessage={`Are you sure you want to delete the configuration: ${userConfigs.find((c) => c.id === configToDeleteId)?.title ?? ''}? This action cannot be undone.`}
         onConfirm={handleConfirmDelete}
         confirmButtonText={isDeleting ? 'Deleting...' : 'Delete'}
       />
