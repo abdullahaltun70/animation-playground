@@ -38,29 +38,29 @@ export const configsTable = pgTable(
       foreignColumns: [authUsers.id],
       name: 'configs_table_user_id_fkey',
     }).onDelete('cascade'),
-    pgPolicy('Enable users to view their own data only', {
+    pgPolicy('Authenticated users can insert their own configs', {
+      as: 'permissive',
+      for: 'insert',
+      to: ['authenticated'],
+      withCheck: sql`(auth.uid() = user_id)`,
+    }),
+    pgPolicy('Users can delete their own configs', {
+      as: 'permissive',
+      for: 'delete',
+      to: ['authenticated'],
+    }),
+    pgPolicy('Users can update their own configs', {
+      as: 'permissive',
+      for: 'update',
+      to: ['authenticated'],
+    }),
+    pgPolicy('Users can view their own or public configs', {
       as: 'permissive',
       for: 'select',
-      to: ['authenticated'],
-      using: sql`(( SELECT auth.uid() AS uid) = user_id)`,
-    }),
-    pgPolicy('Enable insert for users based on user_id', {
-      as: 'permissive',
-      for: 'insert',
       to: ['public'],
     }),
-    pgPolicy('Enable insert for authenticated users only', {
-      as: 'permissive',
-      for: 'insert',
-      to: ['authenticated'],
-    }),
-    pgPolicy('Enable insert for authenticated users', {
-      as: 'permissive',
-      for: 'insert',
-      to: ['authenticated'],
-    }),
   ]
-);
+).enableRLS();
 
 export type Config = typeof configsTable.$inferSelect;
 export type NewConfig = typeof configsTable.$inferInsert;

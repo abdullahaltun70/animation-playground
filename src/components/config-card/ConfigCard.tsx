@@ -12,7 +12,7 @@ import {
   Pencil2Icon,
 } from '@radix-ui/react-icons';
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
-import { redirect } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 
 import { ConfigModel } from '@/types/animations';
 
@@ -31,6 +31,8 @@ export function ConfigCard({
   onShareAction,
   authorName,
 }: ConfigCardProps) {
+  const router = useRouter();
+
   const handleShare = () => {
     if (onShareAction) {
       onShareAction(config.id);
@@ -38,8 +40,7 @@ export function ConfigCard({
   };
 
   const handleEdit = () => {
-    redirect(`/playground?id=${config.id}`);
-    window.location.href = `/playground?id=${config.id}`;
+    router.push(`/playground?id=${config.id}`);
   };
 
   const formatDate = (dateString: string) => {
