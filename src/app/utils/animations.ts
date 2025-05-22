@@ -1,9 +1,12 @@
 import { AnimationConfig } from '@/types/animations';
 
-// Utility functions for animations
-
 /**
- * Animation configuration definitions for generating keyframes
+ * @constant ANIMATION_DEFINITIONS
+ * @description Defines the structure for generating CSS keyframes and animation names for different animation types.
+ * Each key corresponds to an animation type (e.g., 'fade', 'slide') and contains:
+ * - `name` (string, optional): The base name for the animation (e.g., 'fadeIn').
+ * - `getName` (function, optional): A function to dynamically generate the animation name based on config.
+ * - `getKeyframes` (function): A function that takes an `AnimationConfig` and returns the CSS @keyframes string.
  */
 const ANIMATION_DEFINITIONS = {
   fade: {
@@ -66,7 +69,13 @@ const ANIMATION_DEFINITIONS = {
   },
 };
 
-// Default values MUST match the defaults in the useAnimation hook
+/**
+ * @constant DEFAULTS
+ * @description Default values for animation properties. These are used in `generateReactComponent`
+ * to determine if a prop should be included in the generated component code (i.e., if it differs
+ * from the default).
+ * These values should ideally align with defaults used elsewhere, e.g., in a potential future `<Animate>` component or hook.
+ */
 const DEFAULTS = {
   duration: 0.5,
   delay: 0,
@@ -76,11 +85,15 @@ const DEFAULTS = {
   distance: 50,
   degrees: 360,
   scale: 0.8,
-  axis: 'x', // Added default axis
+  axis: 'x',
 };
 
 /**
- * Gets the animation name based on configuration
+ * @function getAnimationName
+ * @description Retrieves the appropriate animation name for a given configuration.
+ * Some animation types have dynamic names based on their properties (e.g., slide direction).
+ * @param {AnimationConfig} config - The animation configuration object.
+ * @returns {string} The CSS animation name.
  */
 function getAnimationName(config: AnimationConfig): string {
   const definition = ANIMATION_DEFINITIONS[config.type];
@@ -91,7 +104,11 @@ function getAnimationName(config: AnimationConfig): string {
 }
 
 /**
- * Generates CSS code for the animation configuration
+ * @function generateCSSCode
+ * @description Generates a string containing CSS rules, including keyframes,
+ * for a given animation configuration.
+ * @param {AnimationConfig} config - The animation configuration object.
+ * @returns {string} The complete CSS code string for the animation.
  */
 export function generateCSSCode(config: AnimationConfig): string {
   const { duration, delay, easing } = config;
@@ -110,16 +127,19 @@ export function generateCSSCode(config: AnimationConfig): string {
 }
 
 /**
- * Generates a concise React code snippet using the <Animate> component.
- * Only includes props that differ from the library's defaults.
+ * @function generateReactComponent
+ * @description Generates a React component string (e.g., `<Animate type="fade" ...>`)
+ * for a given animation configuration. It only includes props whose values differ
+ * from the predefined `DEFAULTS`.
+ * @param {AnimationConfig} config - The animation configuration object.
+ * @returns {string} A string representation of the React component.
  */
 export function generateReactComponent(config: AnimationConfig): string {
   const { type } = config;
   const componentName = `// ${type.charAt(0).toUpperCase() + type.slice(1)} Animation \n`;
 
-  const propsArray: string[] = [`type="${type}"`]; // Type is always required
+  const propsArray: string[] = [`type="${type}"`];
 
-  // Common props
   if (config.duration !== undefined && config.duration !== DEFAULTS.duration) {
     propsArray.push(`duration={${config.duration}}`);
   }
@@ -130,7 +150,6 @@ export function generateReactComponent(config: AnimationConfig): string {
     propsArray.push(`easing="${config.easing}"`);
   }
 
-  // Type-specific props
   if (type === 'fade') {
     if (config.opacity) {
       const startVal =
@@ -169,8 +188,6 @@ export function generateReactComponent(config: AnimationConfig): string {
         config.degrees !== null &&
         !Array.isArray(config.degrees)
       ) {
-        // Properly format object-based degrees, e.g., { start: 0, end: 360 }
-        // Ensures that we only include start/end if they are valid numbers.
         const startVal =
           typeof config.degrees.start === 'number'
             ? `start: ${config.degrees.start}`
@@ -184,16 +201,12 @@ export function generateReactComponent(config: AnimationConfig): string {
 
         if (degreeParts.length > 0) {
           const degreePropsString = degreeParts.join(', ');
-          // This generates a string like: degrees={{ start: 0, end: 360 }} or degrees={{ start: 0 }}
           propsArray.push(`degrees={{ ${degreePropsString} }}`);
         }
-        // If config.degrees is an object but doesn't have valid start/end numbers,
-        // no 'degrees' prop will be added, which is cleaner than an empty or malformed one.
       } else if (
         typeof config.degrees === 'number' &&
         config.degrees !== DEFAULTS.degrees
       ) {
-        // Handle if degrees is a simple number and different from the default.
         propsArray.push(`degrees={${config.degrees}}`);
       }
     }

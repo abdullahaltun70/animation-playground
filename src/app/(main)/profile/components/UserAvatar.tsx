@@ -10,8 +10,12 @@ import { createClient } from '@/app/utils/supabase/client';
 import styles from '../../../../components/profile/UserAvatar.module.scss';
 
 /**
- * UserAvatar component displays the user's avatar or initials.
- * It fetches user data from Supabase and updates on auth state changes.
+ * @component UserAvatar
+ * @description Displays the user's avatar, showing either their profile picture or initials.
+ * It fetches user data from Supabase upon mounting and updates in response to
+ * authentication state changes (sign-in, sign-out). Handles loading and
+ * unauthenticated states gracefully.
+ * This component does not accept any props.
  */
 export function UserAvatar() {
   const [initials, setInitials] = useState('');
@@ -30,38 +34,36 @@ export function UserAvatar() {
         if (user) {
           setIsAuthenticated(true);
 
-          // Generate initials from email if no metadata is available
           if (
             user.user_metadata &&
             Object.keys(user.user_metadata).length > 0
           ) {
-            // Get name from user metadata (e.g., Google provider)
+            // Attempt to get full name and picture from user metadata (common with OAuth providers)
             const fullName =
               user.user_metadata.name || user.user_metadata.full_name || '';
-
-            // Get image from user metadata
             const picture =
               user.user_metadata.picture || user.user_metadata.avatar_url;
 
-            // Generate initials from full name
+            // Generate initials from the full name
             const names = fullName.split(' ');
             let userInitials = '';
-
             if (names.length >= 2) {
               userInitials =
                 `${names[0][0]}${names[names.length - 1][0]}`.toUpperCase();
             } else if (names.length === 1 && names[0]) {
-              userInitials = names[0][0].toUpperCase();
+              userInitials = names[0][0].toUpperCase(); // Single name, use first letter
             }
 
             setInitials(userInitials);
             setImageUrl(picture);
           } else if (user.email) {
-            // Fallback for email/password or other providers: use first two letters of email
+            // Fallback for users without extensive metadata (e.g., email/password sign-ups):
+            // Use the first two letters of the email address as initials.
             const emailInitials = user.email.substring(0, 2).toUpperCase();
             setInitials(emailInitials);
           }
         } else {
+          // No user is signed in
           setIsAuthenticated(false);
           setInitials('');
           setImageUrl(null);
@@ -96,22 +98,23 @@ export function UserAvatar() {
 
   if (isLoading) {
     // Display a placeholder avatar while loading
+    // Render a simple placeholder during the initial loading phase.
     return <Avatar size="2" radius="full" fallback="" />;
   }
 
   if (!isAuthenticated) {
-    // Display a generic person icon if the user is not authenticated
+    // If no user is authenticated, display a generic person icon.
     return (
       <Avatar
         size="2"
         radius="full"
         className={styles.userAvatar}
-        fallback={<PersonIcon width="16" height="16" />}
+        fallback={<PersonIcon width="16" height="16" />} // Radix UI PersonIcon as fallback
       />
     );
   }
 
-  // Display the user's avatar image or fallback to initials
+  // If authenticated, display the user's avatar image if available, otherwise fallback to initials.
   return (
     <Avatar
       size="2"

@@ -19,7 +19,10 @@ interface ShareDialogProps {
 }
 
 /**
- * Dialog for sharing the animation configuration URL.
+ * @component ShareDialog
+ * @description A dialog component that displays a shareable URL for the current
+ * animation configuration and allows the user to copy it to the clipboard.
+ * @param {ShareDialogProps} props - The props for the component.
  */
 export function ShareDialog({
   open,
