@@ -1,41 +1,161 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Animation Playground
+
+Welcome to the Animation Playground! This Next.js application provides a user-friendly interface for creating, previewing, and sharing web animations. It leverages the `animation-library-test-abdullah-altun` library to power its animation capabilities and offers a seamless experience for both novice and experienced developers.
+
+## Features
+
+- **Intuitive Animation Configuration:** Easily create and customize animations (fade, slide, scale, rotate, bounce) through a simple UI.
+- **Live Preview:** Instantly see your animations in action as you configure them.
+- **Code Generation:** Generate React component code and CSS for your animations.
+- **Shareable Configurations:** Save your animation configurations and share them with others via unique URLs.
+- **User Accounts:** Sign up and log in to save and manage your animation configurations.
+- **Responsive Design:** The playground is designed to work seamlessly across various devices.
+- **Built with Modern Technologies:** Utilizes Next.js, React, TypeScript, Supabase (for backend services), and Radix UI (for UI components).
 
 ## Getting Started
 
-Scripts:
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-- run `yarn checks` to run `typecheck && lint && prettier && test`
-- run `yarn checks:fix` to run `typecheck && lint:fix && prettier:fix && test`
+### Prerequisites
 
-First, run the development server:
+- Node.js (version 18.x or higher recommended)
+- Yarn (or npm/pnpm)
+- A Supabase account and project (if you want to use the backend features like saving configurations)
+
+### Installation
+
+1.  **Clone the repository:**
+
+    ```bash
+    git clone <repository-url>
+    cd animation-playground
+    ```
+
+2.  **Install dependencies:**
+
+    ```bash
+    yarn install
+    # or
+    # npm install
+    # or
+    # pnpm install
+    ```
+
+3.  **Set up environment variables:**
+
+    Create a `.env.local` file in the root of your project and add the following environment variables. You can get these from your Supabase project settings.
+
+    ```env
+    NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+    NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+    # Optional: If you are using Supabase authentication with a JWT secret
+    # SUPABASE_JWT_SECRET=your_supabase_jwt_secret
+    ```
+
+4.  **Run database migrations (if applicable):**
+
+    This project uses Drizzle ORM. If there are database schema changes or you're setting up the database for the first time:
+
+    ```bash
+    yarn drizzle-kit generate # To generate migration files (if you made schema changes)
+    yarn drizzle-kit migrate  # To apply migrations to your database
+    ```
+
+    _Note: Ensure your database connection string is correctly configured for Drizzle, potentially in a `drizzle.config.ts` or similar, and that your Supabase database is ready._
+
+5.  **Run the development server:**
+
+    ```bash
+    yarn dev
+    ```
+
+    Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+
+## Available Scripts
+
+In the project directory, you can run:
+
+- `yarn dev`: Runs the app in development mode with Turbopack.
+- `yarn build`: Builds the app for production.
+- `yarn start`: Starts the production server.
+- `yarn lint`: Lints the codebase using Next.js's built-in ESLint configuration.
+- `yarn lint:fix`: Lints and automatically fixes issues.
+- `yarn typecheck`: Runs TypeScript type checking.
+- `yarn prettier`: Checks for Prettier formatting issues.
+- `yarn prettier:fix`: Formats files with Prettier.
+- `yarn test`: Runs Vitest tests.
+- `yarn test:watch`: Runs Vitest tests in watch mode.
+- `yarn test:coverage`: Runs Vitest tests and generates a coverage report.
+- `yarn checks`: Runs all checks (typecheck, lint, prettier, test).
+- `yarn checks:fix`: Runs all checks and attempts to fix issues.
+
+## Project Structure
+
+A brief overview of the key directories:
+
+- `public/`: Static assets.
+- `src/`:
+  - `app/`: Next.js App Router, including pages, layouts, and API routes.
+    - `(auth)/`: Routes and components related to authentication.
+    - `(main)/`: Main application routes like the playground, documentation, profile.
+  - `components/`: Shared React components used throughout the application.
+  - `context/`: React context providers (e.g., ToastContext).
+  - `db/`: Drizzle ORM schema, migrations, and database utilities.
+  - `hooks/`: Custom React hooks.
+  - `test-animations/`: Contains a test page (`page.tsx`) for demonstrating various animations using the `animation-library-test-abdullah-altun`.
+  - `tests/`: Vitest unit and integration tests.
+    - `components/`: Tests for React components.
+    - `hooks/`: Tests for custom React hooks.
+  - `types/`: TypeScript type definitions.
+- `supabase/`: Supabase specific configurations, typically for local development or migrations if not using Drizzle Kit directly for schema management with Supabase.
+- `docs/`: Generated TypeDoc documentation.
+
+## Core Technologies
+
+- **Next.js:** React framework for server-side rendering, static site generation, and more.
+- **React:** JavaScript library for building user interfaces.
+- **TypeScript:** Superset of JavaScript that adds static typing.
+- **`animation-library-test-abdullah-altun`:** The core library providing animation functionalities.
+- **Supabase:** Open-source Firebase alternative for backend services (database, auth).
+- **Drizzle ORM:** TypeScript ORM for interacting with the SQL database.
+- **Radix UI:** Unstyled, accessible UI components.
+- **Vitest:** Fast and modern testing framework.
+- **ESLint & Prettier:** For code linting and formatting.
+
+## Testing
+
+This project uses Vitest for unit and integration testing.
+
+- Run all tests: `yarn test`
+- Run tests in watch mode: `yarn test:watch`
+- Generate a coverage report: `yarn test:coverage`
+
+Test files are primarily located in the `src/tests/` directory, mirroring the structure of the code they are testing.
+
+## Documentation
+
+API and component documentation can be generated using TypeDoc:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+yarn typedoc
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+This will generate HTML documentation in the `docs/` directory.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Contributing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Contributions are welcome! If you have suggestions or want to contribute to the project, please feel free to open an issue or submit a pull request.
 
-## Learn More
+1.  Fork the Project
+2.  Create your Feature Branch (`git checkout -b feature/AmazingFeature`)
+3.  Commit your Changes (`git commit -m 'Add some AmazingFeature'`)
+4.  Push to the Branch (`git push origin feature/AmazingFeature`)
+5.  Open a Pull Request
 
-To learn more about Next.js, take a look at the following resources:
+## License
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+This project is licensed under the MIT License - see the `LICENSE` file for details (if one exists, otherwise assume it's proprietary or specify).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+This README provides a comprehensive overview of the Animation Playground. If you have any questions or need further assistance, please don't hesitate to reach out or check the existing documentation and code.
