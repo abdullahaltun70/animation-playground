@@ -18,6 +18,14 @@ import { ConfigModel } from '@/types/animations';
 
 import styles from './ConfigCard.module.scss';
 
+/**
+ * @interface ConfigCardProps
+ * @description Defines the props for the ConfigCard component.
+ * @property {ConfigModel} config - The configuration data object to display.
+ * @property {(id: string) => void} [onDeleteAction] - Optional callback function to handle delete action.
+ * @property {(id: string) => void} [onShareAction] - Optional callback function to handle share action.
+ * @property {string} authorName - The name of the configuration's author.
+ */
 interface ConfigCardProps {
   config: ConfigModel;
   onDeleteAction?: (id: string) => void;
@@ -25,6 +33,13 @@ interface ConfigCardProps {
   authorName: string;
 }
 
+/**
+ * @component ConfigCard
+ * @description A card component to display information about an animation configuration,
+ * including its title, description, metadata (creation date, author, visibility),
+ * and action buttons for edit, share, and delete.
+ * @param {ConfigCardProps} props - The props for the component.
+ */
 export function ConfigCard({
   config,
   onDeleteAction,
@@ -43,11 +58,18 @@ export function ConfigCard({
     router.push(`/playground?id=${config.id}`);
   };
 
+  /**
+   * @function formatDate
+   * @description Formats a date string into a more readable format (e.g., "Jan 1, 2023").
+   * Handles potential errors with invalid date strings.
+   * @param {string} dateString - The date string to format.
+   * @returns {string} The formatted date string or "Invalid Date" on error.
+   */
   const formatDate = (dateString: string) => {
     try {
       const date = new Date(dateString);
-      // Basic check for invalid date
       if (isNaN(date.getTime())) {
+        // Basic check for invalid date
         return 'Invalid Date';
       }
       return date.toLocaleDateString(undefined, {
@@ -74,7 +96,7 @@ export function ConfigCard({
 
         <Flex gap="2" direction="row" align="center" wrap="wrap">
           {' '}
-          {/* Added wrap */}
+          {/* Added wrap for responsiveness */}
           <Flex gap="1" align="center">
             <CalendarIcon />
             <Text size="1" className={styles.metaText}>
@@ -106,38 +128,23 @@ export function ConfigCard({
           </Flex>
         </Flex>
 
-        {/* Action Buttons */}
         <Flex mt="3" gap="2" justify="end">
-          {/* Conditionally render Delete button */}
           {onDeleteAction && (
             <Button
               variant="soft"
               color="red"
-              onClick={() => onDeleteAction(config.id)} // Directly call handler
-              // className={styles.deleteButton} // Use Radix props or global styles
-              size="1" // Adjust size as needed
+              onClick={() => onDeleteAction(config.id)}
+              size="1"
             >
               <TrashIcon /> Delete
             </Button>
           )}
-          {/* Share Button */}
-          {onShareAction && ( // Also make Share conditional if needed, but usually always shown
-            <Button
-              variant="soft"
-              onClick={handleShare}
-              // className={styles.shareButton}
-              size="1"
-            >
+          {onShareAction && (
+            <Button variant="soft" onClick={handleShare} size="1">
               <Share1Icon /> Share
             </Button>
           )}
-          {/* Edit Button */}
-          <Button
-            variant="soft"
-            onClick={handleEdit}
-            // className={styles.editButton}
-            size="1"
-          >
+          <Button variant="soft" onClick={handleEdit} size="1">
             <Pencil2Icon /> Edit
           </Button>
         </Flex>

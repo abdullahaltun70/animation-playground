@@ -77,7 +77,7 @@ export async function GET(
   try {
     // User might be authenticated or not, we fetch the config, then check ownership/access
     const authResult = await authenticateUser(request);
-    const configId = params.id;
+    const configId = (await params).id;
 
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
@@ -206,7 +206,7 @@ export async function PUT(
       return authResult.error; // Returns 401 Unauthorized
     }
 
-    const configId = params.id;
+    const configId = (await params).id;
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
         { error: 'Invalid configuration ID provided for update' },
@@ -334,7 +334,7 @@ export async function DELETE(
       return authResult.error; // Returns 401 Unauthorized
     }
 
-    const configId = params.id;
+    const configId = (await params).id;
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
         { error: 'Invalid configuration ID provided for deletion' },

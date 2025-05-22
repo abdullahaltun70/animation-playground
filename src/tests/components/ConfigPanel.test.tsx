@@ -290,7 +290,7 @@ describe('ConfigPanel Component', () => {
     );
 
     const visibilitySwitchGroup = screen.getByRole('group', {
-      name: 'Visibility',
+      name: 'Configuration visibility',
     });
     expect(visibilitySwitchGroup).toHaveAttribute('data-disabled', 'true');
   });

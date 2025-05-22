@@ -21,6 +21,12 @@ import { ThemeToggle } from '@/components/theme-toggle';
 
 import styles from './Header.module.scss';
 
+/**
+ * @component Header
+ * @description Renders the application header, including navigation links, theme toggle, and user authentication status/menu.
+ * It manages its own authentication state by interacting with Supabase.
+ * This component does not accept any props.
+ */
 export const Header = () => {
   const pathname = usePathname();
   const supabase = createClient();
@@ -30,7 +36,7 @@ export const Header = () => {
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
 
   useEffect(() => {
-    // on change in auth, get the user metadata and update state
+    // Initial check for user authentication status
     const checkAuth = async () => {
       setIsLoadingAuth(true);
       const {
@@ -57,14 +63,12 @@ export const Header = () => {
     return () => {
       subscription?.unsubscribe();
     };
-  }, [supabase.auth]); // Add supabase.auth dependency
+  }, [supabase.auth]); // supabase.auth dependency ensures effect re-runs if the auth instance changes
 
   return (
     <header className={`${styles.header} fade-in`}>
       <div className={styles.headerContent}>
-        {/* Left Section: Logo & Links */}
         <Flex gap="6" align="center" className={styles.leftSection}>
-          {/* Logo */}
           <RadixLink href="/" className={styles.logoContainer}>
             <div className={styles.logo}>
               <Image
@@ -76,7 +80,6 @@ export const Header = () => {
             </div>
           </RadixLink>
 
-          {/* Navigation Links */}
           <nav className={styles.nav}>
             <RadixLink
               href={'/'}
@@ -96,9 +99,7 @@ export const Header = () => {
           </nav>
         </Flex>
 
-        {/* Right Section: Auth/Theme */}
         <div className={styles.rightSection}>
-          {/* Conditionally render based on loading and auth state */}
           {!isLoadingAuth && (
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
@@ -122,8 +123,6 @@ export const Header = () => {
                     )}
                     <DropdownMenu.Item asChild>
                       <RadixLink href="/profile">
-                        {' '}
-                        {/* Use 'a' tag inside for correct rendering */}
                         <PersonIcon
                           width="16"
                           height="16"
@@ -145,11 +144,10 @@ export const Header = () => {
                         width="16"
                         height="16"
                         style={{
-                          transform: 'scaleX(-1)',
+                          transform: 'scaleX(-1)', // Visually indicates "Sign In" action
                           marginRight: '8px',
                         }}
                       />
-                      {/* Reversed icon for Sign In */}
                       Sign In
                     </RadixLink>
                   </DropdownMenu.Item>
@@ -158,9 +156,10 @@ export const Header = () => {
             </DropdownMenu.Root>
           )}
           {isLoadingAuth && (
+            // Render a placeholder or the UserAvatar directly while loading
+            // UserAvatar might have its own loading state or show a default
             <div className={styles.avatarTriggerButton}>
-              {/* Placeholder with same dimensions */}
-              <UserAvatar /> {/* Or a skeleton Avatar */}
+              <UserAvatar />
             </div>
           )}
 

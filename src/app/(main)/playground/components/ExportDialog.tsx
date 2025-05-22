@@ -11,6 +11,17 @@ import { AnimationConfig } from '@/types/animations';
 
 import styles from '../styles/Playground.module.scss';
 
+/**
+ * @interface ExportDialogProps
+ * @description Defines the props for the ExportDialog component.
+ * @property {boolean} open - Controls the visibility of the dialog.
+ * @property {(open: boolean) => void} onOpenChange - Callback function invoked when the dialog's open state changes.
+ * @property {string} exportTab - The currently active tab in the export dialog (e.g., 'react', 'css').
+ * @property {(value: string) => void} onExportTabChange - Callback function invoked when the active export tab changes.
+ * @property {() => void} onCopyCode - Callback function invoked when the "Copy Code" button is clicked.
+ * @property {boolean} copySuccess - Boolean indicating if the code copy operation was successful.
+ * @property {AnimationConfig} animationConfig - The current animation configuration to generate code from.
+ */
 interface ExportDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -22,7 +33,11 @@ interface ExportDialogProps {
 }
 
 /**
- * Dialog for exporting animation code as a React component or CSS.
+ * @component ExportDialog
+ * @description A dialog component that allows users to export the current animation
+ * configuration as either React component code or CSS. It provides tabs for switching
+ * between code formats and a button to copy the generated code.
+ * @param {ExportDialogProps} props - The props for the component.
  */
 export function ExportDialog({
   open,

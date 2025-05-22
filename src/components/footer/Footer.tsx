@@ -4,16 +4,19 @@ import { Link as RadixLink, Text } from '@radix-ui/themes';
 
 import styles from './Footer.module.scss';
 
+/**
+ * @component Footer
+ * @description Renders the application footer, displaying copyright information and navigation links.
+ * It does not accept any props.
+ */
 export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
     <footer className={styles.footer}>
       <div className={styles.footerContent}>
-        {/* Copyright */}
         <Text size="2">© {currentYear} Animation Playground</Text>
 
-        {/* Links */}
         <div className={styles.footerLinks}>
           <RadixLink href="/terms" size={'2'}>
             Terms
