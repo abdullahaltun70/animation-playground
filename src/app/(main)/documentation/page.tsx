@@ -1,13 +1,13 @@
-'use client';
-
 import React from 'react';
 
-import TestPage from '@/test-animations/page';
-
-export default function Documentation() {
+const TypeDocPage = () => {
   return (
-    <>
-      <TestPage />
-    </>
+    <iframe
+      src="/docs/index.html"
+      style={{ width: '100vw', height: '100vh', border: 'none' }}
+      title="TypeDoc Documentation"
+    />
   );
-}
+};
+
+export default TypeDocPage;
