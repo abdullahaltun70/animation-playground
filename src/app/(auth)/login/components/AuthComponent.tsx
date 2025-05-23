@@ -83,7 +83,7 @@ const AuthComponent: React.FC = () => {
     forgotPasswordForm.reset();
   }, [view, setError, signInForm, signUpForm, forgotPasswordForm]);
 
-  // ASYNCHRONE WRAPPERS FOR HANDLERS (to switch view)
+  // Async handlers for form submissions
 
   const onSignUpSubmit = async (data: SignUpFormData) => {
     const success = await handleSignUp(data);

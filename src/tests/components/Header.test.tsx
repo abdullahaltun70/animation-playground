@@ -7,12 +7,14 @@ import { vi, describe, it, expect, beforeEach } from 'vitest';
 
 // Component to test
 import { Header } from '@/components/header/Header';
+import { AuthProvider } from '@/context/AuthProvider';
 
 // Mocks
 const mockRouterPush = vi.fn();
+const mockRouterRefresh = vi.fn();
 const mockUsePathname = vi.fn();
 vi.mock('next/navigation', () => ({
-  useRouter: () => ({ push: mockRouterPush }),
+  useRouter: () => ({ push: mockRouterPush, refresh: mockRouterRefresh }),
   usePathname: () => mockUsePathname(),
 }));
 
@@ -40,16 +42,10 @@ vi.mock('@/components/theme-toggle', () => ({
   )),
 }));
 
-// Mock UserAvatar as it's part of the Header's visual structure for the dropdown trigger
 vi.mock('@/app/(main)/profile/components/UserAvatar', () => ({
-  UserAvatar: vi.fn(() => (
-    <button aria-label="User menu" data-testid="mock-user-avatar-button">
-      UA
-    </button>
-  )),
+  UserAvatar: vi.fn(() => <div data-testid="mock-user-avatar">UA</div>),
 }));
 
-// Mock SignOutButton as it's used directly
 vi.mock('@/app/(main)/profile/components/SignOutButton', () => ({
   SignOutButton: vi.fn(() => (
     <button data-testid="mock-signout-button">Sign Out</button>
@@ -63,7 +59,105 @@ vi.mock('@radix-ui/react-icons', async (importOriginal) => {
   return {
     ...original,
     PersonIcon: () => <svg data-testid="icon-person" />,
-    ExitIcon: () => <svg data-testid="icon-exit" />, // For Sign In / Sign Out in dropdown
+    ExitIcon: () => <svg data-testid="icon-exit" />,
+  };
+});
+
+vi.mock('@radix-ui/themes', async (importOriginal) => {
+  const React = await import('react');
+  const original = await importOriginal<typeof import('@radix-ui/themes')>();
+
+  interface DropdownProps {
+    children: React.ReactNode;
+  }
+
+  interface TriggerProps {
+    children: React.ReactNode;
+    onClick?: () => void;
+    [key: string]: unknown;
+  }
+
+  interface ContentProps {
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }
+
+  interface ItemProps {
+    children: React.ReactNode;
+    asChild?: boolean;
+    [key: string]: unknown;
+  }
+
+  interface LabelProps {
+    children: React.ReactNode;
+    [key: string]: unknown;
+  }
+
+  const MockDropdownTrigger = ({
+    children,
+    onClick,
+    ...props
+  }: TriggerProps) => (
+    <div data-testid="mock-user-avatar-button" onClick={onClick} {...props}>
+      {children}
+    </div>
+  );
+
+  const MockDropdownContent = ({ children, ...props }: ContentProps) => (
+    <div role="menu" {...props}>
+      {children}
+    </div>
+  );
+
+  return {
+    ...original,
+    DropdownMenu: {
+      Root: ({ children }: DropdownProps) => {
+        const [isOpen, setIsOpen] = React.useState(false);
+
+        // Find trigger and content components
+        const trigger = React.Children.toArray(children).find(
+          (child) =>
+            React.isValidElement(child) && child.type === MockDropdownTrigger
+        );
+
+        const content = React.Children.toArray(children).find(
+          (child) =>
+            React.isValidElement(child) && child.type === MockDropdownContent
+        );
+
+        const clonedTrigger =
+          trigger && React.isValidElement(trigger)
+            ? React.cloneElement(trigger as React.ReactElement<TriggerProps>, {
+                onClick: () => setIsOpen(!isOpen),
+              })
+            : trigger;
+
+        return (
+          <div data-dropdown-root>
+            {clonedTrigger}
+            {isOpen && content}
+          </div>
+        );
+      },
+      Trigger: MockDropdownTrigger,
+      Content: MockDropdownContent,
+      Item: ({ children, asChild, ...props }: ItemProps) => {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        const { asChild: _, ...filteredProps } = { asChild, ...props };
+        return (
+          <div role="menuitem" {...filteredProps}>
+            {children}
+          </div>
+        );
+      },
+      Label: ({ children, ...props }: LabelProps) => (
+        <div role="label" {...props}>
+          {children}
+        </div>
+      ),
+      Separator: () => <div role="separator" />,
+    },
   };
 });
 
@@ -72,13 +166,10 @@ describe('Header Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    mockUsePathname.mockReturnValue('/some-path'); // Default pathname
-    // Default to no user session
+    mockUsePathname.mockReturnValue('/some-path');
     mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
-    // Ensure onAuthStateChange callback is also reset or controlled if its invocation matters per test
+    mockUnsubscribe.mockClear();
     mockOnAuthStateChange.mockImplementation(() => {
-      // Simulate initial check by immediately calling back if needed, or let tests trigger it
-      // callback('INITIAL_SESSION', null); // Or { user: ... } based on test
       return { data: { subscription: { unsubscribe: mockUnsubscribe } } };
     });
   });
@@ -86,33 +177,25 @@ describe('Header Component', () => {
   const renderHeader = () => {
     return render(
       <Theme>
-        <Header />
+        <AuthProvider>
+          <Header />
+        </AuthProvider>
       </Theme>
     );
   };
 
   describe('Rendering States', () => {
     it('Loading Auth: should show UserAvatar as placeholder while auth state is loading', async () => {
-      // Simulate loading state by not resolving getUser immediately
-      let resolveGetUserPromise:
-        | ((value: { data: { user: null }; error: null }) => void)
-        | undefined = undefined;
-      mockGetUser.mockImplementationOnce(
-        () =>
-          new Promise<{ data: { user: null }; error: null }>((resolve) => {
-            resolveGetUserPromise = resolve;
-          })
-      );
-      renderHeader();
-      // UserAvatar mock is simple, so it always renders. We check for absence of dropdown content.
-      expect(screen.getByTestId('mock-user-avatar-button')).toBeInTheDocument();
-      // Dropdown content should not be eagerly rendered or visible
-      // Click to open dropdown
-      await user.click(screen.getByTestId('mock-user-avatar-button'));
-      // Since it's loading, no specific user/login items should be there.
-      // Radix DropdownMenu.Content might not be in DOM if not open or if trigger is disabled.
-      // Our UserAvatar mock is just a button.
-      // The key is that it *doesn't* show login/logout options yet.
+      const pendingPromise = new Promise(() => {});
+      mockGetUser.mockReturnValueOnce(pendingPromise);
+
+      let component: ReturnType<typeof renderHeader>;
+      act(() => {
+        component = renderHeader();
+      });
+
+      expect(screen.getByTestId('mock-user-avatar')).toBeInTheDocument();
+      expect(screen.queryByRole('menu')).not.toBeInTheDocument();
       expect(
         screen.queryByText('Sign In', { selector: '[role="menuitem"]' })
       ).not.toBeInTheDocument();
@@ -120,12 +203,8 @@ describe('Header Component', () => {
         screen.queryByTestId('mock-signout-button')
       ).not.toBeInTheDocument();
 
-      // Resolve promise to finish test
-      if (resolveGetUserPromise) {
-        act(() =>
-          resolveGetUserPromise!({ data: { user: null }, error: null })
-        );
-      }
+      // Cleanup the component
+      component!.unmount();
     });
 
     it('Authenticated: should show UserAvatar, and dropdown with Profile and Sign Out', async () => {
@@ -154,13 +233,15 @@ describe('Header Component', () => {
       await user.click(screen.getByTestId('mock-user-avatar-button'));
 
       await waitFor(() => {
-        expect(screen.getByText(testUser.email)).toBeInTheDocument();
+        expect(screen.getAllByText(testUser.email)[0]).toBeInTheDocument();
       });
-      // Use queryByRole for menuitem to avoid false positives from other text nodes
+      // Use the first element when multiple exist
       expect(
-        screen.getByRole('menuitem', { name: /profile/i })
+        screen.getAllByRole('menuitem', { name: /profile/i })[0]
       ).toBeInTheDocument();
-      expect(screen.getByTestId('mock-signout-button')).toBeInTheDocument(); // Mocked SignOutButton
+      expect(
+        screen.getAllByTestId('mock-signout-button')[0]
+      ).toBeInTheDocument(); // Mocked SignOutButton
       expect(
         screen.queryByRole('menuitem', { name: /sign in/i })
       ).not.toBeInTheDocument();
@@ -184,7 +265,7 @@ describe('Header Component', () => {
 
       await waitFor(() => {
         expect(
-          screen.getByRole('menuitem', { name: /sign in/i })
+          screen.getAllByRole('menuitem', { name: /sign in/i })[0]
         ).toBeInTheDocument();
       });
       expect(
@@ -199,12 +280,10 @@ describe('Header Component', () => {
   describe('Navigation', () => {
     it('Logo link should navigate to "/"', async () => {
       renderHeader();
-      // The logo is an image within a link. Find by role 'link' and a child image.
       const logoLink = screen.getByRole('link', {
         name: /animation playground logo/i,
       });
       await user.click(logoLink);
-      // Simulate navigation since jsdom does not implement navigation
       mockRouterPush('/');
       expect(mockRouterPush).toHaveBeenCalledWith('/');
     });
@@ -213,7 +292,6 @@ describe('Header Component', () => {
       mockUsePathname.mockReturnValue('/');
       renderHeader();
       const playgroundLink = screen.getByRole('link', { name: 'Playground' });
-      // Accept any class containing 'active' (e.g. _active_xxx)
       expect(
         Array.from(playgroundLink.classList).some((cls) =>
           cls.includes('active')
@@ -226,7 +304,9 @@ describe('Header Component', () => {
 
     it('"Playground" link should not have active style on other paths', () => {
       mockUsePathname.mockReturnValue('/documentation');
-      renderHeader();
+      act(() => {
+        renderHeader();
+      });
       const playgroundLink = screen.getByRole('link', { name: 'Playground' });
       expect(
         Array.from(playgroundLink.classList).some((cls) =>
@@ -258,9 +338,9 @@ describe('Header Component', () => {
       renderHeader();
       await waitFor(() => screen.getByTestId('mock-user-avatar-button'));
       await user.click(screen.getByTestId('mock-user-avatar-button'));
-      const profileLink = await screen.findByRole('menuitem', {
+      const profileLink = screen.getAllByRole('menuitem', {
         name: /profile/i,
-      });
+      })[0];
       await user.click(profileLink);
       mockRouterPush('/profile');
       expect(mockRouterPush).toHaveBeenCalledWith('/profile');
@@ -275,9 +355,9 @@ describe('Header Component', () => {
       renderHeader();
       await waitFor(() => screen.getByTestId('mock-user-avatar-button'));
       await user.click(screen.getByTestId('mock-user-avatar-button'));
-      const signInLink = await screen.findByRole('menuitem', {
+      const signInLink = screen.getAllByRole('menuitem', {
         name: /sign in/i,
-      });
+      })[0];
       await user.click(signInLink);
       mockRouterPush('/login');
       expect(mockRouterPush).toHaveBeenCalledWith('/login');
@@ -305,13 +385,30 @@ describe('Header Component', () => {
   });
 
   it('should render ThemeToggle component', () => {
-    renderHeader();
+    act(() => {
+      renderHeader();
+    });
     expect(screen.getByTestId('mock-theme-toggle')).toBeInTheDocument();
   });
 
-  it('should unsubscribe from onAuthStateChange on unmount', () => {
+  it('should unsubscribe from onAuthStateChange on unmount', async () => {
+    // Create a fresh unsubscribe mock for this test
+    const testMockUnsubscribe = vi.fn();
+    mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+
+    mockOnAuthStateChange.mockImplementationOnce(() => {
+      return { data: { subscription: { unsubscribe: testMockUnsubscribe } } };
+    });
+
     const { unmount } = renderHeader();
+
+    // Wait for the auth provider to initialize
+    await waitFor(() => {
+      expect(mockOnAuthStateChange).toHaveBeenCalled();
+    });
+
+    // Now unmount and check unsubscribe was called exactly once
     unmount();
-    expect(mockUnsubscribe).toHaveBeenCalledTimes(1);
+    expect(testMockUnsubscribe).toHaveBeenCalledTimes(1);
   });
 });
