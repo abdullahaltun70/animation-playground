@@ -71,6 +71,7 @@ const MenuItem = ({
             display: 'inline-block',
             verticalAlign: 'middle',
             marginLeft: '8px',
+            transformOrigin: '50% 40%',
           }} // Added styles here
         >
           <ChevronDownIcon />
