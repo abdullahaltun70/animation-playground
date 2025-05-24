@@ -1,0 +1,546 @@
+---
+title: Animation Utils
+description: Utility functions for creating, manipulating, and applying animations.
+icon: wrench-screwdriver
+---
+
+# Animation Utils
+
+The Animation Utils module provides a collection of utility functions for creating, manipulating, and applying animations in the Animation Playground.
+
+## Import
+
+```typescript
+import {
+  createAnimation,
+  applyAnimation,
+  generateKeyframes,
+  validateConfig,
+  optimizeAnimation,
+  getAnimationCSS,
+  presetAnimations,
+} from '@/utils/animations';
+```
+
+## Core Functions
+
+### `createAnimation(config: AnimationConfig): Animation`
+
+Creates a complete animation object from a configuration.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-out',
+  transform: { x: 200 },
+};
+
+const animation = createAnimation(config);
+// Returns: { keyframes, timing, metadata }
+```
+
+**Parameters:**
+
+- `config` - Animation configuration object
+
+**Returns:** Complete animation object with keyframes and timing
+
+### `applyAnimation(element: HTMLElement, config: AnimationConfig): Promise<void>`
+
+Applies an animation to a DOM element.
+
+```typescript
+const element = document.getElementById('my-element');
+const config = {
+  type: 'fade',
+  duration: 800,
+  easing: 'ease-in-out',
+};
+
+await applyAnimation(element, config);
+console.log('Animation completed');
+```
+
+**Parameters:**
+
+- `element` - Target DOM element
+- `config` - Animation configuration
+
+**Returns:** Promise that resolves when animation completes
+
+### `generateKeyframes(config: AnimationConfig): Keyframe[]`
+
+Generates Web Animations API keyframes from configuration.
+
+```typescript
+const keyframes = generateKeyframes({
+  type: 'bounce',
+  duration: 1000,
+  transform: { scale: 1.2 },
+});
+
+// Returns array of keyframes suitable for Web Animations API
+console.log(keyframes);
+// [
+//   { transform: 'scale(1)', offset: 0 },
+//   { transform: 'scale(1.2)', offset: 0.5 },
+//   { transform: 'scale(1)', offset: 1 }
+// ]
+```
+
+## Validation Functions
+
+### `validateConfig(config: any): ValidationResult`
+
+Validates an animation configuration object.
+
+```typescript
+interface ValidationResult {
+  isValid: boolean;
+  errors: string[];
+  warnings: string[];
+}
+
+const result = validateConfig({
+  type: 'fade',
+  duration: -100, // Invalid
+  easing: 'ease-in-out',
+});
+
+console.log(result);
+// {
+//   isValid: false,
+//   errors: ['Duration must be positive'],
+//   warnings: []
+// }
+```
+
+### `sanitizeConfig(config: Partial<AnimationConfig>): AnimationConfig`
+
+Sanitizes and provides defaults for incomplete configurations.
+
+```typescript
+const partialConfig = {
+  type: 'slide',
+  // Missing required properties
+};
+
+const sanitized = sanitizeConfig(partialConfig);
+// Returns complete config with defaults applied
+```
+
+## CSS Generation
+
+### `getAnimationCSS(config: AnimationConfig): string`
+
+Generates CSS animation rules from configuration.
+
+```typescript
+const css = getAnimationCSS({
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-out',
+  transform: { x: 100 },
+});
+
+console.log(css);
+// @keyframes slide-animation {
+//   0% { transform: translateX(0px); }
+//   100% { transform: translateX(100px); }
+// }
+//
+// .slide-animation {
+//   animation: slide-animation 1000ms ease-out forwards;
+// }
+```
+
+### `getKeyframeCSS(keyframes: Keyframe[]): string`
+
+Converts keyframes array to CSS @keyframes rule.
+
+```typescript
+const keyframes = [
+  { transform: 'scale(1)', offset: 0 },
+  { transform: 'scale(1.2)', offset: 0.5 },
+  { transform: 'scale(1)', offset: 1 },
+];
+
+const css = getKeyframeCSS(keyframes);
+```
+
+## Animation Presets
+
+### `presetAnimations`
+
+Collection of pre-built animation configurations.
+
+```typescript
+const presets = {
+  // Fade animations
+  fadeIn: {
+    type: 'fade',
+    duration: 800,
+    easing: 'ease-in-out',
+    opacity: 1,
+  },
+
+  fadeOut: {
+    type: 'fade',
+    duration: 600,
+    easing: 'ease-in',
+    opacity: 0,
+  },
+
+  // Slide animations
+  slideInLeft: {
+    type: 'slide',
+    duration: 1000,
+    easing: 'ease-out',
+    transform: { x: 0 },
+  },
+
+  slideOutRight: {
+    type: 'slide',
+    duration: 800,
+    easing: 'ease-in',
+    transform: { x: 300 },
+  },
+
+  // Scale animations
+  scaleUp: {
+    type: 'scale',
+    duration: 600,
+    easing: 'ease-out',
+    transform: { scale: 1.2 },
+  },
+
+  // Bounce animations
+  bounceIn: {
+    type: 'bounceIn',
+    duration: 1000,
+    easing: 'ease-out',
+  },
+
+  // Complex animations
+  flipCard: {
+    type: 'flip',
+    duration: 800,
+    easing: 'ease-in-out',
+    transform: { rotateY: 180 },
+  },
+};
+
+// Usage
+const fadeAnimation = createAnimation(presetAnimations.fadeIn);
+```
+
+## Optimization Functions
+
+### `optimizeAnimation(config: AnimationConfig): AnimationConfig`
+
+Optimizes animation configuration for better performance.
+
+```typescript
+const optimized = optimizeAnimation({
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-out',
+  transform: { x: 100 },
+  // Will optimize these properties
+  width: '200px', // Removed - causes layout
+  height: '150px', // Removed - causes layout
+});
+
+// Returns config with performance optimizations applied
+```
+
+### `isGPUOptimized(config: AnimationConfig): boolean`
+
+Checks if animation can be GPU-accelerated.
+
+```typescript
+const isOptimized = isGPUOptimized({
+  type: 'scale',
+  transform: { scale: 1.2 },
+}); // true
+
+const isNotOptimized = isGPUOptimized({
+  type: 'custom',
+  keyframes: [
+    { width: '100px' }, // Layout property
+    { width: '200px' },
+  ],
+}); // false
+```
+
+## Transform Utilities
+
+### `normalizeTransform(transform: TransformConfig): string`
+
+Converts transform configuration to CSS transform string.
+
+```typescript
+const transformString = normalizeTransform({
+  x: 100,
+  y: 50,
+  scale: 1.2,
+  rotate: 45,
+});
+
+console.log(transformString);
+// "translateX(100px) translateY(50px) scale(1.2) rotate(45deg)"
+```
+
+### `combineTransforms(...transforms: string[]): string`
+
+Combines multiple transform strings into one.
+
+```typescript
+const combined = combineTransforms(
+  'translateX(100px)',
+  'scale(1.2)',
+  'rotate(45deg)'
+);
+// "translateX(100px) scale(1.2) rotate(45deg)"
+```
+
+## Timing Functions
+
+### `getDuration(config: AnimationConfig): number`
+
+Calculates total animation duration including delays and iterations.
+
+```typescript
+const totalDuration = getDuration({
+  type: 'bounce',
+  duration: 1000,
+  delay: 200,
+  iterations: 3,
+});
+// Returns: 3400 (200 + 1000 * 3 + gaps between iterations)
+```
+
+### `createTimeline(animations: AnimationConfig[]): Timeline`
+
+Creates a timeline for multiple sequential animations.
+
+```typescript
+const timeline = createTimeline([
+  { type: 'fade', duration: 500 },
+  { type: 'slide', duration: 800 },
+  { type: 'scale', duration: 600 },
+]);
+
+// Returns timeline with calculated start times and total duration
+```
+
+## Advanced Utilities
+
+### `morphAnimation(from: AnimationConfig, to: AnimationConfig, progress: number): AnimationConfig`
+
+Interpolates between two animation configurations.
+
+```typescript
+const morphed = morphAnimation(
+  { type: 'fade', opacity: 0 },
+  { type: 'fade', opacity: 1 },
+  0.5 // 50% between configurations
+);
+// Returns config with opacity: 0.5
+```
+
+### `reverseAnimation(config: AnimationConfig): AnimationConfig`
+
+Creates the reverse of an animation.
+
+```typescript
+const slideIn = {
+  type: 'slide',
+  transform: { x: 100 },
+};
+
+const slideOut = reverseAnimation(slideIn);
+// Returns animation that slides back to original position
+```
+
+### `loopAnimation(config: AnimationConfig, count: number): AnimationConfig`
+
+Creates a looped version of an animation.
+
+```typescript
+const looped = loopAnimation(
+  { type: 'pulse', duration: 1000 },
+  3 // Loop 3 times
+);
+```
+
+## Usage Examples
+
+### Custom Animation System
+
+```typescript
+import {
+  createAnimation,
+  applyAnimation,
+  validateConfig,
+} from '@/utils/animations';
+
+class AnimationEngine {
+  private activeAnimations = new Map<string, Animation>();
+
+  async animate(element: HTMLElement, config: AnimationConfig, id?: string) {
+    // Validate configuration
+    const validation = validateConfig(config);
+    if (!validation.isValid) {
+      throw new Error(`Invalid animation: ${validation.errors.join(', ')}`);
+    }
+
+    // Create and apply animation
+    const animation = createAnimation(config);
+
+    if (id) {
+      this.activeAnimations.set(id, animation);
+    }
+
+    await applyAnimation(element, config);
+
+    if (id) {
+      this.activeAnimations.delete(id);
+    }
+  }
+
+  stopAnimation(id: string) {
+    const animation = this.activeAnimations.get(id);
+    if (animation) {
+      animation.cancel();
+      this.activeAnimations.delete(id);
+    }
+  }
+}
+```
+
+### Animation Sequence Builder
+
+```typescript
+import { createTimeline, generateKeyframes } from '@/utils/animations';
+
+class SequenceBuilder {
+  private animations: AnimationConfig[] = [];
+
+  add(config: AnimationConfig) {
+    this.animations.push(config);
+    return this;
+  }
+
+  fadeIn(duration = 800) {
+    return this.add({
+      type: 'fade',
+      duration,
+      easing: 'ease-in-out',
+      opacity: 1,
+    });
+  }
+
+  slideIn(direction: 'left' | 'right' | 'up' | 'down', distance = 100) {
+    const transforms = {
+      left: { x: -distance },
+      right: { x: distance },
+      up: { y: -distance },
+      down: { y: distance },
+    };
+
+    return this.add({
+      type: 'slide',
+      duration: 1000,
+      easing: 'ease-out',
+      transform: transforms[direction],
+    });
+  }
+
+  scale(factor = 1.2, duration = 600) {
+    return this.add({
+      type: 'scale',
+      duration,
+      easing: 'ease-out',
+      transform: { scale: factor },
+    });
+  }
+
+  build() {
+    return createTimeline(this.animations);
+  }
+}
+
+// Usage
+const sequence = new SequenceBuilder()
+  .fadeIn()
+  .slideIn('left')
+  .scale(1.1)
+  .build();
+```
+
+### Performance Monitor
+
+```typescript
+import { isGPUOptimized, optimizeAnimation } from '@/utils/animations';
+
+function analyzePerformance(config: AnimationConfig) {
+  const analysis = {
+    isOptimized: isGPUOptimized(config),
+    optimizedConfig: optimizeAnimation(config),
+    recommendations: [],
+  };
+
+  if (!analysis.isOptimized) {
+    analysis.recommendations.push(
+      'Consider using transform properties instead of layout properties',
+      'Use will-change CSS property for better performance',
+      'Avoid animating width, height, top, left properties'
+    );
+  }
+
+  return analysis;
+}
+```
+
+## Error Handling
+
+```typescript
+import { validateConfig, createAnimation } from '@/utils/animations';
+
+try {
+  const config = {
+    type: 'invalid-type',
+    duration: -100,
+  };
+
+  const validation = validateConfig(config);
+  if (!validation.isValid) {
+    throw new Error(`Configuration errors: ${validation.errors.join(', ')}`);
+  }
+
+  const animation = createAnimation(config);
+} catch (error) {
+  console.error('Animation creation failed:', error);
+}
+```
+
+## Performance Tips
+
+1. **Use transform properties** for GPU acceleration
+2. **Avoid layout-triggering properties** (width, height, top, left)
+3. **Batch DOM updates** when applying multiple animations
+4. **Use `will-change`** CSS property for complex animations
+5. **Prefer shorter durations** for better perceived performance
+
+## Related Types
+
+- [`AnimationConfig`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-config) - Configuration interface
+- [`AnimationType`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-type) - Animation types
+- [`EasingFunction`](https://docs.page/abdullahaltun70/animation-playground/api/types/easing-function) - Easing functions
+
+## Related Components
+
+- [`AnimatedContainer`](https://docs.page/abdullahaltun70/animation-playground/api/components/animated-container) - Uses animation utils
+- [`AnimationPreview`](https://docs.page/abdullahaltun70/animation-playground/api/components/animation-preview) - Utilizes animation utilities

@@ -1,0 +1,655 @@
+---
+title: useAuth
+description: Hook for managing user authentication state and operations.
+icon: shield-check
+---
+
+# useAuth
+
+The `useAuth` hook provides comprehensive authentication management including sign-in, sign-up, password reset, and user session handling with Supabase integration.
+
+## Import
+
+```typescript
+import { useAuth } from '@/hooks/useAuth';
+```
+
+## Basic Usage
+
+```tsx
+import { useAuth } from '@/hooks/useAuth';
+
+function AuthExample() {
+  const { user, isLoading, isAuthenticated, signIn, signOut, signUp } =
+    useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <div>
+        <button onClick={() => signIn('email@example.com', 'password')}>
+          Sign In
+        </button>
+      </div>
+    );
+  }
+
+  return (
+    <div>
+      <p>Welcome, {user?.email}!</p>
+      <button onClick={signOut}>Sign Out</button>
+    </div>
+  );
+}
+```
+
+## Return Value
+
+The hook returns an object with the following properties and methods:
+
+### State Properties
+
+#### `user`
+
+**Type:** `User | null`
+
+The current authenticated user object, or `null` if not authenticated.
+
+```typescript
+interface User {
+  id: string;
+  email: string;
+  created_at: string;
+  // Additional Supabase user properties...
+}
+```
+
+#### `isAuthenticated`
+
+**Type:** `boolean`
+
+Whether a user is currently authenticated.
+
+#### `isLoading`
+
+**Type:** `boolean`
+
+Whether an authentication operation is in progress.
+
+#### `error`
+
+**Type:** `string | null`
+
+The last authentication error message, or `null` if no error.
+
+### Authentication Methods
+
+#### `signIn(email: string, password: string): Promise<void>`
+
+Signs in a user with email and password.
+
+```tsx
+const { signIn, error } = useAuth();
+
+const handleSignIn = async () => {
+  try {
+    await signIn('user@example.com', 'password123');
+    // User is now signed in
+  } catch (err) {
+    console.error('Sign in failed:', error);
+  }
+};
+```
+
+#### `signUp(data: SignUpData): Promise<void>`
+
+Signs up a new user.
+
+```typescript
+interface SignUpData {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+```
+
+```tsx
+const { signUp } = useAuth();
+
+const handleSignUp = async () => {
+  try {
+    await signUp({
+      email: 'newuser@example.com',
+      password: 'password123',
+      confirmPassword: 'password123',
+    });
+    // Check email for confirmation link
+  } catch (err) {
+    console.error('Sign up failed:', err);
+  }
+};
+```
+
+#### `signOut(): Promise<void>`
+
+Signs out the current user.
+
+```tsx
+const { signOut } = useAuth();
+
+const handleSignOut = async () => {
+  try {
+    await signOut();
+    // User is now signed out
+  } catch (err) {
+    console.error('Sign out failed:', err);
+  }
+};
+```
+
+#### `resetPassword(email: string): Promise<void>`
+
+Sends a password reset email.
+
+```tsx
+const { resetPassword } = useAuth();
+
+const handleResetPassword = async () => {
+  try {
+    await resetPassword('user@example.com');
+    // Password reset email sent
+  } catch (err) {
+    console.error('Password reset failed:', err);
+  }
+};
+```
+
+#### `updatePassword(newPassword: string): Promise<void>`
+
+Updates the current user's password.
+
+```tsx
+const { updatePassword } = useAuth();
+
+const handleUpdatePassword = async () => {
+  try {
+    await updatePassword('newpassword123');
+    // Password updated successfully
+  } catch (err) {
+    console.error('Password update failed:', err);
+  }
+};
+```
+
+## Advanced Usage
+
+### Complete Authentication Flow
+
+```tsx
+import { useAuth } from '@/hooks/useAuth';
+import { useState } from 'react';
+
+function AuthFlow() {
+  const {
+    user,
+    isLoading,
+    isAuthenticated,
+    signIn,
+    signUp,
+    signOut,
+    resetPassword,
+    error,
+  } = useAuth();
+
+  const [mode, setMode] = useState<'signin' | 'signup' | 'reset'>('signin');
+  const [formData, setFormData] = useState({
+    email: '',
+    password: '',
+    confirmPassword: '',
+  });
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    try {
+      switch (mode) {
+        case 'signin':
+          await signIn(formData.email, formData.password);
+          break;
+        case 'signup':
+          await signUp(formData);
+          break;
+        case 'reset':
+          await resetPassword(formData.email);
+          break;
+      }
+    } catch (err) {
+      // Error handled by hook
+    }
+  };
+
+  if (isLoading) {
+    return <div className="loading">Authenticating...</div>;
+  }
+
+  if (isAuthenticated) {
+    return (
+      <div className="user-profile">
+        <h2>Welcome, {user?.email}!</h2>
+        <button onClick={signOut}>Sign Out</button>
+      </div>
+    );
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="auth-form">
+      {error && <div className="error-message">{error}</div>}
+
+      <div className="form-tabs">
+        <button
+          type="button"
+          onClick={() => setMode('signin')}
+          className={mode === 'signin' ? 'active' : ''}
+        >
+          Sign In
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('signup')}
+          className={mode === 'signup' ? 'active' : ''}
+        >
+          Sign Up
+        </button>
+        <button
+          type="button"
+          onClick={() => setMode('reset')}
+          className={mode === 'reset' ? 'active' : ''}
+        >
+          Reset Password
+        </button>
+      </div>
+
+      <input
+        type="email"
+        placeholder="Email"
+        value={formData.email}
+        onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+        required
+      />
+
+      {mode !== 'reset' && (
+        <input
+          type="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={(e) =>
+            setFormData({ ...formData, password: e.target.value })
+          }
+          required
+        />
+      )}
+
+      {mode === 'signup' && (
+        <input
+          type="password"
+          placeholder="Confirm Password"
+          value={formData.confirmPassword}
+          onChange={(e) =>
+            setFormData({ ...formData, confirmPassword: e.target.value })
+          }
+          required
+        />
+      )}
+
+      <button type="submit" disabled={isLoading}>
+        {mode === 'signin' && 'Sign In'}
+        {mode === 'signup' && 'Sign Up'}
+        {mode === 'reset' && 'Send Reset Email'}
+      </button>
+    </form>
+  );
+}
+```
+
+### Protected Routes
+
+```tsx
+import { useAuth } from '@/hooks/useAuth';
+import { Navigate } from 'react-router-dom';
+
+function ProtectedRoute({ children }: { children: React.ReactNode }) {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <>{children}</>;
+}
+
+// Usage
+function App() {
+  return (
+    <Routes>
+      <Route path="/login" element={<LoginPage />} />
+      <Route
+        path="/dashboard"
+        element={
+          <ProtectedRoute>
+            <Dashboard />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+```
+
+### Session Management
+
+```tsx
+function SessionExample() {
+  const { user, isAuthenticated, refreshSession } = useAuth();
+
+  // Automatically refresh session every 30 minutes
+  useEffect(() => {
+    if (isAuthenticated) {
+      const interval = setInterval(
+        () => {
+          refreshSession();
+        },
+        30 * 60 * 1000
+      ); // 30 minutes
+
+      return () => clearInterval(interval);
+    }
+  }, [isAuthenticated, refreshSession]);
+
+  return (
+    <div>
+      {isAuthenticated ? (
+        <div>
+          <p>Session active for: {user?.email}</p>
+          <button onClick={refreshSession}>Refresh Session</button>
+        </div>
+      ) : (
+        <p>No active session</p>
+      )}
+    </div>
+  );
+}
+```
+
+## Error Handling
+
+### Error Types
+
+The hook handles several types of authentication errors:
+
+```typescript
+type AuthError =
+  | 'invalid_credentials'
+  | 'user_not_found'
+  | 'email_already_registered'
+  | 'weak_password'
+  | 'network_error'
+  | 'session_expired'
+  | 'unknown_error';
+```
+
+### Custom Error Handling
+
+```tsx
+function CustomErrorHandling() {
+  const { signIn, error, clearError } = useAuth();
+  const [customMessage, setCustomMessage] = useState<string>('');
+
+  const handleSignIn = async (email: string, password: string) => {
+    clearError(); // Clear previous errors
+
+    try {
+      await signIn(email, password);
+    } catch (err) {
+      // Custom error messages based on error type
+      switch (error) {
+        case 'invalid_credentials':
+          setCustomMessage('Invalid email or password. Please try again.');
+          break;
+        case 'network_error':
+          setCustomMessage('Network error. Please check your connection.');
+          break;
+        default:
+          setCustomMessage('An unexpected error occurred. Please try again.');
+      }
+    }
+  };
+
+  return (
+    <div>
+      {(error || customMessage) && (
+        <div className="error-banner">
+          {customMessage || error}
+          <button
+            onClick={() => {
+              clearError();
+              setCustomMessage('');
+            }}
+          >
+            Dismiss
+          </button>
+        </div>
+      )}
+
+      {/* Sign in form */}
+    </div>
+  );
+}
+```
+
+## Google OAuth Integration
+
+```tsx
+function GoogleSignIn() {
+  const { signInWithGoogle, isLoading } = useAuth();
+
+  const handleGoogleSignIn = async () => {
+    try {
+      await signInWithGoogle();
+      // User signed in with Google
+    } catch (err) {
+      console.error('Google sign in failed:', err);
+    }
+  };
+
+  return (
+    <button
+      onClick={handleGoogleSignIn}
+      disabled={isLoading}
+      className="google-signin-btn"
+    >
+      {isLoading ? 'Signing in...' : 'Sign in with Google'}
+    </button>
+  );
+}
+```
+
+## User Profile Management
+
+```tsx
+function UserProfile() {
+  const { user, updateProfile, updatePassword, deleteAccount } = useAuth();
+
+  const [profileData, setProfileData] = useState({
+    displayName: user?.user_metadata?.displayName || '',
+    avatar: user?.user_metadata?.avatar || '',
+  });
+
+  const handleUpdateProfile = async () => {
+    try {
+      await updateProfile(profileData);
+      // Profile updated successfully
+    } catch (err) {
+      console.error('Profile update failed:', err);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (confirm('Are you sure you want to delete your account?')) {
+      try {
+        await deleteAccount();
+        // Account deleted
+      } catch (err) {
+        console.error('Account deletion failed:', err);
+      }
+    }
+  };
+
+  return (
+    <div className="user-profile">
+      <h2>Profile Settings</h2>
+
+      <div className="profile-field">
+        <label>Display Name:</label>
+        <input
+          type="text"
+          value={profileData.displayName}
+          onChange={(e) =>
+            setProfileData({
+              ...profileData,
+              displayName: e.target.value,
+            })
+          }
+        />
+      </div>
+
+      <div className="profile-actions">
+        <button onClick={handleUpdateProfile}>Update Profile</button>
+
+        <button onClick={handleDeleteAccount} className="danger-btn">
+          Delete Account
+        </button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Testing
+
+### Mock Authentication Hook
+
+```typescript
+// __mocks__/useAuth.ts
+export const useAuth = jest.fn(() => ({
+  user: null,
+  isAuthenticated: false,
+  isLoading: false,
+  error: null,
+  signIn: jest.fn(),
+  signUp: jest.fn(),
+  signOut: jest.fn(),
+  resetPassword: jest.fn(),
+}));
+```
+
+### Hook Testing
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useAuth } from '@/hooks/useAuth';
+
+describe('useAuth', () => {
+  it('should initialize with unauthenticated state', () => {
+    const { result } = renderHook(() => useAuth());
+
+    expect(result.current.user).toBeNull();
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it('should handle sign in', async () => {
+    const { result } = renderHook(() => useAuth());
+
+    await act(async () => {
+      await result.current.signIn('test@example.com', 'password');
+    });
+
+    expect(result.current.isAuthenticated).toBe(true);
+    expect(result.current.user).toBeTruthy();
+  });
+
+  it('should handle sign out', async () => {
+    const { result } = renderHook(() => useAuth());
+
+    // First sign in
+    await act(async () => {
+      await result.current.signIn('test@example.com', 'password');
+    });
+
+    // Then sign out
+    await act(async () => {
+      await result.current.signOut();
+    });
+
+    expect(result.current.isAuthenticated).toBe(false);
+    expect(result.current.user).toBeNull();
+  });
+});
+```
+
+## Performance Optimization
+
+### Memoization
+
+```tsx
+import { useMemo } from 'react';
+
+function OptimizedAuthComponent() {
+  const { user, isAuthenticated } = useAuth();
+
+  // Memoize user display data
+  const userDisplayData = useMemo(() => {
+    if (!user) return null;
+
+    return {
+      displayName: user.user_metadata?.displayName || user.email,
+      avatar: user.user_metadata?.avatar,
+      joinDate: new Date(user.created_at).toLocaleDateString(),
+    };
+  }, [user]);
+
+  // Memoize authentication status
+  const authStatus = useMemo(
+    () => ({
+      isAuthenticated,
+      userLevel: user?.user_metadata?.level || 'basic',
+    }),
+    [isAuthenticated, user?.user_metadata?.level]
+  );
+
+  return (
+    <div>
+      {authStatus.isAuthenticated && userDisplayData && (
+        <div>
+          <h3>{userDisplayData.displayName}</h3>
+          <p>Member since: {userDisplayData.joinDate}</p>
+          <p>Level: {authStatus.userLevel}</p>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+## Related
+
+- [`AnimationConfig`](/api/types/animation-config) - For user-specific animation configurations
+- [`useAnimationConfig`](/api/hooks/use-animation-config) - Hook that integrates with user authentication
+- [Supabase Authentication](https://supabase.com/docs/guides/auth) - Official Supabase auth documentation

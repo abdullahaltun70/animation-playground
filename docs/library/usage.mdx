@@ -1,0 +1,350 @@
+---
+title: Usage Examples
+description: Learn how to use the Animate component and useAnimation hook with practical examples.
+icon: code
+---
+
+# Usage Examples
+
+Learn how to create beautiful animations using the library's components and hooks.
+
+## The `<Animate>` Component
+
+The `<Animate>` component is the easiest way to apply animations. Remember to use it within a Client Component.
+
+### Basic Example
+
+```tsx
+'use client';
+
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function MyComponent() {
+  return (
+    <div>
+      <Animate type="fade" duration={0.8}>
+        <h2>Fade In Title</h2>
+      </Animate>
+
+      <Animate type="slide" distance={-100} axis="x" delay={0.2}>
+        <p>Slides in from the left (distance is negative).</p>
+      </Animate>
+
+      <Animate type="slide" distance={75} axis="y" delay={0.4}>
+        <p>Slides down from above (distance is positive, axis y).</p>
+      </Animate>
+
+      <Animate type="bounce" distance={25} easing="ease-in-out">
+        <button>Bounce Me Up (distance positive)</button>
+      </Animate>
+
+      <Animate type="scale" scale={0.5} duration={0.4}>
+        <span>Scale In (starts at 50% size)</span>
+      </Animate>
+
+      <Animate type="rotate" degrees={-90} delay={0.5}>
+        <div>Rotate -90 degrees (Counter-Clockwise)</div>
+      </Animate>
+
+      <Animate type="rotate" degrees={{ start: 45, end: 225 }} duration={1}>
+        <div>Rotate from 45 to 225 degrees</div>
+      </Animate>
+    </div>
+  );
+}
+```
+
+### Advanced Examples
+
+#### Custom Wrapper Element
+
+```tsx
+<Animate type="fade" as="section" className="my-section">
+  <h3>Custom wrapper element</h3>
+  <p>This will be wrapped in a section element instead of div</p>
+</Animate>
+```
+
+#### Animation Completion Callback
+
+```tsx
+<Animate
+  type="scale"
+  scale={0.3}
+  duration={0.6}
+  onAnimationComplete={() => console.log('Animation finished!')}
+>
+  <div>Scale animation with callback</div>
+</Animate>
+```
+
+#### Complex Slide Animations
+
+```tsx
+// Slide in from different directions
+<div className="grid grid-cols-2 gap-4">
+  <Animate type="slide" distance={-150} axis="x">
+    <div>From Left</div>
+  </Animate>
+
+  <Animate type="slide" distance={150} axis="x">
+    <div>From Right</div>
+  </Animate>
+
+  <Animate type="slide" distance={-100} axis="y">
+    <div>From Top</div>
+  </Animate>
+
+  <Animate type="slide" distance={100} axis="y">
+    <div>From Bottom</div>
+  </Animate>
+</div>
+```
+
+## The `useAnimation` Hook
+
+For more direct control, or if you want to apply animations to an element without an extra wrapper, use the `useAnimation` hook.
+
+### Basic Hook Usage
+
+```tsx
+'use client';
+
+import {
+  useAnimation,
+  AnimationConfig,
+} from 'animation-library-test-abdullah-altun';
+
+function MyAdvancedComponent() {
+  const slideConfig: AnimationConfig = {
+    type: 'slide',
+    distance: 150,
+    axis: 'x',
+    duration: 0.7,
+    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  };
+
+  const {
+    ref: slideRef,
+    key: slideKey,
+    replay: replaySlide,
+  } = useAnimation<HTMLDivElement>(slideConfig);
+
+  return (
+    <div>
+      <div
+        ref={slideRef}
+        key={slideKey}
+        style={{
+          padding: '20px',
+          background: 'lightcoral',
+          marginBottom: '10px',
+        }}
+      >
+        Animated with Hook (Slide)!
+      </div>
+      <button onClick={replaySlide}>Replay Slide</button>
+    </div>
+  );
+}
+```
+
+### Multiple Animations with Hooks
+
+```tsx
+'use client';
+
+import {
+  useAnimation,
+  AnimationConfig,
+} from 'animation-library-test-abdullah-altun';
+
+function MultipleAnimations() {
+  // Configure different animations
+  const fadeConfig: AnimationConfig = {
+    type: 'fade',
+    duration: 1.2,
+    opacity: { start: 0, end: 1 },
+  };
+
+  const bounceConfig: AnimationConfig = {
+    type: 'bounce',
+    distance: 50,
+    duration: 0.8,
+    delay: 0.3,
+  };
+
+  const rotateConfig: AnimationConfig = {
+    type: 'rotate',
+    degrees: { start: 0, end: 360 },
+    duration: 2,
+    delay: 0.6,
+  };
+
+  // Create animation hooks
+  const fadeAnimation = useAnimation<HTMLHeadingElement>(fadeConfig);
+  const bounceAnimation = useAnimation<HTMLParagraphElement>(bounceConfig);
+  const rotateAnimation = useAnimation<HTMLDivElement>(rotateConfig);
+
+  const replayAll = () => {
+    fadeAnimation.replay();
+    bounceAnimation.replay();
+    rotateAnimation.replay();
+  };
+
+  return (
+    <div>
+      <h2 ref={fadeAnimation.ref} key={fadeAnimation.key}>
+        Fade In Title
+      </h2>
+
+      <p ref={bounceAnimation.ref} key={bounceAnimation.key}>
+        Bouncing paragraph text
+      </p>
+
+      <div
+        ref={rotateAnimation.ref}
+        key={rotateAnimation.key}
+        style={{ width: '100px', height: '100px', background: 'blue' }}
+      >
+        Rotating Box
+      </div>
+
+      <button onClick={replayAll}>Replay All Animations</button>
+    </div>
+  );
+}
+```
+
+### Animation with Completion Handler
+
+```tsx
+const config: AnimationConfig = {
+  type: 'scale',
+  scale: 0.2,
+  duration: 0.8,
+};
+
+const { ref, key, replay } = useAnimation<HTMLDivElement>(config, (event) => {
+  console.log('Animation completed!', event);
+  // Trigger next animation or state change
+});
+```
+
+## Common Patterns
+
+### Staggered Animations
+
+Create a sequence of animations with increasing delays:
+
+```tsx
+const items = ['Item 1', 'Item 2', 'Item 3', 'Item 4'];
+
+return (
+  <div>
+    {items.map((item, index) => (
+      <Animate
+        key={item}
+        type="slide"
+        distance={-100}
+        axis="x"
+        delay={index * 0.1}
+        duration={0.5}
+      >
+        <div className="item">{item}</div>
+      </Animate>
+    ))}
+  </div>
+);
+```
+
+### Conditional Animations
+
+```tsx
+const [isVisible, setIsVisible] = useState(false);
+
+return (
+  <div>
+    <button onClick={() => setIsVisible(!isVisible)}>Toggle Animation</button>
+
+    {isVisible && (
+      <Animate type="fade" duration={0.3}>
+        <div>Conditionally rendered with animation</div>
+      </Animate>
+    )}
+  </div>
+);
+```
+
+### Interactive Animations
+
+```tsx
+const [animationType, setAnimationType] = useState<AnimationType>('fade');
+
+return (
+  <div>
+    <select onChange={(e) => setAnimationType(e.target.value as AnimationType)}>
+      <option value="fade">Fade</option>
+      <option value="slide">Slide</option>
+      <option value="scale">Scale</option>
+      <option value="rotate">Rotate</option>
+      <option value="bounce">Bounce</option>
+    </select>
+
+    <Animate
+      type={animationType}
+      key={animationType} // Force re-animation on type change
+      duration={0.6}
+    >
+      <div className="demo-box">Animation Type: {animationType}</div>
+    </Animate>
+  </div>
+);
+```
+
+## Important Notes
+
+### Children Requirements
+
+The `<Animate>` component's `children` prop must be a single React element that can accept a `ref` (like standard HTML elements `div`, `p`, `button`, or components using `React.forwardRef`).
+
+```tsx
+// ✅ Good - Single element
+<Animate type="fade">
+  <div>Single child element</div>
+</Animate>
+
+// ❌ Bad - Multiple children
+<Animate type="fade">
+  <div>First child</div>
+  <div>Second child</div>
+</Animate>
+
+// ✅ Good - Wrap multiple children
+<Animate type="fade">
+  <div>
+    <div>First child</div>
+    <div>Second child</div>
+  </div>
+</Animate>
+```
+
+### Client Component Requirement
+
+Always ensure that components using the animation library are marked as Client Components in Next.js:
+
+```tsx
+'use client'; // Required at the top of the file
+
+import { Animate } from 'animation-library-test-abdullah-altun';
+```
+
+### Animation Wrapper
+
+The `<Animate>` component wraps its children in an element (default `div`, configurable with `as` prop) and applies an `animated` CSS class to this wrapper, along with specific animation classes.
+
+## Next Steps
+
+- [Animation Types](https://docs.page/abdullahaltun70/animation-playground/library/animations) - Explore all available animation types and their controls
+- [API Reference](https://docs.page/abdullahaltun70/animation-playground/library/api) - Complete API documentation for components and hooks
+- [Customization](https://docs.page/abdullahaltun70/animation-playground/library/customization) - Learn how to customize animations with SCSS variables

@@ -1,0 +1,1053 @@
+---
+title: API Reference
+description: Complete API reference for animation-library-test-abdullah-altun
+icon: book-open
+---
+
+# API Reference
+
+<Info>
+  Complete reference for all components, hooks, and types available in the
+  animation library.
+</Info>
+
+## Components
+
+<CardGroup cols={1}>
+<Card title="<Animate> Component" icon="magic">
+The main animation component that wraps your content with entrance animations.
+
+```tsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+<Animate
+  type="fade"
+  duration={0.5}
+  delay={0.2}
+  easing="ease-out"
+  opacity={{ start: 0, end: 1 }}
+>
+  <div>Your content here</div>
+</Animate>;
+```
+
+<Warning>
+The `<Animate>` component is the primary way to add animations to your React elements. It handles all the animation logic internally.
+</Warning>
+</Card>
+</CardGroup>
+
+### Props Reference
+
+<CardGroup cols={2}>
+<Card title="Core Props" icon="cog">
+**Required Properties**
+
+- `type` - Animation type to apply
+- `children` - Content to animate
+
+**Optional Properties**
+
+- `duration` - Animation duration (seconds)
+- `delay` - Start delay (seconds)
+- `easing` - Timing function
+
+</Card>
+<Card title="Animation-Specific Props" icon="sliders">
+**Movement Controls**
+
+- `distance` - For slide/bounce (+/- direction)
+- `degrees` - Rotation angle (+/- direction)
+- `scale` - Initial scale value
+- `opacity` - Start/end opacity config
+- `axis` - Movement axis ('x' or 'y')
+</Card>
+</CardGroup>
+
+## Hooks
+
+<Info>
+Hooks provide programmatic control over animations, offering more flexibility than the declarative `<Animate>` component approach.
+</Info>
+
+### `useAnimation`
+
+<Card title="useAnimation Hook" icon="magic-wand">
+A powerful hook for programmatic animation control with more flexibility than the `<Animate>` component.
+
+```tsx
+import { useAnimation } from 'animation-library-test-abdullah-altun';
+
+function MyComponent() {
+  const { ref, key, replay } = useAnimation({
+    type: 'slide',
+    duration: 0.8,
+    distance: 100,
+    easing: 'cubic-bezier(0.175, 0.885, 0.32, 1.275)',
+  });
+
+  return (
+    <div ref={ref} key={key}>
+      <button onClick={replay}>Replay Animation</button>
+    </div>
+  );
+}
+```
+
+<Success>
+This hook automatically manages animation state and provides replay functionality out of the box.
+</Success>
+</Card>
+
+#### Parameters
+
+<CardGroup cols={1}>
+  <Card title="Configuration Object" icon="settings">
+    | Parameter | Type | Description | | --------- | ----------------- |
+    ------------------------------ | | `config` | `AnimationConfig` | Animation
+    configuration object |
+  </Card>
+</CardGroup>
+
+#### Returns
+
+<CardGroup cols={3}>
+<Card title="ref" icon="link">
+`RefObject<HTMLElement>`
+
+Ref to attach to animated element
+
+</Card>
+<Card title="key" icon="key">
+`number`
+
+Unique key that changes to trigger re-animation
+
+</Card>
+<Card title="replay" icon="play">
+`() => void`
+
+Function to replay the animation
+
+</Card>
+</CardGroup>
+
+## Types
+
+<Info>
+  Type definitions provide IntelliSense support and ensure type safety when
+  using the animation library.
+</Info>
+
+### `AnimationType`
+
+<Card title="Available Animation Types" icon="list">
+The library supports 5 core animation types, each with directional control:
+
+```typescript
+type AnimationType = 'fade' | 'slide' | 'scale' | 'rotate' | 'bounce';
+```
+
+<CardGroup cols={3}>
+<Card title="fade" icon="eye">
+**Opacity-based animations**
+
+Smooth fade in/out effects with opacity control
+
+</Card>
+<Card title="slide" icon="arrows-alt">
+**Position-based animations**
+
+Translate movements with direction control via distance sign
+
+</Card>
+<Card title="scale" icon="expand">
+**Size-based animations**
+
+Scale transformations from small to normal size
+
+</Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+<Card title="rotate" icon="sync">
+**Rotation animations**
+
+Spin effects with clockwise/counter-clockwise control via degrees sign
+
+</Card>
+<Card title="bounce" icon="arrow-up">
+**Spring-based animations**
+
+Elastic bounce effects with directional control
+
+</Card>
+</CardGroup>
+</Card>
+
+### `EasingFunction`
+
+<Card title="Timing Functions" icon="clock">
+Control the acceleration curve of your animations:
+
+```typescript
+type EasingFunction =
+  | 'ease'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'linear'
+  | 'cubic-bezier(0.175, 0.885, 0.32, 1.275)'; // Elastic/Spring effect
+```
+
+<CardGroup cols={3}>
+<Card title="Standard Easings" icon="wave-square">
+- `ease` - Default smooth transition
+- `ease-in` - Slow start, fast end
+- `ease-out` - Fast start, slow end
+- `ease-in-out` - Slow start and end
+- `linear` - Constant speed
+</Card>
+<Card title="Custom Bezier" icon="bezier-curve">
+Use `cubic-bezier()` for custom timing curves:
+
+```typescript
+'cubic-bezier(0.175, 0.885, 0.32, 1.275)';
+```
+
+Perfect for spring-like effects!
+
+</Card>
+<Card title="Pro Tip" icon="lightbulb">
+<Success>
+For bounce animations, use the elastic cubic-bezier for enhanced spring effects
+</Success>
+</Card>
+</CardGroup>
+</Card>
+
+### `AnimationConfig`
+
+Configuration object for animations:
+
+```typescript
+interface AnimationConfig {
+  type: AnimationType;
+  duration: number; // Duration in seconds
+  delay: number; // Delay in seconds
+  easing: EasingFunction;
+  distance?: number; // For slide/bounce (+/- for direction)
+  degrees?: number; // For rotate (+/- for direction)
+  scale?: number; // Initial scale value
+  opacity?: {
+    start: number; // Initial opacity (0-1)
+    end: number; // Final opacity (0-1)
+  };
+  axis?: 'x' | 'y'; // Axis for slide animations
+  name?: string; // Optional name
+  description?: string; // Optional description
+}
+```
+
+## Direction Control
+
+<Warning>
+  Understanding direction control is crucial for creating the exact animation
+  effects you want.
+</Warning>
+
+<Card title="Sign-Based Direction System" icon="compass">
+The library uses an intuitive **sign-based direction system** for precise control over animation directions.
+
+<CardGroup cols={2}>
+<Card title="Positive Values" icon="plus">
+**Movement Direction**
+
+- Slide: from right/bottom
+- Rotate: clockwise
+- Bounce: from top/right
+
+</Card>
+<Card title="Negative Values" icon="minus">
+**Movement Direction**
+
+- Slide: from left/top
+- Rotate: counter-clockwise
+- Bounce: from bottom/left
+</Card>
+</CardGroup>
+</Card>
+
+### Slide Animations
+
+<Steps>
+<Step title="Choose Direction">
+Use positive/negative distance values to control slide direction:
+
+```tsx
+// Slide from left
+<Animate type="slide" distance={-100} axis="x">Content</Animate>
+
+// Slide from right
+<Animate type="slide" distance={100} axis="x">Content</Animate>
+```
+
+</Step>
+
+<Step title="Set Axis">
+Control whether movement is horizontal (`x`) or vertical (`y`):
+
+```tsx
+// Slide from top
+<Animate type="slide" distance={-50} axis="y">
+  Content
+</Animate>
+```
+
+</Step>
+</Steps>
+
+### Rotate Animations
+
+<CardGroup cols={2}>
+<Card title="Clockwise Rotation" icon="rotate-right">
+Use **positive degrees** for clockwise rotation:
+
+```tsx
+<Animate type="rotate" degrees={180}>
+  Content
+</Animate>
+```
+
+</Card>
+<Card title="Counter-Clockwise" icon="rotate-left">
+Use **negative degrees** for counter-clockwise rotation:
+
+```tsx
+<Animate type="rotate" degrees={-180}>
+  Content
+</Animate>
+```
+
+</Card>
+</CardGroup>
+
+### Bounce Animations
+
+<CardGroup cols={2}>
+<Card title="Bounce Up" icon="arrow-up">
+Use **positive distance** to bounce from top:
+
+```tsx
+<Animate type="bounce" distance={30}>
+  Content
+</Animate>
+```
+
+</Card>
+<Card title="Bounce Down" icon="arrow-down">
+Use **negative distance** to bounce from bottom:
+
+```tsx
+<Animate type="bounce" distance={-30}>
+  Content
+</Animate>
+```
+
+</Card>
+</CardGroup>
+
+## Advanced Usage
+
+<Info>
+  Advanced patterns for creating complex animation sequences and effects.
+</Info>
+
+### Animation Composition
+
+<Card title="Multi-layered Animations" icon="layers">
+Combine multiple animations by nesting components for complex effects:
+
+```tsx
+<Animate type="bounce" distance={50}>
+  <Animate type="slide" distance={-200}>
+    <Animate type="scale" scale={0.5} duration={0.5} delay={1}>
+      <div>Multi-layered animation</div>
+    </Animate>
+  </Animate>
+</Animate>
+```
+
+<Warning>
+Be mindful of performance when nesting multiple animations. Test on lower-end devices.
+</Warning>
+</Card>
+
+### Staggered Animations
+
+<Card title="Sequential Effects" icon="clock">
+Create beautiful staggered effects using delay:
+
+```tsx
+{
+  Array.from({ length: 5 }, (_, index) => (
+    <Animate
+      key={index}
+      type="fade"
+      duration={0.5}
+      delay={index * 0.2}
+      opacity={{ start: 0, end: 1 }}
+    >
+      <div>Item {index + 1}</div>
+    </Animate>
+  ));
+}
+```
+
+<Success>
+Staggered animations create professional-looking sequential reveals perfect for lists and galleries.
+</Success>
+</Card>
+
+### Custom Easing for Spring Effects
+
+<Card title="Spring Animations" icon="spring">
+Use cubic-bezier for spring-like animations:
+
+```tsx
+<Animate
+  type="bounce"
+  duration={1.2}
+  easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+  distance={50}
+>
+  <div>Spring bounce effect</div>
+</Animate>
+```
+
+</Card>
+
+## Components
+
+### `<Animate>`
+
+The main component for applying entrance animations to your React elements.
+
+#### Props
+
+```typescript
+interface AnimateProps {
+  // Animation configuration
+  type?: AnimationType;
+  duration?: number;
+  delay?: number;
+  easing?: string;
+
+  // Transform properties
+  distance?: number;
+  scale?: number;
+  rotation?: number;
+
+  // Animation control
+  trigger?: boolean;
+  repeat?: boolean;
+  fillMode?: 'none' | 'forwards' | 'backwards' | 'both';
+
+  // React props
+  children: React.ReactNode;
+  className?: string;
+  style?: React.CSSProperties;
+
+  // Event handlers
+  onAnimationStart?: () => void;
+  onAnimationEnd?: () => void;
+  onAnimationIteration?: () => void;
+}
+```
+
+#### Detailed Props
+
+##### Animation Configuration
+
+| Prop       | Type            | Default      | Description                        |
+| ---------- | --------------- | ------------ | ---------------------------------- |
+| `type`     | `AnimationType` | `'fadeIn'`   | The type of animation to apply     |
+| `duration` | `number`        | `600`        | Animation duration in milliseconds |
+| `delay`    | `number`        | `0`          | Delay before animation starts (ms) |
+| `easing`   | `string`        | `'ease-out'` | CSS timing function                |
+
+##### Transform Properties
+
+| Prop       | Type     | Default | Description                                           |
+| ---------- | -------- | ------- | ----------------------------------------------------- |
+| `distance` | `number` | `20`    | Movement distance in pixels for slide/fade animations |
+| `scale`    | `number` | `0.8`   | Initial scale value for scale animations (0-1)        |
+| `rotation` | `number` | `90`    | Rotation angle in degrees for rotation animations     |
+
+##### Animation Control
+
+| Prop       | Type      | Default  | Description                                    |
+| ---------- | --------- | -------- | ---------------------------------------------- |
+| `trigger`  | `boolean` | `true`   | Whether to trigger the animation immediately   |
+| `repeat`   | `boolean` | `false`  | Whether the animation should repeat infinitely |
+| `fillMode` | `string`  | `'both'` | CSS animation-fill-mode property               |
+
+##### Event Handlers
+
+| Prop                   | Type         | Description                                                   |
+| ---------------------- | ------------ | ------------------------------------------------------------- |
+| `onAnimationStart`     | `() => void` | Called when animation starts                                  |
+| `onAnimationEnd`       | `() => void` | Called when animation completes                               |
+| `onAnimationIteration` | `() => void` | Called on each animation iteration (for repeating animations) |
+
+#### Usage Examples
+
+```jsx
+// Basic usage
+<Animate type="fadeIn">
+  <div>Simple fade in animation</div>
+</Animate>
+
+// With custom properties
+<Animate
+  type="slideUp"
+  duration={800}
+  distance={50}
+  delay={200}
+  easing="cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+>
+  <div>Custom slide animation</div>
+</Animate>
+
+// With event handlers
+<Animate
+  type="bounceIn"
+  onAnimationStart={() => console.log('Animation started')}
+  onAnimationEnd={() => console.log('Animation completed')}
+>
+  <div>Bounce animation with events</div>
+</Animate>
+
+// Controlled animation
+const [shouldAnimate, setShouldAnimate] = useState(false);
+
+<Animate type="scaleIn" trigger={shouldAnimate}>
+  <div>Controlled animation</div>
+</Animate>
+```
+
+## Hooks
+
+### `useAnimation`
+
+A powerful hook for programmatic animation control with more flexibility than the `<Animate>` component.
+
+#### Parameters
+
+```typescript
+function useAnimation(config: UseAnimationConfig): UseAnimationReturn;
+```
+
+```typescript
+interface UseAnimationConfig {
+  type: AnimationType;
+  duration?: number;
+  delay?: number;
+  easing?: string;
+  distance?: number;
+  scale?: number;
+  rotation?: number;
+  fillMode?: string;
+  repeat?: boolean;
+}
+
+interface UseAnimationReturn {
+  ref: React.RefObject<HTMLElement>;
+  trigger: () => void;
+  reset: () => void;
+  isAnimating: boolean;
+  styles: React.CSSProperties;
+}
+```
+
+#### Return Values
+
+| Property      | Type                           | Description                                      |
+| ------------- | ------------------------------ | ------------------------------------------------ |
+| `ref`         | `React.RefObject<HTMLElement>` | Ref to attach to the animated element            |
+| `trigger`     | `() => void`                   | Function to manually trigger the animation       |
+| `reset`       | `() => void`                   | Function to reset the animation to initial state |
+| `isAnimating` | `boolean`                      | Current animation state                          |
+| `styles`      | `React.CSSProperties`          | Computed styles for the animation                |
+
+#### Usage Examples
+
+```jsx
+// Basic hook usage
+function MyComponent() {
+  const { ref, trigger, isAnimating } = useAnimation({
+    type: 'fadeInUp',
+    duration: 600,
+    distance: 30,
+  });
+
+  return (
+    <div>
+      <button onClick={trigger} disabled={isAnimating}>
+        Animate
+      </button>
+      <div ref={ref}>Content to animate</div>
+    </div>
+  );
+}
+
+// With multiple animations
+function ComplexComponent() {
+  const fadeAnimation = useAnimation({ type: 'fadeIn', duration: 400 });
+  const slideAnimation = useAnimation({
+    type: 'slideUp',
+    duration: 600,
+    delay: 200,
+  });
+
+  const handleAnimateAll = () => {
+    fadeAnimation.trigger();
+    slideAnimation.trigger();
+  };
+
+  return (
+    <div>
+      <button onClick={handleAnimateAll}>Animate All</button>
+      <div ref={fadeAnimation.ref}>First element</div>
+      <div ref={slideAnimation.ref}>Second element</div>
+    </div>
+  );
+}
+
+// With dynamic styles
+function DynamicAnimation() {
+  const { ref, trigger, styles, reset } = useAnimation({
+    type: 'scaleIn',
+    duration: 500,
+    scale: 0.5,
+  });
+
+  return (
+    <div>
+      <button onClick={trigger}>Start</button>
+      <button onClick={reset}>Reset</button>
+      <div
+        ref={ref}
+        style={{
+          ...styles,
+          backgroundColor: 'blue',
+          padding: '20px',
+          borderRadius: '8px',
+        }}
+      >
+        Dynamic content
+      </div>
+    </div>
+  );
+}
+```
+
+### `useIntersectionAnimation`
+
+A specialized hook that combines Intersection Observer with animations for scroll-triggered effects.
+
+#### Parameters
+
+```typescript
+function useIntersectionAnimation(
+  config: UseAnimationConfig,
+  options?: IntersectionObserverInit
+): UseIntersectionAnimationReturn;
+```
+
+#### Return Values
+
+```typescript
+interface UseIntersectionAnimationReturn {
+  ref: React.RefObject<HTMLElement>;
+  isVisible: boolean;
+  isAnimating: boolean;
+  styles: React.CSSProperties;
+}
+```
+
+#### Usage Example
+
+```jsx
+function ScrollTriggeredAnimation() {
+  const { ref, isVisible, isAnimating } = useIntersectionAnimation(
+    {
+      type: 'fadeInUp',
+      duration: 800,
+      distance: 40,
+    },
+    {
+      threshold: 0.2,
+      triggerOnce: true,
+    }
+  );
+
+  return (
+    <div style={{ height: '200vh' }}>
+      <div style={{ height: '100vh' }}>Scroll down...</div>
+      <div ref={ref}>
+        {isVisible ? 'Visible and animating!' : 'Not visible yet'}
+      </div>
+    </div>
+  );
+}
+```
+
+## Types
+
+### `AnimationType`
+
+Union type of all available animation types.
+
+```typescript
+type AnimationType =
+  // Fade animations
+  | 'fadeIn'
+  | 'fadeInUp'
+  | 'fadeInDown'
+  | 'fadeInLeft'
+  | 'fadeInRight'
+
+  // Slide animations
+  | 'slideUp'
+  | 'slideDown'
+  | 'slideLeft'
+  | 'slideRight'
+
+  // Scale animations
+  | 'scaleIn'
+  | 'scaleInUp'
+  | 'scaleInDown'
+
+  // Rotation animations
+  | 'rotateIn'
+  | 'rotateInUpLeft'
+  | 'rotateInUpRight'
+
+  // Bounce animations
+  | 'bounceIn'
+  | 'bounceInUp'
+  | 'bounceInDown'
+  | 'bounceInLeft'
+  | 'bounceInRight'
+
+  // Special animations
+  | 'flipInX'
+  | 'flipInY'
+  | 'zoomIn'
+  | 'rollIn';
+```
+
+### `EasingFunction`
+
+Type for CSS easing functions.
+
+```typescript
+type EasingFunction =
+  | 'linear'
+  | 'ease'
+  | 'ease-in'
+  | 'ease-out'
+  | 'ease-in-out'
+  | 'step-start'
+  | 'step-end'
+  | `steps(${number})`
+  | `steps(${number}, start)`
+  | `steps(${number}, end)`
+  | `cubic-bezier(${number}, ${number}, ${number}, ${number})`;
+```
+
+### `AnimationConfig`
+
+Configuration object for animations.
+
+```typescript
+interface AnimationConfig {
+  type: AnimationType;
+  duration?: number;
+  delay?: number;
+  easing?: EasingFunction;
+  distance?: number;
+  scale?: number;
+  rotation?: number;
+  fillMode?: 'none' | 'forwards' | 'backwards' | 'both';
+  repeat?: boolean;
+}
+```
+
+## Utilities
+
+<Info>
+  Utility functions for advanced animation control and configuration management.
+</Info>
+
+<CardGroup cols={3}>
+<Card title="createAnimation" icon="magic">
+**Create Custom Configurations**
+
+Utility function for creating reusable animation configurations.
+
+```typescript
+function createAnimation(config: Partial<AnimationConfig>): AnimationConfig;
+```
+
+</Card>
+<Card title="getAnimationStyles" icon="css3">
+**Generate CSS Styles**
+
+Generate CSS styles for animations programmatically.
+
+```typescript
+function getAnimationStyles(config: AnimationConfig): React.CSSProperties;
+```
+
+</Card>
+<Card title="validateAnimationConfig" icon="check-circle">
+**Validate Configurations**
+
+Utility to validate animation configuration objects.
+
+```typescript
+function validateAnimationConfig(config: unknown): config is AnimationConfig;
+```
+
+</Card>
+</CardGroup>
+
+### `createAnimation`
+
+<Steps>
+<Step title="Create Configuration">
+Define your custom animation configuration:
+
+```jsx
+const customFade = createAnimation({
+  type: 'fade',
+  duration: 1000,
+  easing: 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+});
+```
+
+</Step>
+
+<Step title="Apply to Component">
+Use the configuration with the Animate component:
+
+```jsx
+<Animate {...customFade}>
+  <div>Custom animation</div>
+</Animate>
+```
+
+</Step>
+</Steps>
+
+### `getAnimationStyles`
+
+<Card title="Direct Style Application" icon="paint-brush">
+Generate and apply CSS styles directly to elements:
+
+```jsx
+const styles = getAnimationStyles({
+  type: 'slide',
+  duration: 600,
+  distance: 30,
+});
+
+// Apply styles directly
+<div style={styles}>Styled element</div>;
+```
+
+<Success>
+Perfect for integrating with existing CSS-in-JS solutions or when you need fine-grained control.
+</Success>
+</Card>
+
+### `validateAnimationConfig`
+
+<Card title="Safe Configuration Handling" icon="shield-alt">
+Validate user-provided or dynamic animation configurations:
+
+```jsx
+const userConfig = JSON.parse(userInput);
+
+if (validateAnimationConfig(userConfig)) {
+  // Safe to use userConfig as AnimationConfig
+  <Animate {...userConfig}>
+    <div>Validated animation</div>
+  </Animate>;
+}
+```
+
+<Warning>
+Always validate configurations from external sources to prevent runtime errors.
+</Warning>
+</Card>
+
+## CSS Classes
+
+<Info>
+  For developers who prefer class-based animations, the library exposes CSS
+  classes for direct use.
+</Info>
+
+### Animation Classes
+
+<Card title="Class-Based Animation" icon="css3">
+Each animation type has a corresponding CSS class for direct HTML/CSS usage:
+
+```css
+.animate-fade-in {
+  /* fade animation */
+}
+.animate-fade-in-up {
+  /* fadeInUp animation */
+}
+.animate-slide-up {
+  /* slideUp animation */
+}
+/* ... etc for all animation types */
+```
+
+<CardGroup cols={2}>
+<Card title="HTML Usage" icon="code">
+```html
+<div class="animate-fade-in-up animate-duration-slow">
+  CSS class-based animation
+</div>
+```
+</Card>
+<Card title="CSS-in-JS Usage" icon="js">
+```jsx
+<div className="animate-slide-up animate-delay-md">
+  React with CSS classes
+</div>
+```
+</Card>
+</CardGroup>
+</Card>
+
+### Modifier Classes
+
+<CardGroup cols={2}>
+<Card title="Duration Modifiers" icon="clock">
+```css
+.animate-duration-fast { animation-duration: 300ms; }
+.animate-duration-normal { animation-duration: 600ms; }
+.animate-duration-slow { animation-duration: 1000ms; }
+```
+</Card>
+<Card title="Delay Modifiers" icon="stopwatch">
+```css
+.animate-delay-sm { animation-delay: 100ms; }
+.animate-delay-md { animation-delay: 300ms; }
+.animate-delay-lg { animation-delay: 500ms; }
+```
+</Card>
+</CardGroup>
+
+<Success>
+  CSS classes are perfect for rapid prototyping and when you need lightweight
+  animations without JavaScript.
+</Success>
+
+## Advanced Patterns
+
+<Warning>
+  These patterns are for advanced use cases. Consider performance implications
+  when implementing complex animation sequences.
+</Warning>
+
+### Animation Sequences
+
+<Card title="Step-by-Step Animation Sequences" icon="list-ol">
+Create complex, timed animation sequences with state management:
+
+```jsx
+function AnimationSequence() {
+  const [step, setStep] = useState(0);
+
+  const animations = [
+    { type: 'fade', duration: 400 },
+    { type: 'slide', duration: 500, delay: 200 },
+    { type: 'bounce', duration: 600, delay: 400 },
+  ];
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      setStep((prev) => (prev + 1) % animations.length);
+    }, 2000);
+
+    return () => clearInterval(timer);
+  }, []);
+
+  return (
+    <div>
+      {animations.map((config, index) => (
+        <Animate key={index} {...config} trigger={step === index}>
+          <div>Step {index + 1}</div>
+        </Animate>
+      ))}
+    </div>
+  );
+}
+```
+
+<Info>
+This pattern is excellent for onboarding flows, tutorials, or attention-grabbing sequences.
+</Info>
+</Card>
+
+### Performance Monitoring
+
+<Card title="Animation Performance Management" icon="tachometer-alt">
+Monitor and limit concurrent animations to maintain performance:
+
+```jsx
+function PerformanceAwareAnimation() {
+  const [animationCount, setAnimationCount] = useState(0);
+  const maxAnimations = 10; // Limit concurrent animations
+
+  const { ref, trigger, isAnimating } = useAnimation({
+    type: 'fade',
+    duration: 500,
+  });
+
+  const handleTrigger = () => {
+    if (animationCount < maxAnimations) {
+      setAnimationCount((prev) => prev + 1);
+      trigger();
+    }
+  };
+
+  const handleAnimationEnd = () => {
+    setAnimationCount((prev) => prev - 1);
+  };
+
+  return (
+    <Animate type="scale" onAnimationEnd={handleAnimationEnd}>
+      <button
+        onClick={handleTrigger}
+        disabled={animationCount >= maxAnimations}
+      >
+        Animate ({animationCount}/{maxAnimations})
+      </button>
+    </Animate>
+  );
+}
+```
+
+<Success>
+Performance monitoring ensures smooth user experience even with multiple simultaneous animations.
+</Success>
+</Card>

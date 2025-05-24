@@ -1,0 +1,330 @@
+---
+title: useShareExport Hook
+description: React hook for sharing and exporting animation configurations and results.
+icon: share
+---
+
+# useShareExport Hook
+
+The `useShareExport` hook provides functionality for sharing animation configurations and exporting animation results in various formats.
+
+## Import
+
+```typescript
+import { useShareExport } from '@/hooks/useShareExport';
+```
+
+## Basic Usage
+
+```typescript
+import React from 'react';
+import { useShareExport } from '@/hooks/useShareExport';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+function ShareExportExample() {
+  const { config } = useAnimationConfig();
+  const {
+    shareConfig,
+    exportConfig,
+    exportAnimation,
+    shareableUrl,
+    isExporting,
+    isSharing,
+    exportFormats
+  } = useShareExport();
+
+  const handleShare = async () => {
+    const url = await shareConfig(config);
+    console.log('Shareable URL:', url);
+  };
+
+  return (
+    <div>
+      <button onClick={handleShare} disabled={isSharing}>
+        {isSharing ? 'Sharing...' : 'Share Animation'}
+      </button>
+
+      <button onClick={() => exportConfig(config, 'json')}>
+        Export Config as JSON
+      </button>
+
+      <button onClick={() => exportAnimation(config, 'gif')}>
+        Export as GIF
+      </button>
+    </div>
+  );
+}
+```
+
+## API Reference
+
+### Return Value
+
+The hook returns an object with the following properties:
+
+```typescript
+interface UseShareExportReturn {
+  // Sharing
+  shareConfig: (config: AnimationConfig) => Promise<string>;
+  shareableUrl: string | null;
+  isSharing: boolean;
+
+  // Exporting
+  exportConfig: (
+    config: AnimationConfig,
+    format: ConfigFormat
+  ) => Promise<void>;
+  exportAnimation: (
+    config: AnimationConfig,
+    format: AnimationFormat
+  ) => Promise<void>;
+  isExporting: boolean;
+
+  // Available formats
+  exportFormats: {
+    config: ConfigFormat[];
+    animation: AnimationFormat[];
+  };
+
+  // Utilities
+  generateShareableUrl: (configId: string) => string;
+  copyToClipboard: (text: string) => Promise<boolean>;
+}
+```
+
+### Methods
+
+#### `shareConfig(config: AnimationConfig): Promise<string>`
+
+Shares an animation configuration and returns a shareable URL.
+
+**Parameters:**
+
+- `config` - The animation configuration to share
+
+**Returns:** Promise that resolves to the shareable URL
+
+```typescript
+const shareableUrl = await shareConfig({
+  type: 'fade',
+  duration: 1000,
+  easing: 'ease-in-out',
+});
+```
+
+#### `exportConfig(config: AnimationConfig, format: ConfigFormat): Promise<void>`
+
+Exports an animation configuration in the specified format.
+
+**Parameters:**
+
+- `config` - The animation configuration to export
+- `format` - Export format (`'json'`, `'yaml'`, `'javascript'`, `'typescript'`)
+
+```typescript
+// Export as JSON
+await exportConfig(config, 'json');
+
+// Export as TypeScript
+await exportConfig(config, 'typescript');
+```
+
+#### `exportAnimation(config: AnimationConfig, format: AnimationFormat): Promise<void>`
+
+Exports the animation in the specified format.
+
+**Parameters:**
+
+- `config` - The animation configuration
+- `format` - Animation format (`'gif'`, `'mp4'`, `'webm'`, `'css'`)
+
+```typescript
+// Export as GIF
+await exportAnimation(config, 'gif');
+
+// Export as CSS animation
+await exportAnimation(config, 'css');
+```
+
+#### `generateShareableUrl(configId: string): string`
+
+Generates a shareable URL for a given configuration ID.
+
+**Parameters:**
+
+- `configId` - The unique identifier of the saved configuration
+
+**Returns:** The complete shareable URL
+
+#### `copyToClipboard(text: string): Promise<boolean>`
+
+Copies text to the user's clipboard.
+
+**Parameters:**
+
+- `text` - The text to copy
+
+**Returns:** Promise that resolves to `true` if successful, `false` otherwise
+
+## Types
+
+### ConfigFormat
+
+```typescript
+type ConfigFormat = 'json' | 'yaml' | 'javascript' | 'typescript';
+```
+
+### AnimationFormat
+
+```typescript
+type AnimationFormat = 'gif' | 'mp4' | 'webm' | 'css';
+```
+
+## Advanced Usage
+
+### Custom Export Options
+
+```typescript
+import { useShareExport } from '@/hooks/useShareExport';
+
+function AdvancedExportExample() {
+  const { exportAnimation, isExporting } = useShareExport();
+
+  const exportWithOptions = async () => {
+    const config = {
+      type: 'slide',
+      duration: 2000,
+      easing: 'ease-out',
+      // Custom export options
+      exportOptions: {
+        quality: 'high',
+        fps: 60,
+        dimensions: { width: 800, height: 600 }
+      }
+    };
+
+    await exportAnimation(config, 'mp4');
+  };
+
+  return (
+    <button onClick={exportWithOptions} disabled={isExporting}>
+      {isExporting ? 'Exporting...' : 'Export High Quality MP4'}
+    </button>
+  );
+}
+```
+
+### Batch Export
+
+```typescript
+function BatchExportExample() {
+  const { exportConfig } = useShareExport();
+
+  const exportMultipleFormats = async (config: AnimationConfig) => {
+    const formats: ConfigFormat[] = ['json', 'typescript', 'css'];
+
+    for (const format of formats) {
+      await exportConfig(config, format);
+    }
+  };
+
+  return (
+    <button onClick={() => exportMultipleFormats(config)}>
+      Export All Formats
+    </button>
+  );
+}
+```
+
+### Share with Custom Message
+
+```typescript
+function ShareWithMessageExample() {
+  const { shareConfig, copyToClipboard } = useShareExport();
+
+  const shareWithMessage = async (config: AnimationConfig) => {
+    const url = await shareConfig(config);
+    const message = `Check out this cool animation: ${url}`;
+
+    if (navigator.share) {
+      await navigator.share({
+        title: 'Cool Animation',
+        text: message,
+        url: url
+      });
+    } else {
+      await copyToClipboard(message);
+    }
+  };
+
+  return (
+    <button onClick={() => shareWithMessage(config)}>
+      Share Animation
+    </button>
+  );
+}
+```
+
+## Error Handling
+
+```typescript
+import { useShareExport } from '@/hooks/useShareExport';
+
+function ErrorHandlingExample() {
+  const { shareConfig, exportAnimation } = useShareExport();
+
+  const handleShare = async () => {
+    try {
+      const url = await shareConfig(config);
+      console.log('Shared successfully:', url);
+    } catch (error) {
+      console.error('Failed to share:', error);
+      // Handle error (show notification, etc.)
+    }
+  };
+
+  const handleExport = async () => {
+    try {
+      await exportAnimation(config, 'gif');
+      console.log('Export completed');
+    } catch (error) {
+      console.error('Export failed:', error);
+      // Handle error
+    }
+  };
+
+  return (
+    <div>
+      <button onClick={handleShare}>Share</button>
+      <button onClick={handleExport}>Export</button>
+    </div>
+  );
+}
+```
+
+## Performance Considerations
+
+- **Large Exports**: For large animations, consider showing progress indicators during export
+- **Format Selection**: GIF exports are generally smaller but lower quality than MP4
+- **Caching**: Shareable URLs are cached to avoid duplicate uploads
+- **Rate Limiting**: The hook includes built-in rate limiting for sharing operations
+
+## Related Hooks
+
+- [`useAnimationConfig`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-animation-config) - For managing animation configurations
+- [`useAuth`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-auth) - For user authentication (required for sharing)
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Sharing fails**: Ensure user is authenticated
+2. **Export quality issues**: Try adjusting export options
+3. **Large file sizes**: Consider using compressed formats or lower quality settings
+4. **Browser compatibility**: Some export formats may not be supported in all browsers
+
+### Browser Support
+
+- **Sharing**: Requires modern browser with Web Share API or clipboard support
+- **GIF Export**: Supported in all modern browsers
+- **Video Export**: Requires browsers with MediaRecorder API support

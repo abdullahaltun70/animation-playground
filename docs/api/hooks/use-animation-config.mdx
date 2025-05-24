@@ -1,0 +1,569 @@
+---
+title: useAnimationConfig
+description: Hook for managing animation configuration state and operations.
+icon: settings-2
+---
+
+# useAnimationConfig
+
+The `useAnimationConfig` hook provides state management and operations for animation configurations. It handles creating, updating, validating, and persisting animation settings.
+
+## Import
+
+```typescript
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+```
+
+## Basic Usage
+
+```tsx
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+function AnimationEditor() {
+  const {
+    animationConfig,
+    setAnimationConfig,
+    updateConfig,
+    resetConfig,
+    isValid,
+  } = useAnimationConfig();
+
+  return (
+    <div>
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={setAnimationConfig}
+      />
+
+      <AnimatedContainer config={animationConfig}>
+        <div>Preview content</div>
+      </AnimatedContainer>
+
+      <button onClick={resetConfig} disabled={!isValid}>
+        Reset to Default
+      </button>
+    </div>
+  );
+}
+```
+
+## Return Value
+
+The hook returns an object with the following properties and methods:
+
+### State Properties
+
+#### `animationConfig`
+
+**Type:** `AnimationConfig`
+
+The current animation configuration object.
+
+```typescript
+const { animationConfig } = useAnimationConfig();
+console.log(animationConfig);
+// {
+//   type: 'fade',
+//   duration: 0.5,
+//   easing: 'ease-out',
+//   delay: 0,
+//   name: 'My Animation'
+// }
+```
+
+#### `isValid`
+
+**Type:** `boolean`
+
+Whether the current configuration is valid.
+
+#### `isDirty`
+
+**Type:** `boolean`
+
+Whether the configuration has been modified from its initial state.
+
+#### `errors`
+
+**Type:** `ValidationError[]`
+
+Array of validation errors for the current configuration.
+
+```typescript
+interface ValidationError {
+  field: keyof AnimationConfig;
+  message: string;
+}
+```
+
+### Methods
+
+#### `setAnimationConfig(config: AnimationConfig): void`
+
+Sets the entire animation configuration.
+
+```tsx
+const { setAnimationConfig } = useAnimationConfig();
+
+const newConfig = {
+  type: 'slide' as const,
+  duration: 1.0,
+  easing: 'ease-in-out',
+  delay: 0.2,
+  name: 'Slide Animation',
+};
+
+setAnimationConfig(newConfig);
+```
+
+#### `updateConfig(updates: Partial<AnimationConfig>): void`
+
+Updates specific properties of the configuration.
+
+```tsx
+const { updateConfig } = useAnimationConfig();
+
+// Update just the duration
+updateConfig({ duration: 1.5 });
+
+// Update multiple properties
+updateConfig({
+  type: 'bounce',
+  duration: 2.0,
+  name: 'Bouncy Animation',
+});
+```
+
+#### `resetConfig(): void`
+
+Resets the configuration to its default values.
+
+```tsx
+const { resetConfig } = useAnimationConfig();
+
+// Reset to default configuration
+resetConfig();
+```
+
+#### `validateConfig(config?: AnimationConfig): boolean`
+
+Validates the current or provided configuration.
+
+```tsx
+const { validateConfig, animationConfig } = useAnimationConfig();
+
+// Validate current config
+const isCurrentValid = validateConfig();
+
+// Validate specific config
+const testConfig = { type: 'fade', duration: 0.5, easing: 'ease-out' };
+const isTestValid = validateConfig(testConfig);
+```
+
+## Advanced Usage
+
+### With Initial Configuration
+
+```tsx
+function CustomInitialConfig() {
+  const initialConfig = {
+    type: 'scale' as const,
+    duration: 1.2,
+    easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+    delay: 0.3,
+    name: 'Custom Scale',
+  };
+
+  const { animationConfig, updateConfig } = useAnimationConfig(initialConfig);
+
+  return (
+    <ConfigPanel
+      initialConfig={animationConfig}
+      onConfigChange={updateConfig}
+    />
+  );
+}
+```
+
+### With Persistence
+
+```tsx
+function PersistedConfig() {
+  // Hook automatically saves to localStorage
+  const { animationConfig, setAnimationConfig, saveConfig, loadConfig } =
+    useAnimationConfig({
+      persist: true,
+      storageKey: 'my-animation-config',
+    });
+
+  const handleSave = async () => {
+    try {
+      await saveConfig();
+      toast.success('Configuration saved!');
+    } catch (error) {
+      toast.error('Failed to save configuration');
+    }
+  };
+
+  return (
+    <div>
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={setAnimationConfig}
+      />
+
+      <button onClick={handleSave}>Save Configuration</button>
+    </div>
+  );
+}
+```
+
+### With Validation
+
+```tsx
+function ValidatedConfig() {
+  const { animationConfig, updateConfig, isValid, errors } =
+    useAnimationConfig();
+
+  return (
+    <div>
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={updateConfig}
+      />
+
+      {!isValid && (
+        <div className="validation-errors">
+          <h4>Configuration Errors:</h4>
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index} className="error-item">
+                <strong>{error.field}:</strong> {error.message}
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+
+      <AnimatedContainer config={animationConfig} disabled={!isValid}>
+        <div>Preview (disabled if invalid)</div>
+      </AnimatedContainer>
+    </div>
+  );
+}
+```
+
+## Configuration Options
+
+The hook accepts an optional configuration object:
+
+```typescript
+interface UseAnimationConfigOptions {
+  initialConfig?: Partial<AnimationConfig>;
+  persist?: boolean;
+  storageKey?: string;
+  validateOnChange?: boolean;
+  debounceMs?: number;
+}
+```
+
+### Example with Options
+
+```tsx
+const configOptions = {
+  initialConfig: {
+    type: 'fade' as const,
+    duration: 1.0,
+  },
+  persist: true,
+  storageKey: 'custom-animation-config',
+  validateOnChange: true,
+  debounceMs: 300,
+};
+
+const { animationConfig, updateConfig } = useAnimationConfig(configOptions);
+```
+
+## Validation Rules
+
+The hook includes built-in validation for:
+
+### Duration Validation
+
+```typescript
+// Must be between 0.1 and 3.0 seconds
+const validateDuration = (duration: number): boolean => {
+  return duration >= 0.1 && duration <= 3.0;
+};
+```
+
+### Delay Validation
+
+```typescript
+// Must be between 0 and 5.0 seconds
+const validateDelay = (delay: number): boolean => {
+  return delay >= 0 && delay <= 5.0;
+};
+```
+
+### Type Validation
+
+```typescript
+// Must be a valid animation type
+const validTypes = ['fade', 'slide', 'scale', 'rotate', 'bounce'];
+const validateType = (type: string): boolean => {
+  return validTypes.includes(type);
+};
+```
+
+### Custom Validation
+
+```tsx
+function CustomValidationExample() {
+  const customValidator = (config: AnimationConfig): ValidationError[] => {
+    const errors: ValidationError[] = [];
+
+    // Custom rule: bounce animations should be longer
+    if (config.type === 'bounce' && config.duration < 1.0) {
+      errors.push({
+        field: 'duration',
+        message: 'Bounce animations should be at least 1 second',
+      });
+    }
+
+    // Custom rule: slide animations need delay
+    if (config.type === 'slide' && (config.delay || 0) < 0.1) {
+      errors.push({
+        field: 'delay',
+        message: 'Slide animations should have a small delay',
+      });
+    }
+
+    return errors;
+  };
+
+  const { animationConfig, updateConfig, isValid, errors } = useAnimationConfig(
+    {
+      customValidator,
+    }
+  );
+
+  // ... rest of component
+}
+```
+
+## Performance Optimization
+
+### Debounced Updates
+
+```tsx
+function DebouncedExample() {
+  // Debounce config updates to avoid excessive re-renders
+  const { animationConfig, updateConfig } = useAnimationConfig({
+    debounceMs: 300, // Wait 300ms before applying changes
+  });
+
+  return (
+    <ConfigPanel
+      initialConfig={animationConfig}
+      onConfigChange={updateConfig} // Automatically debounced
+    />
+  );
+}
+```
+
+### Memoized Computations
+
+```tsx
+function OptimizedExample() {
+  const { animationConfig } = useAnimationConfig();
+
+  // Memoize expensive computations
+  const animationCSS = useMemo(() => {
+    return generateAnimationCSS(animationConfig);
+  }, [animationConfig]);
+
+  const previewProps = useMemo(() => {
+    return {
+      style: { animation: animationCSS },
+      'data-type': animationConfig.type,
+    };
+  }, [animationCSS, animationConfig.type]);
+
+  return <div {...previewProps}>Optimized preview</div>;
+}
+```
+
+## Integration Examples
+
+### With Form Libraries
+
+```tsx
+import { useForm, Controller } from 'react-hook-form';
+
+function FormIntegrationExample() {
+  const { animationConfig, updateConfig } = useAnimationConfig();
+
+  const { control, handleSubmit, watch } = useForm({
+    defaultValues: animationConfig,
+  });
+
+  // Watch form changes and update animation config
+  const watchedValues = watch();
+
+  useEffect(() => {
+    updateConfig(watchedValues);
+  }, [watchedValues, updateConfig]);
+
+  return (
+    <form onSubmit={handleSubmit(console.log)}>
+      <Controller
+        name="type"
+        control={control}
+        render={({ field }) => (
+          <select {...field}>
+            <option value="fade">Fade</option>
+            <option value="slide">Slide</option>
+            {/* ... more options */}
+          </select>
+        )}
+      />
+
+      <Controller
+        name="duration"
+        control={control}
+        render={({ field }) => (
+          <input type="range" min="0.1" max="3.0" step="0.1" {...field} />
+        )}
+      />
+    </form>
+  );
+}
+```
+
+### With State Management
+
+```tsx
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import {
+  setAnimationConfig,
+  selectAnimationConfig,
+} from '@/store/animationSlice';
+
+function ReduxIntegrationExample() {
+  const dispatch = useAppDispatch();
+  const globalConfig = useAppSelector(selectAnimationConfig);
+
+  const { updateConfig } = useAnimationConfig(globalConfig);
+
+  const handleConfigChange = (newConfig: AnimationConfig) => {
+    updateConfig(newConfig);
+    dispatch(setAnimationConfig(newConfig));
+  };
+
+  return (
+    <ConfigPanel
+      initialConfig={globalConfig}
+      onConfigChange={handleConfigChange}
+    />
+  );
+}
+```
+
+## Error Handling
+
+### Error Boundaries
+
+```tsx
+function ErrorHandlingExample() {
+  const { animationConfig, updateConfig, errors, clearErrors } =
+    useAnimationConfig();
+
+  const handleConfigChange = (newConfig: AnimationConfig) => {
+    try {
+      updateConfig(newConfig);
+      clearErrors();
+    } catch (error) {
+      console.error('Failed to update config:', error);
+    }
+  };
+
+  return (
+    <ErrorBoundary
+      fallback={<div>Something went wrong with the animation config</div>}
+    >
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={handleConfigChange}
+      />
+
+      {errors.length > 0 && (
+        <div className="error-message">
+          Please fix the following errors:
+          <ul>
+            {errors.map((error, index) => (
+              <li key={index}>{error.message}</li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </ErrorBoundary>
+  );
+}
+```
+
+## Testing
+
+### Hook Testing
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+describe('useAnimationConfig', () => {
+  it('should initialize with default config', () => {
+    const { result } = renderHook(() => useAnimationConfig());
+
+    expect(result.current.animationConfig).toEqual({
+      type: 'fade',
+      duration: 0.5,
+      easing: 'ease-out',
+      delay: 0,
+      name: '',
+    });
+  });
+
+  it('should update config correctly', () => {
+    const { result } = renderHook(() => useAnimationConfig());
+
+    act(() => {
+      result.current.updateConfig({
+        type: 'slide',
+        duration: 1.0,
+      });
+    });
+
+    expect(result.current.animationConfig.type).toBe('slide');
+    expect(result.current.animationConfig.duration).toBe(1.0);
+  });
+
+  it('should validate config on change', () => {
+    const { result } = renderHook(() =>
+      useAnimationConfig({ validateOnChange: true })
+    );
+
+    act(() => {
+      result.current.updateConfig({ duration: 5.0 }); // Invalid duration
+    });
+
+    expect(result.current.isValid).toBe(false);
+    expect(result.current.errors).toHaveLength(1);
+  });
+});
+```
+
+## Related
+
+- [`ConfigPanel`](/api/components/config-panel) - Component for editing animation configurations
+- [`AnimatedContainer`](/api/components/animated-container) - Component that uses the configuration
+- [`AnimationConfig`](/api/types/animation-config) - Type definition for configuration objects

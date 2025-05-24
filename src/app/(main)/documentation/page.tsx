@@ -78,6 +78,11 @@ function DocumentationPage() {
             </Tabs.Content>
 
             <Tabs.Content value="animation-library">
+              <iframe
+                src="https://docs.page/abdullahaltun70/animation-playground" // This is your locally hosted Animation Library docs
+                title="Animation Library Documentation"
+                style={{ width: '100vw', height: '100vh', border: 'none' }}
+              />
               Animation library docs
             </Tabs.Content>
           </Box>

@@ -1,0 +1,210 @@
+---
+title: Installation & Setup
+description: Learn how to install and set up the animation-library-test-abdullah-altun in your React project.
+icon: download
+---
+
+# Installation & Setup
+
+<Success>
+  Get started with the animation library in your React project in just a few
+  minutes!
+</Success>
+
+<Steps>
+<Step title="Install the Package" icon="download">
+
+Install the library using your preferred package manager:
+
+<Tabs groupId="package-manager">
+<TabItem label="npm" value="npm">
+
+```bash
+npm install animation-library-test-abdullah-altun
+```
+
+</TabItem>
+<TabItem label="yarn" value="yarn">
+
+```bash
+yarn add animation-library-test-abdullah-altun
+```
+
+</TabItem>
+<TabItem label="pnpm" value="pnpm">
+
+```bash
+pnpm add animation-library-test-abdullah-altun
+```
+
+</TabItem>
+</Tabs>
+
+</Step>
+<Step title="Import Styles" icon="css3">
+
+The library requires styles to be imported into your project. Choose the method that best fits your setup:
+
+<CardGroup>
+<Card title="Compiled CSS" icon="file">
+**Recommended for most projects**
+
+In your global CSS file:
+
+```css
+/* src/app/globals.css */
+@import 'animation-library-test-abdullah-altun/dist/styles.css';
+```
+
+</Card>
+<Card title="SCSS Import" icon="sass">
+**For advanced customization**
+
+In your SCSS file:
+
+```scss
+// src/styles/globals.scss
+@use 'animation-library-test-abdullah-altun/src/styles' as *;
+```
+
+</Card>
+</CardGroup>
+
+</Step>
+<Step title="Start Using" icon="play">
+
+Import and use the animation components:
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function MyComponent() {
+  return (
+    <Animate type="fade" opacity={{ start: 0, end: 1 }}>
+      <div>Hello, animated world!</div>
+    </Animate>
+  );
+}
+```
+
+</Step>
+</Steps>
+
+/_ Your other global styles _/
+
+````
+
+**Step 2:** Ensure this global CSS file is imported in your root layout or app component:
+
+```tsx
+// src/app/layout.tsx (Next.js App Router)
+import './globals.css'; // Or your global CSS file name
+
+export default function RootLayout({ children }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  );
+}
+````
+
+### Method 2: SCSS Integration (Advanced)
+
+If your project uses a modern Sass compiler that supports the `@use` rule (Dart Sass 1.23+), you can integrate the library's SCSS source for more direct variable configuration.
+
+**Step 1:** Ensure you have a compatible `sass` version installed:
+
+<Tabs groupId="package-manager">
+<TabItem label="npm" value="npm">
+
+```bash
+npm install sass
+```
+
+</TabItem>
+<TabItem label="yarn" value="yarn">
+
+```bash
+yarn add sass
+```
+
+</TabItem>
+<TabItem label="pnpm" value="pnpm">
+
+```bash
+pnpm add sass
+```
+
+</TabItem>
+</Tabs>
+
+**Step 2:** In your main global SCSS file (e.g., `src/app/globals.scss`):
+
+```scss
+/* src/app/globals.scss */
+
+// Configure SCSS variables using the `with` keyword:
+@use 'animation-library-test-abdullah-altun/styles' with (
+  $animation-duration: 0.7s,
+  // SCSS fallback for animation duration
+  $default-slide-distance: 80px,
+  // SCSS fallback for slide distance
+   // ... other configurable variables from the library's _variables.scss
+);
+
+// If no SCSS variable configuration is needed, simply:
+// @use "animation-library-test-abdullah-altun/styles";
+
+/* Your other global styles */
+```
+
+**Step 3:** Ensure this global SCSS file is imported in your root layout or app component.
+
+> **Note:** With this method, animation behavior is controlled by props on the React components, which set CSS Custom Properties. SCSS variable customization is not applicable here.
+
+## Verification
+
+Once you've installed and imported the styles, you can verify everything is working by creating a simple test component:
+
+```tsx
+'use client'; // Necessary if this component isn't already client-side
+
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function TestAnimation() {
+  return (
+    <div>
+      <Animate type="fade" duration={0.8}>
+        <h2>Hello, Animation Library! 👋</h2>
+      </Animate>
+    </div>
+  );
+}
+
+export default TestAnimation;
+```
+
+If you see the text fade in smoothly, you're all set! 🎉
+
+## Next Steps
+
+- [Usage Examples](https://docs.page/abdullahaltun70/animation-playground/library/usage) - Learn how to use the `<Animate>` component and `useAnimation` hook
+- [Animation Types](https://docs.page/abdullahaltun70/animation-playground/library/animations) - Explore all available animation types
+- [API Reference](https://docs.page/abdullahaltun70/animation-playground/library/api) - Complete API documentation
+
+## Troubleshooting
+
+### Styles Not Applying
+
+1. Ensure `dist/styles.css` (or SCSS via `@use`) is correctly imported globally
+2. Check that the global CSS/SCSS file is imported in your root layout/app component
+3. Verify the animation library package is installed correctly
+
+### Client Component Requirement
+
+Remember that `<Animate>` and `useAnimation` must be used in React Client Components. In Next.js App Router, add `"use client";` at the top of your component file.
+
+### CSS Custom Properties Not Working
+
+Use browser dev tools to check if CSS Custom Properties are correctly set on the animated element. The library sets properties like `--animation-duration`, `--distance`, etc.

@@ -1,0 +1,380 @@
+---
+title: Animation Types
+description: Explore all available animation types in the Animation Library
+icon: sparkles
+---
+
+# Animation Types
+
+The Animation Library provides 5 core animation types that you can customize with various properties to create engaging effects.
+
+## Core Animation Types
+
+### fade
+
+Controls opacity transitions for smooth appearing and disappearing effects.
+
+```jsx
+// Basic fade with custom opacity range
+<Animate
+  type="fade"
+  duration={1}
+  opacity={{ start: 0, end: 1 }}
+>
+  <div>Content fades in</div>
+</Animate>
+
+// Fade out effect
+<Animate
+  type="fade"
+  duration={1}
+  opacity={{ start: 1, end: 0 }}
+>
+  <div>Content fades out</div>
+</Animate>
+```
+
+### slide
+
+Creates smooth position transitions using distance and direction control.
+
+```jsx
+// Slide in from right (positive distance)
+<Animate
+  type="slide"
+  duration={0.8}
+  distance={100}
+  axis="x"
+>
+  <div>Slides from right</div>
+</Animate>
+
+// Slide in from left (negative distance)
+<Animate
+  type="slide"
+  duration={0.8}
+  distance={-100}
+  axis="x"
+>
+  <div>Slides from left</div>
+</Animate>
+
+// Slide up from bottom (negative distance on Y axis)
+<Animate
+  type="slide"
+  duration={0.8}
+  distance={-50}
+  axis="y"
+>
+  <div>Slides up from bottom</div>
+</Animate>
+```
+
+### scale
+
+Size-based transformations for zooming and scaling effects.
+
+```jsx
+// Scale in from small to normal
+<Animate
+  type="scale"
+  duration={0.6}
+  scale={{ start: 0, end: 1 }}
+>
+  <div>Scales in</div>
+</Animate>
+
+// Scale out from normal to large
+<Animate
+  type="scale"
+  duration={0.6}
+  scale={{ start: 1, end: 1.5 }}
+>
+  <div>Scales up</div>
+</Animate>
+
+// Scale with specific axis
+<Animate
+  type="scale"
+  duration={0.8}
+  scale={{ start: 0, end: 1 }}
+  axis="x"
+>
+  <div>Scales horizontally</div>
+</Animate>
+```
+
+### rotate
+
+Rotational transformations with customizable degrees and direction.
+
+```jsx
+// Basic rotation
+<Animate
+  type="rotate"
+  duration={1}
+  degrees={360}
+>
+  <div>Rotates 360 degrees</div>
+</Animate>
+
+// Reverse rotation
+<Animate
+  type="rotate"
+  duration={1}
+  degrees={-180}
+>
+  <div>Rotates -180 degrees</div>
+</Animate>
+
+// Combined with fade
+<Animate
+  type="rotate"
+  duration={1}
+  degrees={360}
+  opacity={{ start: 0, end: 1 }}
+>
+  <div>Rotates and fades in</div>
+</Animate>
+```
+
+### bounce
+
+Playful bouncing effects with elastic motion characteristics.
+
+```jsx
+// Basic bounce effect
+<Animate
+  type="bounce"
+  duration={1.2}
+>
+  <div>Bounces with elastic motion</div>
+</Animate>
+
+// Bounce with distance control
+<Animate
+  type="bounce"
+  duration={1.2}
+  distance={50}
+  axis="y"
+>
+  <div>Bounces vertically</div>
+</Animate>
+
+// Bounce in from side
+<Animate
+  type="bounce"
+  duration={1.2}
+  distance={-100}
+  axis="x"
+>
+  <div>Bounces in from left</div>
+</Animate>
+```
+
+## Animation Properties
+
+### Duration
+
+Controls animation timing in seconds.
+
+```jsx
+// Fast animation
+<Animate type="fade" duration={0.3}>
+  <div>Quick fade</div>
+</Animate>
+
+// Slow animation
+<Animate type="slide" duration={2}>
+  <div>Slow slide</div>
+</Animate>
+```
+
+### Delay
+
+Adds delay before animation starts.
+
+```jsx
+<Animate type="bounce" duration={1} delay={0.5}>
+  <div>Bounces after 0.5 seconds</div>
+</Animate>
+```
+
+### Easing
+
+Controls animation timing curve.
+
+```jsx
+<Animate type="scale" duration={1} easing="ease-out">
+  <div>Scales with ease-out timing</div>
+</Animate>
+```
+
+### Distance with Direction
+
+Positive/negative values control direction on specified axis.
+
+```jsx
+// Slide right
+<Animate type="slide" distance={100} axis="x">
+  <div>Slides right</div>
+</Animate>
+
+// Slide left
+<Animate type="slide" distance={-100} axis="x">
+  <div>Slides left</div>
+</Animate>
+
+// Slide down
+<Animate type="slide" distance={50} axis="y">
+  <div>Slides down</div>
+</Animate>
+
+// Slide up
+<Animate type="slide" distance={-50} axis="y">
+  <div>Slides up</div>
+</Animate>
+```
+
+### Axis Control
+
+Specify which axis the animation affects.
+
+```jsx
+// X-axis only
+<Animate type="scale" axis="x" scale={{ start: 0, end: 1 }}>
+  <div>Horizontal scaling</div>
+</Animate>
+
+// Y-axis only
+<Animate type="scale" axis="y" scale={{ start: 0, end: 1 }}>
+  <div>Vertical scaling</div>
+</Animate>
+```
+
+### Opacity Range
+
+Precise opacity control with start and end values.
+
+```jsx
+// Custom opacity transition
+<Animate type="fade" opacity={{ start: 0.2, end: 0.8 }}>
+  <div>Fades from 20% to 80% opacity</div>
+</Animate>
+```
+
+### Scale Range
+
+Precise scaling control with start and end values.
+
+```jsx
+// Custom scale transition
+<Animate type="scale" scale={{ start: 0.5, end: 1.2 }}>
+  <div>Scales from 50% to 120%</div>
+</Animate>
+```
+
+## Complex Animation Combinations
+
+Combine multiple properties for sophisticated effects:
+
+```jsx
+// Slide in from right with fade and scale
+<Animate
+  type="slide"
+  duration={1.5}
+  delay={0.3}
+  distance={100}
+  axis="x"
+  easing="ease-out"
+  opacity={{ start: 0, end: 1 }}
+  scale={{ start: 0.8, end: 1 }}
+>
+  <div>Complex entrance animation</div>
+</Animate>
+
+// Rotating bounce with fade
+<Animate
+  type="bounce"
+  duration={2}
+  degrees={360}
+  distance={30}
+  axis="y"
+  opacity={{ start: 0, end: 1 }}
+>
+  <div>Bouncy rotating fade-in</div>
+</Animate>
+```
+
+## Animation Patterns
+
+### Entrance Animations
+
+```jsx
+// Fade up pattern
+<Animate type="slide" distance={-30} axis="y" opacity={{ start: 0, end: 1 }}>
+  <div>Fades up into view</div>
+</Animate>
+
+// Scale bounce in
+<Animate type="bounce" scale={{ start: 0, end: 1 }} duration={1.2}>
+  <div>Bounces into view</div>
+</Animate>
+```
+
+### Exit Animations
+
+```jsx
+// Fade down and out
+<Animate type="slide" distance={30} axis="y" opacity={{ start: 1, end: 0 }}>
+  <div>Fades down and out</div>
+</Animate>
+
+// Scale out
+<Animate type="scale" scale={{ start: 1, end: 0 }} duration={0.6}>
+  <div>Scales out of view</div>
+</Animate>
+```
+
+### Attention Animations
+
+```jsx
+// Pulse effect with scale
+<Animate type="scale" scale={{ start: 1, end: 1.1 }} duration={0.6}>
+  <div>Pulses to draw attention</div>
+</Animate>
+
+// Shake effect with bounce
+<Animate type="bounce" distance={10} axis="x" duration={0.8}>
+  <div>Shakes horizontally</div>
+</Animate>
+```
+
+## Best Practices
+
+### Duration Guidelines
+
+- **Micro-interactions**: 0.1-0.3 seconds
+- **UI transitions**: 0.3-0.6 seconds
+- **Decorative animations**: 0.6-1.2 seconds
+- **Attention effects**: 1.2-2.0 seconds
+
+### Direction Control Tips
+
+- Use **negative distance** for "inward" movements (up, left)
+- Use **positive distance** for "outward" movements (down, right)
+- Combine with opacity for smoother entrance/exit effects
+
+### Performance Optimization
+
+- Prefer transform-based animations (scale, rotate, translate)
+- Use `will-change` CSS property for complex animations
+- Test on lower-end devices
+- Consider animation complexity vs. performance
+
+### Accessibility
+
+- Respect `prefers-reduced-motion` user preference
+- Provide animation disable options
+- Keep essential animations under 1 second
+- Don't rely solely on animation for important information
