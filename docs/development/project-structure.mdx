@@ -4,7 +4,6 @@ description: Understand the codebase architecture and organization of the Animat
 icon: folder
 ---
 
-
 # Project Structure
 
 Animation Playground is built with modern web development practices and follows a well-organized structure that makes it easy to navigate, understand, and contribute to the codebase.
@@ -18,9 +17,8 @@ animation-playground/
 ├── docs/                    # Documentation (this site)
 ├── public/                  # Static assets
 ├── src/                     # Application source code
-├── supabase/               # Database migrations
-├── coverage/               # Test coverage reports
-├── scripts/                # Build and utility scripts
+├── supabase/                # Database migrations
+├── coverage/                # Test coverage reports
 └── Configuration files
 ```
 
@@ -33,18 +31,18 @@ The `app/` directory follows Next.js 13+ App Router conventions:
 ```
 src/app/
 ├── layout.tsx              # Root layout component
-├── page.tsx               # Homepage
-├── globals.scss           # Global styles
-├── (auth)/                # Authentication routes
+├── page.tsx                # Homepage
+├── globals.scss            # Global styles
+├── (auth)/                 # Authentication routes
 │   ├── signin/
 │   ├── signup/
 │   └── layout.tsx
-├── (main)/                # Main application routes
-│   ├── playground/        # Animation creation interface
-│   ├── profile/          # User profile and library
-│   └── docs/             # Documentation routes
-├── api/                   # API routes
-└── utils/                 # Utility functions
+├── (main)/                 # Main application routes
+│   ├── playground/         # Animation creation interface
+│   ├── profile/            # User profile and library
+│   └── docs/               # Documentation routes
+├── api/                    # API routes
+└── utils/                  # Utility functions
 ```
 
 **Route Groups**
@@ -72,8 +70,8 @@ src/components/
 ├── footer/                # Site footer
 ├── theme-toggle/          # Dark/light mode switcher
 ├── animated-container/    # Animation wrapper components
-├── config-card/          # Animation library card component
-└── profile/              # User profile components
+├── config-card/           # Animation library card component
+└── profile/               # User profile components
 ```
 
 **Component Organization**
@@ -134,9 +132,8 @@ src/tests/
 - **Mock Service Worker**: API mocking for tests
 
 > 💡 **Tip:**
-  Tests are co-located with the code they test and follow the same directory
-  structure for easy navigation.
-
+> Tests are co-located with the code they test and follow the same directory
+> structure for easy navigation.
 
 ## Configuration Files
 
@@ -323,9 +320,8 @@ User Input → Component → Custom Hook → Database
 - `prettier`: Code formatting
 
 > ℹ️ **Info:**
-  All dependencies are kept up to date and regularly audited for security
-  vulnerabilities.
-
+> All dependencies are kept up to date and regularly audited for security
+> vulnerabilities.
 
 ## Development Workflow
 
@@ -358,4 +354,4 @@ User Input → Component → Custom Hook → Database
 - Shared code in common directories
 - Tests co-located with source code
 
-Ready to contribute? Check out our [Contributing Guide](/development/contributing) to learn how to get involved with the project.
+Ready to contribute? Check out our [Contributing Guide](https://docs.page/abdullahaltun70/animation-playground/development/contributing) to learn how to get involved with the project.

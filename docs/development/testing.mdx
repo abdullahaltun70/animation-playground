@@ -4,7 +4,6 @@ description: Learn about the comprehensive testing strategy and how to write tes
 icon: beaker
 ---
 
-
 # Testing
 
 Animation Playground uses a comprehensive testing strategy to ensure code quality, reliability, and maintainability. This guide covers our testing approach, tools, and best practices.
@@ -18,9 +17,8 @@ Our testing strategy follows the testing pyramid principle:
 3. **End-to-End Tests** (Top): Test complete user workflows
 
 > ℹ️ **Info:**
-  We aim for high test coverage while focusing on testing behavior rather than
-  implementation details.
-
+> We aim for high test coverage while focusing on testing behavior rather than
+> implementation details.
 
 ## Testing Stack
 
@@ -424,9 +422,8 @@ yarn test --grep "authentication"
 - LCOV: For CI/CD integration
 
 > 💡 **Tip:**
-  Use `yarn test:coverage` to see which parts of your code need more test
-  coverage!
-
+> Use `yarn test:coverage` to see which parts of your code need more test
+> coverage!
 
 ## Testing Best Practices
 
@@ -478,7 +475,7 @@ it('should update animation when config changes', async () => {
 it('should complete animation within expected time', async () => {
   const startTime = performance.now();
 
-  render(<AnimationComponent duration={0.5} />);
+  render(<Animate duration={0.5} />);
 
   // Trigger animation
   await user.click(screen.getByRole('button', { name: /play/i }));
@@ -541,10 +538,8 @@ Tests must pass for:
 - TypeScript type checking passes
 - ESLint rules pass
 
-> ✅ **Success:**
-  **Testing is integral to our development process.** Well-tested code leads to
-  more confident deployments and better user experiences.
-
+> ✅ **Success:** > **Testing is integral to our development process.** Well-tested code leads to
+> more confident deployments and better user experiences.
 
 ## Debugging Tests
 
@@ -587,4 +582,4 @@ yarn test --reporter=verbose
 yarn test --grep "specific test" --reporter=verbose
 ```
 
-Ready to contribute to the project? Check out our [Contributing Guide](/development/contributing) to learn how to submit your improvements and new features.
+Ready to contribute to the project? Check out our [Contributing Guide](https://docs.page/abdullahaltun70/animation-playground/development/contributing) to learn how to submit your improvements and new features.
