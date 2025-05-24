@@ -122,5 +122,170 @@ describe('ShareDialog Component', () => {
       // which then passes it to Dialog.Root.
       expect(defaultProps.onOpenChange).toBe(mockOnOpenChange);
     });
+
+    it('should handle escape key press to close dialog', async () => {
+      const user = userEvent.setup();
+      renderShareDialog();
+      await user.keyboard('{Escape}');
+      expect(mockOnOpenChange).toHaveBeenCalledWith(false);
+    });
+  });
+
+  describe('URL Input Field', () => {
+    it('should have readonly attribute to prevent editing', () => {
+      renderShareDialog();
+      const inputField = screen.getByDisplayValue(
+        defaultProps.shareUrl
+      ) as HTMLInputElement;
+      expect(inputField).toHaveAttribute('readonly');
+    });
+
+    it('should select all text when input is focused', async () => {
+      const user = userEvent.setup();
+      renderShareDialog();
+      const inputField = screen.getByDisplayValue(defaultProps.shareUrl);
+      await user.click(inputField);
+      // Verify the input has focus
+      expect(inputField).toHaveFocus();
+    });
+
+    it('should handle very long URLs without breaking layout', () => {
+      const longUrl = 'http://example.com/share/' + 'a'.repeat(200);
+      renderShareDialog({ shareUrl: longUrl });
+      const inputField = screen.getByDisplayValue(longUrl);
+      expect(inputField).toBeInTheDocument();
+    });
+
+    it('should handle empty shareUrl gracefully', () => {
+      renderShareDialog({ shareUrl: '' });
+      const inputField = screen.getByDisplayValue('');
+      expect(inputField).toBeInTheDocument();
+    });
+  });
+
+  describe('Copy Success State Management', () => {
+    it('should show success message with correct styling when copySuccess is true', () => {
+      renderShareDialog({ copySuccess: true });
+      const successMessage = screen.getByText('URL copied to clipboard!');
+      expect(successMessage).toBeInTheDocument();
+      expect(successMessage).toHaveClass('text-green-600');
+    });
+
+    it('should handle rapid copy button clicks', async () => {
+      const user = userEvent.setup();
+      renderShareDialog();
+      const copyButton = screen.getByRole('button', { name: 'Copy URL' });
+
+      // Click multiple times rapidly
+      await user.click(copyButton);
+      await user.click(copyButton);
+      await user.click(copyButton);
+
+      expect(mockOnCopyUrl).toHaveBeenCalledTimes(3);
+    });
+
+    it('should maintain copy success state until dialog is closed', () => {
+      const { rerender } = renderShareDialog({ copySuccess: true });
+      expect(screen.getByText('URL copied to clipboard!')).toBeInTheDocument();
+
+      // Rerender with same props
+      rerender(
+        <Theme>
+          <ShareDialog {...defaultProps} copySuccess={true} />
+        </Theme>
+      );
+      expect(screen.getByText('URL copied to clipboard!')).toBeInTheDocument();
+    });
+  });
+
+  describe('Accessibility', () => {
+    it('should have proper ARIA labels', () => {
+      renderShareDialog();
+      expect(screen.getByRole('dialog')).toBeInTheDocument();
+      expect(screen.getByRole('textbox')).toHaveAttribute(
+        'aria-label',
+        'Share URL'
+      );
+    });
+
+    it('should focus the copy button when dialog opens', () => {
+      renderShareDialog();
+      const copyButton = screen.getByRole('button', { name: 'Copy URL' });
+      expect(copyButton).toBeInTheDocument();
+    });
+
+    it('should trap focus within the dialog', async () => {
+      const user = userEvent.setup();
+      renderShareDialog();
+
+      const copyButton = screen.getByRole('button', { name: 'Copy URL' });
+      const closeButton = screen.getByRole('button', { name: 'Close' });
+
+      // Tab should cycle between focusable elements
+      await user.tab();
+      expect(copyButton).toHaveFocus();
+
+      await user.tab();
+      expect(closeButton).toHaveFocus();
+    });
+  });
+
+  describe('Error Handling', () => {
+    it('should handle missing onCopyUrl prop gracefully', () => {
+      expect(() => {
+        renderShareDialog({ onCopyUrl: undefined });
+      }).not.toThrow();
+    });
+
+    it('should handle missing onOpenChange prop gracefully', () => {
+      expect(() => {
+        renderShareDialog({ onOpenChange: undefined });
+      }).not.toThrow();
+    });
+
+    it('should handle invalid shareUrl prop gracefully', () => {
+      expect(() => {
+        renderShareDialog({ shareUrl: null });
+      }).not.toThrow();
+    });
+  });
+
+  describe('Props Validation', () => {
+    it('should handle all props being undefined', () => {
+      expect(() => {
+        render(
+          <Theme>
+            <ShareDialog
+              open={false}
+              onOpenChange={() => {}}
+              shareUrl=""
+              onCopyUrl={() => {}}
+              copySuccess={false}
+            />
+          </Theme>
+        );
+      }).not.toThrow();
+    });
+
+    it('should re-render correctly when props change', () => {
+      const { rerender } = renderShareDialog({
+        shareUrl: 'http://old-url.com',
+      });
+      expect(
+        screen.getByDisplayValue('http://old-url.com')
+      ).toBeInTheDocument();
+
+      rerender(
+        <Theme>
+          <ShareDialog {...defaultProps} shareUrl="http://new-url.com" />
+        </Theme>
+      );
+      expect(
+        screen.getByDisplayValue('http://new-url.com')
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByDisplayValue('http://old-url.com')
+      ).not.toBeInTheDocument();
+    });
   });
 });

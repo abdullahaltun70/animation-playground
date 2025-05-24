@@ -18,7 +18,7 @@ import styles from '../styles/Playground.module.scss';
  * @property {(open: boolean) => void} onOpenChange - Callback function invoked when the dialog's open state changes.
  * @property {string} exportTab - The currently active tab in the export dialog (e.g., 'react', 'css').
  * @property {(value: string) => void} onExportTabChange - Callback function invoked when the active export tab changes.
- * @property {() => void} onCopyCode - Callback function invoked when the "Copy Code" button is clicked.
+ * @property {(code: string) => void} onCopyCode - Callback function invoked when the "Copy Code" button is clicked.
  * @property {boolean} copySuccess - Boolean indicating if the code copy operation was successful.
  * @property {AnimationConfig} animationConfig - The current animation configuration to generate code from.
  */
@@ -27,7 +27,7 @@ interface ExportDialogProps {
   onOpenChange: (open: boolean) => void;
   exportTab: string;
   onExportTabChange: (value: string) => void;
-  onCopyCode: () => void;
+  onCopyCode: (code: string) => void;
   copySuccess: boolean;
   animationConfig: AnimationConfig;
 }
@@ -48,6 +48,26 @@ export function ExportDialog({
   copySuccess,
   animationConfig,
 }: ExportDialogProps) {
+  // Generate code with error handling
+  const getGeneratedCode = (tab: string): string => {
+    try {
+      if (tab === 'react') {
+        return generateReactComponent(animationConfig);
+      } else {
+        return generateCSSCode(animationConfig);
+      }
+    } catch (error) {
+      console.error('Code generation failed:', error);
+      return `// Error generating ${tab} code`;
+    }
+  };
+
+  const currentCode = getGeneratedCode(exportTab);
+
+  const handleCopyCode = () => {
+    onCopyCode(currentCode);
+  };
+
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
       <Dialog.Content>
@@ -65,24 +85,22 @@ export function ExportDialog({
             <Tabs.Trigger value="react">React Component</Tabs.Trigger>
             <Tabs.Trigger value="css">CSS</Tabs.Trigger>
           </Tabs.List>
-
           <Box pt="3">
             <Tabs.Content value="react">
               <pre className={styles.codeBlock}>
-                {generateReactComponent(animationConfig)}
+                {exportTab === 'react' ? currentCode : ''}
               </pre>
             </Tabs.Content>
-
             <Tabs.Content value="css">
               <pre className={styles.codeBlock}>
-                {generateCSSCode(animationConfig)}
+                {exportTab === 'css' ? currentCode : ''}
               </pre>
             </Tabs.Content>
           </Box>
         </Tabs.Root>
 
         <Flex gap="3" mt="4" justify="end">
-          <Button onClick={onCopyCode}>
+          <Button onClick={handleCopyCode}>
             <CopyIcon /> Copy Code
           </Button>
           <Dialog.Close>
@@ -91,7 +109,7 @@ export function ExportDialog({
         </Flex>
 
         {copySuccess && (
-          <Text color="green" mt="2">
+          <Text mt="2" className="text-green-600">
             Code copied to clipboard!
           </Text>
         )}

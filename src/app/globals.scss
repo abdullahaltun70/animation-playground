@@ -55,6 +55,15 @@ a {
   text-decoration: none;
 }
 
+/* Utility classes for tests */
+.text-green-600 {
+  color: #059669;
+}
+
+.dark .text-green-600 {
+  color: #10b981;
+}
+
 @media (prefers-color-scheme: dark) {
   :root:not(.light) {
     // Apply dark theme when the system uses dark mode
