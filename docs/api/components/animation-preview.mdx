@@ -1,0 +1,418 @@
+---
+title: AnimationPreview
+description: Live preview component for visualizing animations in real-time.
+icon: eye
+---
+
+# AnimationPreview
+
+The `AnimationPreview` component provides a live preview of animations as they're being configured. It displays a visual representation of how the animation will look and behave.
+
+## Import
+
+```typescript
+import { AnimationPreview } from '@/components/AnimationPreview';
+```
+
+## Basic Usage
+
+```tsx
+import { AnimationPreview } from '@/components/AnimationPreview';
+
+function BasicExample() {
+  const config = {
+    type: 'fade' as const,
+    duration: 0.8,
+    easing: 'ease-out',
+    delay: 0,
+    name: 'Fade Animation',
+  };
+
+  return <AnimationPreview config={config} autoPlay={true} />;
+}
+```
+
+## Props
+
+### `config` (required)
+
+**Type:** `AnimationConfig`
+
+The animation configuration to preview.
+
+### `autoPlay` (optional)
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Whether the animation should play automatically when the component mounts or config changes.
+
+### `showControls` (optional)
+
+**Type:** `boolean`  
+**Default:** `true`
+
+Whether to show play/pause/restart controls.
+
+### `previewContent` (optional)
+
+**Type:** `React.ReactNode`  
+**Default:** Default preview element
+
+Custom content to animate. If not provided, uses a default preview element.
+
+### `size` (optional)
+
+**Type:** `'small' | 'medium' | 'large'`  
+**Default:** `'medium'`
+
+Size of the preview area.
+
+### `onAnimationStart` (optional)
+
+**Type:** `() => void`
+
+Callback fired when animation starts.
+
+### `onAnimationEnd` (optional)
+
+**Type:** `() => void`
+
+Callback fired when animation completes.
+
+## Features
+
+### Animation Controls
+
+```tsx
+function ControlsExample() {
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  return (
+    <AnimationPreview
+      config={config}
+      showControls={true}
+      autoPlay={false}
+      onAnimationStart={() => setIsPlaying(true)}
+      onAnimationEnd={() => setIsPlaying(false)}
+    />
+  );
+}
+```
+
+**Controls include:**
+
+- ▶️ Play button - Start the animation
+- ⏸️ Pause button - Pause the animation
+- 🔄 Restart button - Reset and replay
+- ⏹️ Stop button - Stop and reset
+
+### Custom Preview Content
+
+```tsx
+function CustomContentExample() {
+  const customContent = (
+    <div className="custom-preview-item">
+      <h3>Custom Element</h3>
+      <p>This will be animated</p>
+      <button>Interactive Button</button>
+    </div>
+  );
+
+  return <AnimationPreview config={config} previewContent={customContent} />;
+}
+```
+
+### Different Sizes
+
+```tsx
+function SizeExample() {
+  return (
+    <div className="size-examples">
+      <AnimationPreview config={config} size="small" />
+      <AnimationPreview config={config} size="medium" />
+      <AnimationPreview config={config} size="large" />
+    </div>
+  );
+}
+```
+
+## Animation States
+
+### State Management
+
+The component manages several internal states:
+
+```typescript
+interface PreviewState {
+  isPlaying: boolean;
+  isPaused: boolean;
+  isComplete: boolean;
+  progress: number; // 0-100
+}
+```
+
+### State Indicators
+
+```tsx
+function StateIndicatorExample() {
+  const [state, setState] = useState<PreviewState>({
+    isPlaying: false,
+    isPaused: false,
+    isComplete: false,
+    progress: 0,
+  });
+
+  return (
+    <div>
+      <AnimationPreview
+        config={config}
+        onAnimationStart={() =>
+          setState((prev) => ({
+            ...prev,
+            isPlaying: true,
+            isComplete: false,
+          }))
+        }
+        onAnimationEnd={() =>
+          setState((prev) => ({
+            ...prev,
+            isPlaying: false,
+            isComplete: true,
+          }))
+        }
+      />
+
+      <div className="state-info">
+        <p>Playing: {state.isPlaying ? 'Yes' : 'No'}</p>
+        <p>Complete: {state.isComplete ? 'Yes' : 'No'}</p>
+      </div>
+    </div>
+  );
+}
+```
+
+## Styling
+
+### Preview Container
+
+```css
+.animation-preview {
+  border: 2px dashed #e5e7eb;
+  border-radius: 8px;
+  padding: 2rem;
+  background: #f9fafb;
+  position: relative;
+  overflow: hidden;
+}
+
+.animation-preview--small {
+  padding: 1rem;
+  min-height: 150px;
+}
+
+.animation-preview--medium {
+  padding: 2rem;
+  min-height: 250px;
+}
+
+.animation-preview--large {
+  padding: 3rem;
+  min-height: 350px;
+}
+```
+
+### Control Buttons
+
+```css
+.preview-controls {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  justify-content: center;
+}
+
+.preview-control-btn {
+  padding: 0.5rem 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.preview-control-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.preview-control-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+```
+
+## Advanced Usage
+
+### Multiple Previews
+
+```tsx
+function MultiplePreviewExample() {
+  const animations = [
+    { type: 'fade', duration: 0.5, name: 'Quick Fade' },
+    { type: 'slide', duration: 1.0, name: 'Smooth Slide' },
+    { type: 'bounce', duration: 1.5, name: 'Bouncy Entry' },
+  ];
+
+  return (
+    <div className="preview-grid">
+      {animations.map((config, index) => (
+        <div key={index} className="preview-item">
+          <h4>{config.name}</h4>
+          <AnimationPreview config={config} size="small" autoPlay={false} />
+        </div>
+      ))}
+    </div>
+  );
+}
+```
+
+### With Progress Tracking
+
+```tsx
+function ProgressTrackingExample() {
+  const [progress, setProgress] = useState(0);
+
+  const handleAnimationProgress = (progressValue: number) => {
+    setProgress(progressValue);
+  };
+
+  return (
+    <div>
+      <AnimationPreview config={config} onProgress={handleAnimationProgress} />
+
+      <div className="progress-bar">
+        <div className="progress-fill" style={{ width: `${progress}%` }} />
+      </div>
+
+      <p>Progress: {Math.round(progress)}%</p>
+    </div>
+  );
+}
+```
+
+### Comparison View
+
+```tsx
+function ComparisonExample() {
+  const [configA, setConfigA] = useState(defaultConfig);
+  const [configB, setConfigB] = useState({ ...defaultConfig, type: 'slide' });
+
+  return (
+    <div className="comparison-view">
+      <div className="comparison-item">
+        <h3>Configuration A</h3>
+        <AnimationPreview config={configA} />
+        <ConfigPanel initialConfig={configA} onConfigChange={setConfigA} />
+      </div>
+
+      <div className="comparison-item">
+        <h3>Configuration B</h3>
+        <AnimationPreview config={configB} />
+        <ConfigPanel initialConfig={configB} onConfigChange={setConfigB} />
+      </div>
+    </div>
+  );
+}
+```
+
+## Performance
+
+### Optimization Strategies
+
+1. **Throttle rapid updates** when config changes frequently
+2. **Use requestAnimationFrame** for smooth animations
+3. **Cleanup timers** when component unmounts
+4. **Avoid re-rendering** during animation playback
+
+### Memory Management
+
+```tsx
+// Component automatically handles cleanup
+useEffect(() => {
+  return () => {
+    // Cleanup animations, timers, and event listeners
+    cleanupAnimation();
+  };
+}, []);
+```
+
+## Accessibility
+
+### Screen Reader Support
+
+```tsx
+<div
+  role="region"
+  aria-label="Animation preview"
+  aria-live="polite"
+  aria-describedby="preview-description"
+>
+  <div id="preview-description">
+    {`Previewing ${config.type} animation with ${config.duration}s duration`}
+  </div>
+
+  {/* Animation content */}
+</div>
+```
+
+### Keyboard Controls
+
+- `Space` - Play/Pause animation
+- `R` - Restart animation
+- `S` - Stop animation
+- `Escape` - Stop and reset
+
+### Reduced Motion
+
+```tsx
+// Respects user's motion preferences
+const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+
+return (
+  <AnimationPreview
+    config={config}
+    disabled={prefersReducedMotion}
+    showStaticPreview={prefersReducedMotion}
+  />
+);
+```
+
+## Troubleshooting
+
+### Animation Not Playing
+
+1. Check that `autoPlay` is true or controls are being used
+2. Verify the animation configuration is valid
+3. Ensure the component is properly mounted
+4. Check for CSS conflicts that might prevent animations
+
+### Performance Issues
+
+1. Limit the number of simultaneous previews
+2. Use smaller preview sizes when possible
+3. Disable auto-play for multiple previews
+4. Consider using lower frame rates for complex animations
+
+### Visual Issues
+
+1. Check container dimensions and overflow settings
+2. Verify CSS z-index conflicts
+3. Ensure proper box-sizing for preview content
+4. Test across different screen sizes
+
+## Related
+
+- [`AnimatedContainer`](/api/components/animated-container) - The underlying animation component
+- [`ConfigPanel`](/api/components/config-panel) - For configuring animations
+- [`useAnimationConfig`](/api/hooks/use-animation-config) - Hook for managing animation state

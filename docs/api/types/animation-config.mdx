@@ -1,0 +1,428 @@
+---
+title: AnimationConfig Interface
+description: Core interface defining animation configuration options and properties.
+icon: cog
+---
+
+# AnimationConfig Interface
+
+The `AnimationConfig` interface is the central type that defines all animation configuration options in the Animation Playground.
+
+## Import
+
+```typescript
+import type { AnimationConfig } from '@/types/animation';
+```
+
+## Interface Definition
+
+```typescript
+interface AnimationConfig {
+  // Core Animation Properties
+  type: AnimationType;
+  duration: number;
+  easing: EasingFunction;
+  delay?: number;
+  iterations?: number | 'infinite';
+  direction?: 'normal' | 'reverse' | 'alternate' | 'alternate-reverse';
+  fillMode?: 'none' | 'forwards' | 'backwards' | 'both';
+
+  // Transform Properties
+  transform?: {
+    x?: number;
+    y?: number;
+    z?: number;
+    scale?: number;
+    scaleX?: number;
+    scaleY?: number;
+    rotate?: number;
+    rotateX?: number;
+    rotateY?: number;
+    rotateZ?: number;
+    skewX?: number;
+    skewY?: number;
+  };
+
+  // Appearance Properties
+  opacity?: number;
+  backgroundColor?: string;
+  color?: string;
+  borderRadius?: number;
+  borderWidth?: number;
+  borderColor?: string;
+
+  // Layout Properties
+  width?: number | string;
+  height?: number | string;
+  margin?: number | string;
+  padding?: number | string;
+
+  // Advanced Options
+  keyframes?: KeyframeConfig[];
+  customProperties?: Record<string, any>;
+
+  // Metadata
+  id?: string;
+  name?: string;
+  description?: string;
+  tags?: string[];
+  createdAt?: Date;
+  updatedAt?: Date;
+  author?: string;
+}
+```
+
+## Properties
+
+### Core Animation Properties
+
+#### `type: AnimationType` (required)
+
+The type of animation to apply.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'fade', // fade, slide, scale, rotate, bounce, etc.
+  duration: 1000,
+  easing: 'ease-in-out',
+};
+```
+
+#### `duration: number` (required)
+
+Animation duration in milliseconds.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'fade',
+  duration: 2000, // 2 seconds
+  easing: 'ease-in-out',
+};
+```
+
+#### `easing: EasingFunction` (required)
+
+The easing function for the animation timing.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'cubic-bezier(0.4, 0, 0.2, 1)', // Custom cubic-bezier
+};
+```
+
+#### `delay?: number` (optional)
+
+Delay before animation starts in milliseconds.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'fade',
+  duration: 1000,
+  easing: 'ease-in-out',
+  delay: 500, // Wait 500ms before starting
+};
+```
+
+#### `iterations?: number | 'infinite'` (optional)
+
+Number of times to repeat the animation.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'bounce',
+  duration: 800,
+  easing: 'ease-in-out',
+  iterations: 3, // Repeat 3 times
+};
+
+// Or infinite loop
+const infiniteConfig: AnimationConfig = {
+  type: 'rotate',
+  duration: 2000,
+  easing: 'linear',
+  iterations: 'infinite',
+};
+```
+
+### Transform Properties
+
+#### `transform?: object` (optional)
+
+Object containing transform values for the animation.
+
+```typescript
+const config: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-out',
+  transform: {
+    x: 100, // Translate X by 100px
+    y: 50, // Translate Y by 50px
+    scale: 1.2, // Scale to 120%
+    rotate: 45, // Rotate 45 degrees
+  },
+};
+```
+
+**Transform Properties:**
+
+- `x`, `y`, `z`: Translation in pixels
+- `scale`: Uniform scale factor
+- `scaleX`, `scaleY`: Scale factors for specific axes
+- `rotate`: Rotation in degrees
+- `rotateX`, `rotateY`, `rotateZ`: Rotation around specific axes
+- `skewX`, `skewY`: Skew transformation in degrees
+
+### Appearance Properties
+
+#### `opacity?: number` (optional)
+
+Target opacity value (0-1).
+
+```typescript
+const fadeConfig: AnimationConfig = {
+  type: 'fade',
+  duration: 1000,
+  easing: 'ease-in-out',
+  opacity: 0.5, // Fade to 50% opacity
+};
+```
+
+#### Color Properties
+
+```typescript
+const colorConfig: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-in-out',
+  backgroundColor: '#ff6b6b',
+  color: '#ffffff',
+  borderColor: '#333333',
+};
+```
+
+### Layout Properties
+
+#### Size and Spacing
+
+```typescript
+const layoutConfig: AnimationConfig = {
+  type: 'scale',
+  duration: 800,
+  easing: 'ease-out',
+  width: '200px',
+  height: 150,
+  margin: '10px',
+  padding: 20,
+};
+```
+
+### Advanced Options
+
+#### `keyframes?: KeyframeConfig[]` (optional)
+
+Custom keyframe definitions for complex animations.
+
+```typescript
+interface KeyframeConfig {
+  offset: number; // 0-1
+  [property: string]: any;
+}
+
+const keyframeConfig: AnimationConfig = {
+  type: 'custom',
+  duration: 2000,
+  easing: 'linear',
+  keyframes: [
+    { offset: 0, opacity: 1, transform: { scale: 1 } },
+    { offset: 0.5, opacity: 0.5, transform: { scale: 1.2 } },
+    { offset: 1, opacity: 1, transform: { scale: 1 } },
+  ],
+};
+```
+
+#### `customProperties?: Record<string, any>` (optional)
+
+Additional custom properties for specialized animations.
+
+```typescript
+const customConfig: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-in-out',
+  customProperties: {
+    particleCount: 50,
+    trailLength: 10,
+    blurRadius: 5,
+  },
+};
+```
+
+## Complete Examples
+
+### Basic Fade Animation
+
+```typescript
+const fadeInConfig: AnimationConfig = {
+  type: 'fade',
+  duration: 800,
+  easing: 'ease-in-out',
+  opacity: 1,
+  delay: 200,
+};
+```
+
+### Complex Slide Animation
+
+```typescript
+const slideConfig: AnimationConfig = {
+  type: 'slide',
+  duration: 1200,
+  easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+  transform: {
+    x: 300,
+    y: 0,
+    rotate: 15,
+  },
+  opacity: 1,
+  backgroundColor: '#4ecdc4',
+};
+```
+
+### Bounce Effect with Multiple Iterations
+
+```typescript
+const bounceConfig: AnimationConfig = {
+  type: 'bounce',
+  duration: 600,
+  easing: 'ease-out',
+  iterations: 2,
+  direction: 'alternate',
+  transform: {
+    scale: 1.1,
+  },
+};
+```
+
+### Custom Keyframe Animation
+
+```typescript
+const pulseConfig: AnimationConfig = {
+  type: 'custom',
+  duration: 2000,
+  easing: 'ease-in-out',
+  iterations: 'infinite',
+  direction: 'alternate',
+  keyframes: [
+    {
+      offset: 0,
+      transform: { scale: 1 },
+      opacity: 1,
+      backgroundColor: '#ff6b6b',
+    },
+    {
+      offset: 0.5,
+      transform: { scale: 1.3 },
+      opacity: 0.8,
+      backgroundColor: '#4ecdc4',
+    },
+    {
+      offset: 1,
+      transform: { scale: 1 },
+      opacity: 1,
+      backgroundColor: '#45b7d1',
+    },
+  ],
+};
+```
+
+## Validation
+
+### Config Validation Function
+
+```typescript
+function isValidAnimationConfig(config: any): config is AnimationConfig {
+  return (
+    typeof config === 'object' &&
+    typeof config.type === 'string' &&
+    typeof config.duration === 'number' &&
+    config.duration > 0 &&
+    typeof config.easing === 'string'
+  );
+}
+
+// Usage
+if (isValidAnimationConfig(userConfig)) {
+  // Safe to use as AnimationConfig
+  applyAnimation(userConfig);
+}
+```
+
+### Runtime Validation
+
+```typescript
+import { z } from 'zod';
+
+const AnimationConfigSchema = z.object({
+  type: z.enum([
+    'fade',
+    'slide',
+    'scale',
+    'rotate',
+    'bounce',
+    'flip',
+    'custom',
+  ]),
+  duration: z.number().positive(),
+  easing: z.string(),
+  delay: z.number().optional(),
+  iterations: z
+    .union([z.number().positive(), z.literal('infinite')])
+    .optional(),
+  // ... other properties
+});
+
+// Validate config
+try {
+  const validatedConfig = AnimationConfigSchema.parse(userInput);
+} catch (error) {
+  console.error('Invalid configuration:', error);
+}
+```
+
+## Default Values
+
+```typescript
+const defaultAnimationConfig: Partial<AnimationConfig> = {
+  duration: 1000,
+  easing: 'ease-in-out',
+  delay: 0,
+  iterations: 1,
+  direction: 'normal',
+  fillMode: 'both',
+  opacity: 1,
+};
+
+// Merge with defaults
+function createConfig(partial: Partial<AnimationConfig>): AnimationConfig {
+  return {
+    ...defaultAnimationConfig,
+    ...partial,
+    type: partial.type || 'fade',
+    duration: partial.duration || 1000,
+    easing: partial.easing || 'ease-in-out',
+  } as AnimationConfig;
+}
+```
+
+## Related Types
+
+- [`AnimationType`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-type) - Supported animation types
+- [`EasingFunction`](https://docs.page/abdullahaltun70/animation-playground/api/types/easing-function) - Available easing functions
+
+## Related Components
+
+- [`AnimatedContainer`](https://docs.page/abdullahaltun70/animation-playground/api/components/animated-container) - Uses AnimationConfig
+- [`ConfigPanel`](https://docs.page/abdullahaltun70/animation-playground/api/components/config-panel) - Generates AnimationConfig

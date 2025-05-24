@@ -6,25 +6,106 @@ icon: book-open
 
 # Welcome to Animation Playground 🚀
 
-> ℹ️ **Info:**
-> Animation Playground is a Next.js application designed to help you create,
-> preview, and share web animations with ease. Perfect for both novice and
-> experienced developers!
+<Info>
+  This is a unified documentation site covering both the Animation Playground
+  application and the underlying animation-library-test-abdullah-altun npm
+  package. Choose your documentation focus below!
+</Info>
+
+<Tabs groupId="docs-type">
+<TabItem label="🎮 Playground App" value="playground">
 
 ## What is Animation Playground?
 
-Animation Playground leverages the `animation-library-test-abdullah-altun` library to power its animation capabilities, offering a seamless experience for creating beautiful web animations through an intuitive interface.
+Animation Playground is a Next.js application designed to help you create, preview, and share web animations with ease. Perfect for both novice and experienced developers!
 
-### ✨ Key Highlights
+The application leverages the `animation-library-test-abdullah-altun` library to power its animation capabilities, offering a seamless experience for creating beautiful web animations through an intuitive interface.
 
-- **🎨 Intuitive Design**: Easy-to-use interface for animation configuration
-- **⚡ Live Preview**: See your animations in real-time as you build them
-- **📱 Responsive**: Works seamlessly across all devices
-- **🔗 Shareable**: Generate unique URLs to share your creations
-- **💾 User Accounts**: Save and manage your animation configurations
-- **⚙️ Code Generation**: Export React components and CSS
+<CardGroup>
+  <Card title="🎨 Intuitive Design" icon="palette">
+    Easy-to-use interface for animation configuration with real-time visual
+    feedback
+  </Card>
+  <Card title="⚡ Live Preview" icon="eye">
+    See your animations in real-time as you build them with instant updates
+  </Card>
+  <Card title="📱 Responsive" icon="mobile">
+    Works seamlessly across all devices - desktop, tablet, and mobile
+  </Card>
+  <Card title="🔗 Shareable" icon="link">
+    Generate unique URLs to share your creations with others instantly
+  </Card>
+  <Card title="💾 User Accounts" icon="user">
+    Save and manage your animation configurations with persistent storage
+  </Card>
+  <Card title="⚙️ Code Generation" icon="code">
+    Export React components and CSS code for use in your projects
+  </Card>
+</CardGroup>
+
+</TabItem>
+<TabItem label="📦 Animation Library" value="library">
+
+## Animation Library - Abdullah Altun
+
+A lightweight, performant, and customizable animation library for React applications, powered by SCSS and CSS Custom Properties. Easily add entrance animations to your components.
+
+<CardGroup cols={3}>
+<Card title="🎯 React Ready" icon="react">
+Simple `<Animate>` component and flexible `useAnimation` hook
+</Card>
+<Card title="⚡ Modern SCSS" icon="css3">
+Leverages Sass modules with dynamic customization
+</Card>
+<Card title="🎮 Directional" icon="arrows">
+Animations respect direction based on prop values
+</Card>
+<Card title="🎨 Customizable" icon="cog">
+Override timings, easings, distances via props
+</Card>
+<Card title="🚀 Performant" icon="bolt">
+Hardware-accelerated CSS properties
+</Card>
+<Card title="♿ Accessible" icon="universal-access">
+Respects `prefers-reduced-motion` automatically
+</Card>
+</CardGroup>
+
+<Steps>
+<Step title="Install the Library" icon="download">
+
+```bash
+npm install animation-library-test-abdullah-altun
+```
+
+</Step>
+<Step title="Import Components" icon="code">
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+```
+
+</Step>
+<Step title="Use in Your App" icon="play">
+
+```jsx
+<Animate type="fade" opacity={{ start: 0, end: 1 }}>
+  <div>Your content here</div>
+</Animate>
+```
+
+</Step>
+</Steps>
+# or
+yarn add animation-library-test-abdullah-altun
+
+</TabItem>
+</Tabs>
 
 ## Quick Links
+
+<Tabs groupId="docs-type">
+<TabItem label="🎮 Playground App" value="playground">
 
 <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
   <div className="border rounded-lg p-4">
@@ -72,7 +153,77 @@ Animation Playground leverages the `animation-library-test-abdullah-altun` libra
   </div>
 </div>
 
+</TabItem>
+<TabItem label="📦 Animation Library" value="library">
+
+<div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">📖 Getting Started</h3>
+    <p className="text-gray-600 mb-3">
+      Learn how to install and use the animation library
+    </p>
+    <a href="https://docs.page/abdullahaltun70/animation-playground/library/installation" className="text-blue-600 hover:underline">
+      Installation Guide →
+    </a>
+  </div>
+
+<div className="border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-2">🎬 Usage Examples</h3>
+  <p className="text-gray-600 mb-3">
+    Explore component and hook usage patterns
+  </p>
+  <a
+    href="https://docs.page/abdullahaltun70/animation-playground/library/usage"
+    className="text-blue-600 hover:underline"
+  >
+    Usage Examples →
+  </a>
+</div>
+
+<div className="border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-2">🎯 Animation Types</h3>
+  <p className="text-gray-600 mb-3">
+    Discover all available animation types and controls
+  </p>
+  <a
+    href="https://docs.page/abdullahaltun70/animation-playground/library/animations"
+    className="text-blue-600 hover:underline"
+  >
+    Animation Types →
+  </a>
+</div>
+
+<div className="border rounded-lg p-4">
+  <h3 className="text-lg font-semibold mb-2">⚙️ API Reference</h3>
+  <p className="text-gray-600 mb-3">
+    Complete API documentation for components and hooks
+  </p>
+  <a
+    href="https://docs.page/abdullahaltun70/animation-playground/library/api"
+    className="text-blue-600 hover:underline"
+  >
+    Library API →
+  </a>
+</div>
+
+  <div className="border rounded-lg p-4">
+    <h3 className="text-lg font-semibold mb-2">📚 Examples & Best Practices</h3>
+    <p className="text-gray-600 mb-3">
+      Real-world examples and performance best practices
+    </p>
+    <a href="https://docs.page/abdullahaltun70/animation-playground/library/examples" className="text-blue-600 hover:underline">
+      Examples Guide →
+    </a>
+  </div>
+</div>
+
+</TabItem>
+</Tabs>
+
 ## Built with Modern Technologies
+
+<Tabs groupId="docs-type">
+<TabItem label="🎮 Playground App" value="playground">
 
 Animation Playground is built using cutting-edge technologies to ensure performance, scalability, and developer experience:
 
@@ -83,6 +234,30 @@ Animation Playground is built using cutting-edge technologies to ensure performa
 - **[Vitest](https://vitest.dev/)** - Fast and modern testing framework
 
 Ready to get started? Head over to our [Quick Start guide](https://docs.page/abdullahaltun70/animation-playground/setup) to set up your development environment.
+
+</TabItem>
+<TabItem label="📦 Animation Library" value="library">
+
+The animation library is built with modern web standards and best practices:
+
+- **[React](https://reactjs.org/)** - Modern UI library with hooks support
+- **[TypeScript](https://www.typescriptlang.org/)** - Full type safety and IntelliSense
+- **[SCSS](https://sass-lang.com/)** - Advanced CSS with variables and mixins
+- **[CSS Custom Properties](https://developer.mozilla.org/en-US/docs/Web/CSS/--*)** - Runtime animation control
+- **[Hardware Acceleration](https://developer.mozilla.org/en-US/docs/Web/CSS/transform)** - Smooth 60fps animations
+
+### Browser Support
+
+- Chrome 49+
+- Firefox 31+
+- Safari 9.1+
+- Edge 15+
+- Opera 36+
+
+Ready to integrate animations? Check out our [Installation guide](https://docs.page/abdullahaltun70/animation-playground/library/installation) to get started.
+
+</TabItem>
+</Tabs>
 
 ---
 

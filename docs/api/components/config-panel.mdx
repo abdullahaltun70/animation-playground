@@ -1,0 +1,433 @@
+---
+title: ConfigPanel
+description: Interactive panel for configuring animation properties with live preview.
+icon: settings
+---
+
+# ConfigPanel
+
+The `ConfigPanel` component provides an intuitive interface for configuring animation properties. It includes controls for animation type, duration, easing, delay, and other settings with real-time validation.
+
+## Import
+
+```typescript
+import { ConfigPanel } from '@/components/config-panel';
+```
+
+## Basic Usage
+
+```tsx
+import { ConfigPanel } from '@/components/config-panel';
+import { useState } from 'react';
+
+function BasicExample() {
+  const [config, setConfig] = useState({
+    type: 'fade' as const,
+    duration: 0.5,
+    easing: 'ease-out',
+    delay: 0,
+    name: 'My Animation',
+  });
+
+  return <ConfigPanel initialConfig={config} onConfigChange={setConfig} />;
+}
+```
+
+## Props
+
+### `initialConfig` (required)
+
+**Type:** `AnimationConfig`
+
+The initial animation configuration to populate the form fields.
+
+```typescript
+interface AnimationConfig {
+  type: AnimationType;
+  duration: number;
+  easing: EasingFunction;
+  delay?: number;
+  name?: string;
+}
+```
+
+### `onConfigChange` (required)
+
+**Type:** `(config: AnimationConfig) => void`
+
+Callback function that fires whenever any configuration value changes.
+
+### `disabled` (optional)
+
+**Type:** `boolean`  
+**Default:** `false`
+
+When true, disables all form controls.
+
+### `className` (optional)
+
+**Type:** `string`
+
+Additional CSS classes to apply to the panel container.
+
+### `showAdvanced` (optional)
+
+**Type:** `boolean`  
+**Default:** `false`
+
+Whether to show advanced configuration options by default.
+
+## Form Controls
+
+### Animation Type Selector
+
+```tsx
+// Dropdown with all available animation types
+<select value={config.type} onChange={handleTypeChange}>
+  <option value="fade">Fade</option>
+  <option value="slide">Slide</option>
+  <option value="scale">Scale</option>
+  <option value="rotate">Rotate</option>
+  <option value="bounce">Bounce</option>
+</select>
+```
+
+**Options:**
+
+- `fade` - Opacity-based animations
+- `slide` - Transform-based sliding
+- `scale` - Size scaling effects
+- `rotate` - Rotation animations
+- `bounce` - Spring-based bouncing
+
+### Duration Control
+
+```tsx
+// Range slider with numeric input
+<input
+  type="range"
+  min="0.1"
+  max="3.0"
+  step="0.1"
+  value={config.duration}
+  onChange={handleDurationChange}
+/>
+```
+
+**Range:** 0.1 - 3.0 seconds  
+**Step:** 0.1 seconds  
+**Default:** 0.5 seconds
+
+### Easing Function Selector
+
+```tsx
+// Dropdown with preset easing functions
+<select value={config.easing} onChange={handleEasingChange}>
+  <option value="ease">Ease</option>
+  <option value="ease-in">Ease In</option>
+  <option value="ease-out">Ease Out</option>
+  <option value="ease-in-out">Ease In Out</option>
+  <option value="linear">Linear</option>
+</select>
+```
+
+### Delay Control
+
+```tsx
+// Number input for animation delay
+<input
+  type="number"
+  min="0"
+  max="5"
+  step="0.1"
+  value={config.delay || 0}
+  onChange={handleDelayChange}
+/>
+```
+
+**Range:** 0 - 5.0 seconds  
+**Step:** 0.1 seconds  
+**Default:** 0 seconds
+
+### Animation Name
+
+```tsx
+// Text input for naming animations
+<input
+  type="text"
+  placeholder="Enter animation name"
+  value={config.name || ''}
+  onChange={handleNameChange}
+/>
+```
+
+## Advanced Configuration
+
+### Custom Easing
+
+```tsx
+function AdvancedExample() {
+  const [config, setConfig] = useState({
+    type: 'scale' as const,
+    duration: 1.0,
+    easing: 'cubic-bezier(0.4, 0, 0.2, 1)', // Custom cubic bezier
+    delay: 0.2,
+    name: 'Custom Scale Animation',
+  });
+
+  return (
+    <ConfigPanel
+      initialConfig={config}
+      onConfigChange={setConfig}
+      showAdvanced={true}
+    />
+  );
+}
+```
+
+### Validation
+
+The component includes built-in validation:
+
+```typescript
+// Duration validation
+const validateDuration = (value: number): boolean => {
+  return value >= 0.1 && value <= 3.0;
+};
+
+// Delay validation
+const validateDelay = (value: number): boolean => {
+  return value >= 0 && value <= 5.0;
+};
+
+// Name validation
+const validateName = (value: string): boolean => {
+  return value.length <= 50;
+};
+```
+
+## Event Handling
+
+### Real-time Updates
+
+```tsx
+function RealtimeExample() {
+  const [config, setConfig] = useState(defaultConfig);
+
+  const handleConfigChange = (newConfig: AnimationConfig) => {
+    // Validate before updating
+    if (validateConfig(newConfig)) {
+      setConfig(newConfig);
+      // Trigger preview update
+      updatePreview(newConfig);
+    }
+  };
+
+  return (
+    <ConfigPanel initialConfig={config} onConfigChange={handleConfigChange} />
+  );
+}
+```
+
+### Debounced Updates
+
+```tsx
+import { useDebouncedCallback } from 'use-debounce';
+
+function DebouncedExample() {
+  const [config, setConfig] = useState(defaultConfig);
+
+  // Debounce config changes to avoid excessive updates
+  const debouncedUpdate = useDebouncedCallback(
+    (newConfig: AnimationConfig) => {
+      setConfig(newConfig);
+    },
+    300 // 300ms delay
+  );
+
+  return (
+    <ConfigPanel initialConfig={config} onConfigChange={debouncedUpdate} />
+  );
+}
+```
+
+## Styling
+
+### Default Styles
+
+The component comes with default styling that can be customized:
+
+```css
+.config-panel {
+  padding: 1.5rem;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.config-panel__section {
+  margin-bottom: 1.5rem;
+}
+
+.config-panel__label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 500;
+  color: #374151;
+}
+
+.config-panel__input {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #d1d5db;
+  border-radius: 4px;
+  font-size: 0.875rem;
+}
+```
+
+### Custom Styling
+
+```tsx
+function CustomStyledExample() {
+  return (
+    <ConfigPanel
+      className="my-custom-panel"
+      initialConfig={config}
+      onConfigChange={setConfig}
+    />
+  );
+}
+```
+
+```css
+.my-custom-panel {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 12px;
+}
+
+.my-custom-panel .config-panel__input {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: white;
+}
+```
+
+## Integration Examples
+
+### With Preview Component
+
+```tsx
+function PlaygroundExample() {
+  const [config, setConfig] = useState(defaultConfig);
+
+  return (
+    <div className="playground">
+      <div className="config-section">
+        <ConfigPanel initialConfig={config} onConfigChange={setConfig} />
+      </div>
+
+      <div className="preview-section">
+        <AnimatedContainer config={config}>
+          <div className="preview-content">Preview your animation</div>
+        </AnimatedContainer>
+      </div>
+    </div>
+  );
+}
+```
+
+### With State Management
+
+```tsx
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+function StateManagementExample() {
+  const { animationConfig, setAnimationConfig, resetConfig, saveConfig } =
+    useAnimationConfig();
+
+  return (
+    <div>
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={setAnimationConfig}
+      />
+
+      <div className="actions">
+        <button onClick={resetConfig}>Reset to Default</button>
+        <button onClick={saveConfig}>Save Configuration</button>
+      </div>
+    </div>
+  );
+}
+```
+
+## Accessibility
+
+### Keyboard Navigation
+
+- All form controls are keyboard accessible
+- Tab order follows logical flow
+- Form validation provides screen reader feedback
+
+### ARIA Labels
+
+```tsx
+<input
+  type="range"
+  aria-label="Animation duration in seconds"
+  aria-valuemin={0.1}
+  aria-valuemax={3.0}
+  aria-valuenow={config.duration}
+  aria-valuetext={`${config.duration} seconds`}
+/>
+```
+
+### Screen Reader Support
+
+- Form labels are properly associated with inputs
+- Validation errors are announced to screen readers
+- Changes in configuration are communicated
+
+## Performance
+
+### Optimization Tips
+
+1. **Debounce updates** for frequently changing values
+2. **Memoize validation functions** to avoid recalculation
+3. **Use controlled components** for better performance
+4. **Avoid inline functions** in render methods
+
+### Memory Management
+
+- Event listeners are automatically cleaned up
+- Form state is properly managed
+- No memory leaks in configuration updates
+
+## Troubleshooting
+
+### Common Issues
+
+**Configuration not updating:**
+
+- Ensure `onConfigChange` prop is provided
+- Check that the parent component is updating state
+- Verify the configuration object structure
+
+**Validation not working:**
+
+- Check that values are within expected ranges
+- Ensure proper data types (number vs string)
+- Verify custom validation functions
+
+**Styling issues:**
+
+- Check CSS specificity conflicts
+- Ensure proper class names are applied
+- Use browser dev tools to debug styles
+
+## Related
+
+- [`AnimatedContainer`](/api/components/animated-container) - Component that uses the configuration
+- [`useAnimationConfig`](/api/hooks/use-animation-config) - Hook for managing animation state
+- [`AnimationConfig`](/api/types/animation-config) - Type definition for configuration objects

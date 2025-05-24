@@ -6,49 +6,89 @@ icon: play
 
 # Creating Animations
 
-Animation Playground makes it easy to create beautiful web animations through an intuitive interface. This guide will walk you through the process step by step.
+<Info>
+  Animation Playground makes it easy to create beautiful web animations through
+  an intuitive interface. This guide will walk you through the process step by
+  step.
+</Info>
 
 ## Getting Started
 
-### Accessing the Playground
+<Steps>
+<Step title="Access the Playground">
+Navigate to the main application at `http://localhost:3000` and click on the **"Playground"** link in the navigation
+</Step>
 
-1. Navigate to the main application at `http://localhost:3000`
-2. Click on the **"Playground"** link in the navigation
-3. You'll see the animation creation interface with two main panels:
-   - **Configuration Panel** (left): Where you set up your animation
-   - **Preview Panel** (right): Where you see your animation in action
+<Step title="Understand the Interface">
+You'll see the animation creation interface with two main panels:
+
+<CardGroup cols={2}>
+<Card title="Configuration Panel" icon="sliders">
+**Left Side**
+
+Where you set up your animation properties, timing, and effects
+
+</Card>
+<Card title="Preview Panel" icon="eye">
+**Right Side**
+
+Where you see your animation in action with real-time updates
+
+</Card>
+</CardGroup>
+</Step>
+</Steps>
 
 ## Animation Types
 
-Animation Playground supports several animation types:
+<Warning>
+  Understanding the different animation types will help you choose the right
+  effect for your use case.
+</Warning>
 
-### Fade
+<CardGroup cols={3}>
+<Card title="Fade" icon="eye">
+**Opacity Effects**
 
 - **In**: Element appears by fading from transparent to opaque
 - **Out**: Element disappears by fading from opaque to transparent
 - **InOut**: Combines fade in and fade out
 
-### Slide
+</Card>
+<Card title="Slide" icon="arrows-alt">
+**Movement Effects**
 
 - **Up/Down**: Element moves vertically
 - **Left/Right**: Element moves horizontally
 - **Diagonal**: Element moves in diagonal directions
 
-### Scale
+</Card>
+<Card title="Scale" icon="expand">
+**Size Effects**
 
 - **Up**: Element grows from small to normal size
 - **Down**: Element shrinks from normal to small size
 - **Bounce**: Element scales with a bouncing effect
+</Card>
+</CardGroup>
 
-### Rotate
+<CardGroup cols={2}>
+<Card title="Rotate" icon="sync">
+**Rotation Effects**
 
 - **Clockwise**: Element rotates clockwise
 - **Counter-clockwise**: Element rotates counter-clockwise
 - **Full rotation**: 360-degree rotation
 
-### Bounce
+</Card>
+<Card title="Bounce" icon="arrow-up">
+**Spring Effects**
 
 - **Up/Down**: Element bounces vertically
+- **Left/Right**: Element bounces horizontally
+- **Elastic**: Spring-like bouncing effects
+</Card>
+</CardGroup>
 - **Left/Right**: Element bounces horizontally
 - **Spring**: Spring-like bouncing effect
 
