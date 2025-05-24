@@ -40,14 +40,19 @@ export function ShareDialog({
         </Dialog.Description>
 
         <Flex gap="3" mt="4">
-          <TextField.Root value={shareUrl} readOnly style={{ flexGrow: 1 }} />
+          <TextField.Root
+            value={shareUrl || ''}
+            readOnly
+            style={{ flexGrow: 1 }}
+            aria-label="Share URL"
+          />
           <IconButton onClick={onCopyUrl} aria-label="Copy URL">
             <CopyIcon />
           </IconButton>
         </Flex>
 
         {copySuccess && (
-          <Text color="green" mt="2">
+          <Text mt="2" className="text-green-600">
             URL copied to clipboard!
           </Text>
         )}
