@@ -4,7 +4,6 @@ description: Learn how to share your animations with others and export code for 
 icon: share
 ---
 
-
 # Sharing & Exporting
 
 Once you've created the perfect animation, Animation Playground makes it easy to share your work with others and export code for use in your own projects.
@@ -29,9 +28,8 @@ Every animation configuration can be shared with a unique URL that allows others
 5. **Share Away**: Send the link via email, social media, or embed it in documentation
 
 > ℹ️ **Info:**
-  Shared animations are public and read-only. Viewers can see and copy your work
-  but cannot modify the original configuration.
-
+> Shared animations are public and read-only. Viewers can see and copy your work
+> but cannot modify the original configuration.
 
 ### Share Link Features
 
@@ -65,13 +63,13 @@ Export your animation as a ready-to-use React component:
 
 ```jsx
 import React from 'react';
-import { AnimationComponent } from 'animation-library-test-abdullah-altun';
+import { Animate } from 'animation-library-test-abdullah-altun';
 
 const MyFadeAnimation = ({ children, ...props }) => {
   return (
-    <AnimationComponent type="fade" duration={0.5} easing="ease-out" {...props}>
+    <Animate type="fade" duration={0.5} easing="ease-out" {...props}>
       {children}
-    </AnimationComponent>
+    </Animate>
   );
 };
 
@@ -145,9 +143,8 @@ Export the raw configuration object for advanced use cases:
 5. **Use in Project**: Paste the code into your project files
 
 > 💡 **Tip:**
-  The React component export includes TypeScript types and is ready to use with
-  modern React applications!
-
+> The React component export includes TypeScript types and is ready to use with
+> modern React applications!
 
 ## Integration Guide
 
@@ -284,10 +281,8 @@ const SequencedAnimations = () => {
 - Create animation pattern libraries
 - Maintain examples for common use cases
 
-> ✅ **Success:**
-  **Pro Tip**: Create a shared collection of team animations by maintaining a
-  document with links to commonly used animation configurations!
-
+> ✅ **Success:** > **Pro Tip**: Create a shared collection of team animations by maintaining a
+> document with links to commonly used animation configurations!
 
 ## Troubleshooting
 
@@ -325,4 +320,4 @@ const SequencedAnimations = () => {
 - Verify animations work without user accounts
 - Check on different devices and browsers
 
-Ready to manage your animations? Learn about [User Accounts](/guide/user-accounts) to save and organize your creations.
+Ready to manage your animations? Learn about [User Accounts](https://docs.page/abdullahaltun70/animation-playground/guide/user-accounts) to save and organize your creations.
