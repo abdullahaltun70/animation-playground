@@ -4,7 +4,6 @@ description: Learn about the comprehensive testing strategy and how to write tes
 icon: beaker
 ---
 
-import { Callout } from '@docs.page/components';
 
 # Testing
 
@@ -18,10 +17,10 @@ Our testing strategy follows the testing pyramid principle:
 2. **Integration Tests** (Middle): Test component interactions and data flow
 3. **End-to-End Tests** (Top): Test complete user workflows
 
-<Callout type="info">
+> ℹ️ **Info:**
   We aim for high test coverage while focusing on testing behavior rather than
   implementation details.
-</Callout>
+
 
 ## Testing Stack
 
@@ -424,10 +423,10 @@ yarn test --grep "authentication"
 - HTML: Detailed interactive report at `coverage/index.html`
 - LCOV: For CI/CD integration
 
-<Callout type="tip">
+> 💡 **Tip:**
   Use `yarn test:coverage` to see which parts of your code need more test
   coverage!
-</Callout>
+
 
 ## Testing Best Practices
 
@@ -542,10 +541,10 @@ Tests must pass for:
 - TypeScript type checking passes
 - ESLint rules pass
 
-<Callout type="success">
+> ✅ **Success:**
   **Testing is integral to our development process.** Well-tested code leads to
   more confident deployments and better user experiences.
-</Callout>
+
 
 ## Debugging Tests
 
