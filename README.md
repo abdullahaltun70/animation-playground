@@ -142,20 +142,6 @@ yarn typedoc
 
 This will generate HTML documentation in the `docs/` directory.
 
-## Documentation
-
-This project includes comprehensive documentation built with [docs.page](https://use.docs.page/). To view the documentation:
-
-1. **Online**: Visit `https://use.docs.page/abdullahaltun70/animation-playground` (once this repository is public)
-2. **Local TypeDoc**: Run `yarn typedoc` to generate API documentation locally
-
-The documentation includes:
-- Getting started guide
-- Feature overview
-- User guides for creating and sharing animations
-- Development and contribution guidelines
-- Complete API reference
-
 ## Contributing
 
 Contributions are welcome! If you have suggestions or want to contribute to the project, please feel free to open an issue or submit a pull request.
