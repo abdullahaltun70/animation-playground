@@ -1,0 +1,516 @@
+---
+title: Contributing
+description: Learn how to contribute to Animation Playground and help make it even better for everyone.
+icon: heart
+---
+
+import { Callout } from '@docs.page/components';
+
+# Contributing to Animation Playground
+
+We welcome contributions from developers of all skill levels! Whether you're fixing bugs, adding features, improving documentation, or suggesting new ideas, your contributions help make Animation Playground better for everyone.
+
+## Getting Started
+
+### Prerequisites
+
+Before contributing, make sure you have:
+
+- **Node.js** (version 18.x or higher)
+- **Git** for version control
+- **A GitHub account** for submitting pull requests
+- **Basic knowledge** of React, TypeScript, and Next.js
+
+### Development Setup
+
+1. **Fork the Repository**
+
+   ```bash
+   # Visit https://github.com/abdullahaltun70/animation-playground
+   # Click the "Fork" button to create your own copy
+   ```
+
+2. **Clone Your Fork**
+
+   ```bash
+   git clone https://github.com/YOUR_USERNAME/animation-playground.git
+   cd animation-playground
+   ```
+
+3. **Add Upstream Remote**
+
+   ```bash
+   git remote add upstream https://github.com/abdullahaltun70/animation-playground.git
+   ```
+
+4. **Install Dependencies**
+
+   ```bash
+   yarn install
+   ```
+
+5. **Set Up Environment**
+
+   ```bash
+   cp .env.example .env.local
+   # Edit .env.local with your development credentials
+   ```
+
+6. **Verify Setup**
+   ```bash
+   yarn dev
+   # Visit http://localhost:3000 to ensure everything works
+   ```
+
+<Callout type="info">
+  If you encounter any issues during setup, check our [troubleshooting
+  guide](/setup#troubleshooting) or open an issue for help.
+</Callout>
+
+## Types of Contributions
+
+### 🐛 Bug Reports
+
+Found a bug? Help us fix it by providing detailed information:
+
+**Before Reporting**
+
+- Check existing issues to avoid duplicates
+- Try to reproduce the bug consistently
+- Test in different browsers if relevant
+
+**What to Include**
+
+- **Clear title**: Summarize the issue in one line
+- **Steps to reproduce**: Detailed steps to recreate the bug
+- **Expected behavior**: What should happen
+- **Actual behavior**: What actually happens
+- **Environment**: Browser, OS, device type
+- **Screenshots**: If helpful for understanding the issue
+
+**Example Bug Report**
+
+```
+Title: Animation preview not updating when duration changes
+
+Steps to reproduce:
+1. Go to playground page
+2. Select "Fade" animation type
+3. Change duration from 0.5 to 2.0 seconds
+4. Observe preview panel
+
+Expected: Preview should show slower animation
+Actual: Preview still shows 0.5 second animation
+
+Environment: Chrome 120, macOS Sonoma
+```
+
+### ✨ Feature Requests
+
+Have an idea for a new feature? We'd love to hear it!
+
+**Before Requesting**
+
+- Check if the feature already exists
+- Look for similar requests in issues
+- Consider if it fits the project's scope
+
+**What to Include**
+
+- **Clear description**: What you want to achieve
+- **Use case**: Why this feature would be valuable
+- **Proposed solution**: How you think it should work
+- **Alternatives**: Other ways to solve the same problem
+
+### 🎨 UI/UX Improvements
+
+Design improvements are always welcome:
+
+- Better user interfaces
+- Improved accessibility
+- Mobile responsiveness
+- Visual design enhancements
+
+### 📚 Documentation
+
+Help improve our documentation:
+
+- Fix typos or unclear explanations
+- Add missing information
+- Create new guides or tutorials
+- Improve code examples
+
+### 🔧 Code Contributions
+
+Ready to write some code? Here's how to get started:
+
+## Development Workflow
+
+### Creating a Branch
+
+```bash
+# Update your local main branch
+git checkout main
+git pull upstream main
+
+# Create a new branch for your feature
+git checkout -b feature/animation-presets
+# or
+git checkout -b fix/duration-validation
+```
+
+**Branch Naming Conventions**
+
+- `feature/description`: New features
+- `fix/description`: Bug fixes
+- `docs/description`: Documentation updates
+- `refactor/description`: Code improvements
+- `test/description`: Test additions/improvements
+
+### Making Changes
+
+**Code Quality Standards**
+
+- Follow TypeScript best practices
+- Use existing code patterns and conventions
+- Write self-documenting code with clear variable names
+- Add comments for complex logic
+
+**Testing Requirements**
+
+- Write tests for new features
+- Update existing tests when modifying code
+- Ensure all tests pass before submitting
+- Maintain or improve test coverage
+
+**Running Quality Checks**
+
+```bash
+# Run all quality checks
+yarn checks
+
+# Individual checks
+yarn typecheck    # TypeScript validation
+yarn lint         # ESLint checks
+yarn prettier     # Code formatting
+yarn test         # Test suite
+```
+
+### Commit Guidelines
+
+We follow conventional commit format for clear history:
+
+```bash
+# Format: type(scope): description
+git commit -m "feat(animations): add rotation presets"
+git commit -m "fix(preview): resolve duration update bug"
+git commit -m "docs(setup): improve installation instructions"
+```
+
+**Commit Types**
+
+- `feat`: New features
+- `fix`: Bug fixes
+- `docs`: Documentation changes
+- `style`: Formatting, no code change
+- `refactor`: Code restructuring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+### Submitting Pull Requests
+
+1. **Push Your Changes**
+
+   ```bash
+   git push origin feature/your-branch-name
+   ```
+
+2. **Create Pull Request**
+
+   - Go to your fork on GitHub
+   - Click "Compare & pull request"
+   - Fill out the PR template
+
+3. **PR Description Template**
+
+   ```markdown
+   ## Description
+
+   Brief description of what this PR does.
+
+   ## Type of Change
+
+   - [ ] Bug fix
+   - [ ] New feature
+   - [ ] Breaking change
+   - [ ] Documentation update
+
+   ## Testing
+
+   - [ ] Unit tests pass
+   - [ ] Integration tests pass
+   - [ ] Manual testing completed
+
+   ## Screenshots
+
+   (If applicable)
+
+   ## Checklist
+
+   - [ ] Code follows project conventions
+   - [ ] Self-review completed
+   - [ ] Tests added/updated
+   - [ ] Documentation updated
+   ```
+
+<Callout type="tip">
+  Small, focused PRs are easier to review and more likely to be merged quickly.
+  Consider breaking large changes into multiple PRs.
+</Callout>
+
+## Code Review Process
+
+### What Reviewers Look For
+
+**Code Quality**
+
+- Readability and maintainability
+- Proper error handling
+- Performance considerations
+- Security best practices
+
+**Testing**
+
+- Adequate test coverage
+- Test quality and reliability
+- Edge cases considered
+
+**Documentation**
+
+- Code comments for complex logic
+- Updated documentation
+- Clear commit messages
+
+### Responding to Feedback
+
+- Be open to suggestions and constructive criticism
+- Ask questions if feedback isn't clear
+- Make requested changes promptly
+- Thank reviewers for their time
+
+**Example Response**
+
+```markdown
+Thanks for the review! I've addressed your feedback:
+
+1. ✅ Added error handling for invalid duration values
+2. ✅ Extracted magic numbers into constants
+3. ❓ Regarding the animation performance concern, could you clarify what specific optimization you had in mind?
+
+Ready for another review when you have time.
+```
+
+## Coding Standards
+
+### TypeScript Guidelines
+
+**Type Safety**
+
+```typescript
+// ✅ Good: Explicit types
+interface AnimationConfig {
+  type: 'fade' | 'slide' | 'scale';
+  duration: number;
+  easing?: string;
+}
+
+// ❌ Avoid: Any types
+const config: any = { ... };
+```
+
+**Naming Conventions**
+
+- `PascalCase`: Components, interfaces, types
+- `camelCase`: Variables, functions, methods
+- `SCREAMING_SNAKE_CASE`: Constants
+- `kebab-case`: File names (except components)
+
+### React Patterns
+
+**Component Structure**
+
+```typescript
+// ✅ Good: Clear component structure
+interface Props {
+  animation: AnimationConfig;
+  onPlay: () => void;
+}
+
+export const AnimationPreview: React.FC<Props> = ({
+  animation,
+  onPlay
+}) => {
+  // Hooks first
+  const [isPlaying, setIsPlaying] = useState(false);
+
+  // Event handlers
+  const handlePlay = useCallback(() => {
+    setIsPlaying(true);
+    onPlay();
+  }, [onPlay]);
+
+  // Render
+  return (
+    <div className="animation-preview">
+      {/* Component JSX */}
+    </div>
+  );
+};
+```
+
+**Custom Hooks**
+
+```typescript
+// ✅ Good: Reusable logic in hooks
+export const useAnimationConfig = () => {
+  const [config, setConfig] = useState<AnimationConfig>();
+  const [loading, setLoading] = useState(false);
+
+  const saveConfig = useCallback(async (newConfig: AnimationConfig) => {
+    setLoading(true);
+    try {
+      await api.saveAnimation(newConfig);
+      setConfig(newConfig);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  return { config, loading, saveConfig };
+};
+```
+
+### Styling Guidelines
+
+**SCSS Modules**
+
+```scss
+// AnimationPreview.module.scss
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+
+  &.isPlaying {
+    border-color: var(--color-primary);
+  }
+}
+
+.playButton {
+  padding: 0.5rem 1rem;
+  border-radius: 0.25rem;
+
+  &:hover {
+    background-color: var(--color-primary-hover);
+  }
+}
+```
+
+**Responsive Design**
+
+```scss
+.container {
+  // Mobile first
+  padding: 1rem;
+
+  @media (min-width: 768px) {
+    padding: 2rem;
+  }
+
+  @media (min-width: 1024px) {
+    padding: 3rem;
+  }
+}
+```
+
+## Issue Labels
+
+Understanding our label system helps you find good first issues:
+
+**Priority Labels**
+
+- `priority: high` - Critical issues affecting many users
+- `priority: medium` - Important improvements
+- `priority: low` - Nice-to-have features
+
+**Type Labels**
+
+- `bug` - Something isn't working correctly
+- `enhancement` - New feature or improvement
+- `documentation` - Documentation improvements
+- `good first issue` - Good for newcomers
+
+**Status Labels**
+
+- `help wanted` - Extra attention needed
+- `in progress` - Someone is working on it
+- `needs review` - Ready for code review
+
+## Community Guidelines
+
+### Code of Conduct
+
+We are committed to providing a welcoming and inclusive environment:
+
+- **Be respectful**: Treat all community members with respect
+- **Be inclusive**: Welcome people of all backgrounds and experience levels
+- **Be constructive**: Provide helpful feedback and suggestions
+- **Be patient**: Remember that everyone is learning and growing
+
+### Communication
+
+**Best Practices**
+
+- Use clear, descriptive titles for issues and PRs
+- Provide context and examples when asking questions
+- Be patient when waiting for responses
+- Say thank you when someone helps you
+
+**Getting Help**
+
+- Check existing documentation first
+- Search existing issues before creating new ones
+- Provide enough detail for others to help you
+- Be willing to help others in return
+
+## Recognition
+
+We appreciate all contributions and recognize them in various ways:
+
+**Contributors**
+
+- Listed in our README
+- Mentioned in release notes
+- Invited to maintainer discussions for significant contributions
+
+**Types of Recognition**
+
+- Code contributions
+- Documentation improvements
+- Bug reports and testing
+- Community support and mentoring
+
+<Callout type="success">
+  **Thank you for contributing!** Every contribution, no matter how small, helps
+  make Animation Playground better for everyone.
+</Callout>
+
+## Next Steps
+
+Ready to make your first contribution?
+
+1. **Start Small**: Look for `good first issue` labels
+2. **Ask Questions**: Don't hesitate to ask for clarification
+3. **Have Fun**: Enjoy the process of learning and contributing!
+
+Questions? Feel free to open an issue or reach out to the maintainers. We're here to help and excited to work with you!

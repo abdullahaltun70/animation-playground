@@ -1,0 +1,591 @@
+---
+title: Testing
+description: Learn about the comprehensive testing strategy and how to write tests for Animation Playground.
+icon: beaker
+---
+
+import { Callout } from '@docs.page/components';
+
+# Testing
+
+Animation Playground uses a comprehensive testing strategy to ensure code quality, reliability, and maintainability. This guide covers our testing approach, tools, and best practices.
+
+## Testing Philosophy
+
+Our testing strategy follows the testing pyramid principle:
+
+1. **Unit Tests** (Foundation): Test individual functions and components
+2. **Integration Tests** (Middle): Test component interactions and data flow
+3. **End-to-End Tests** (Top): Test complete user workflows
+
+<Callout type="info">
+  We aim for high test coverage while focusing on testing behavior rather than
+  implementation details.
+</Callout>
+
+## Testing Stack
+
+### Core Testing Tools
+
+**Vitest**
+
+- Fast and modern test runner
+- Native TypeScript support
+- Jest-compatible API
+- Excellent performance with ES modules
+
+**Testing Library**
+
+- `@testing-library/react`: Component testing utilities
+- `@testing-library/user-event`: Simulating user interactions
+- `@testing-library/jest-dom`: Custom Jest matchers
+
+**Coverage Reporting**
+
+- `@vitest/coverage-v8`: Code coverage using V8
+- HTML and text reports
+- Integrated with CI/CD pipeline
+
+### Configuration
+
+**Vitest Setup (`vitest.config.ts`)**
+
+```typescript
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
+    globals: true,
+    coverage: {
+      provider: 'v8',
+      reporter: ['text', 'html', 'lcov'],
+      threshold: {
+        global: {
+          branches: 80,
+          functions: 80,
+          lines: 80,
+          statements: 80,
+        },
+      },
+    },
+  },
+});
+```
+
+**Global Test Setup (`vitest.setup.ts`)**
+
+- Mock browser APIs (ResizeObserver, clipboard)
+- Mock Next.js navigation
+- Mock Supabase authentication
+- Configure testing library
+
+## Test Organization
+
+### Directory Structure
+
+```
+src/tests/
+├── components/           # Component unit tests
+│   ├── config-panel/
+│   ├── header/
+│   └── animated-container/
+├── hooks/               # Custom hook tests
+│   ├── useAuth.test.ts
+│   └── useAnimationConfig.test.ts
+├── pages/               # Page integration tests
+│   ├── PlaygroundPage.test.tsx
+│   └── ProfilePage.test.tsx
+├── auth/                # Authentication tests
+├── utils/               # Utility function tests
+└── __fixtures__/        # Test data and fixtures
+```
+
+### Test File Naming
+
+- Unit tests: `ComponentName.test.tsx`
+- Integration tests: `FeatureName.integration.test.tsx`
+- Hook tests: `useHookName.test.ts`
+- Utility tests: `utilityName.test.ts`
+
+## Unit Testing
+
+### Component Testing
+
+**Basic Component Test**
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import { AnimationPreview } from '@/components/AnimationPreview';
+
+describe('AnimationPreview', () => {
+  it('renders animation preview with config', () => {
+    const mockConfig = {
+      type: 'fade',
+      duration: 0.5,
+      name: 'Test Animation',
+    };
+
+    render(<AnimationPreview config={mockConfig} />);
+
+    expect(screen.getByText('Test Animation')).toBeInTheDocument();
+    expect(screen.getByTestId('animation-preview')).toBeInTheDocument();
+  });
+});
+```
+
+**Component with User Interaction**
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { ConfigPanel } from '@/components/config-panel/ConfigPanel';
+
+describe('ConfigPanel', () => {
+  it('calls onConfigChange when duration is updated', async () => {
+    const user = userEvent.setup();
+    const mockOnConfigChange = vi.fn();
+
+    render(
+      <ConfigPanel
+        initialConfig={{ duration: 0.5 }}
+        onConfigChange={mockOnConfigChange}
+      />
+    );
+
+    const durationInput = screen.getByLabelText(/duration/i);
+    await user.clear(durationInput);
+    await user.type(durationInput, '1.0');
+
+    expect(mockOnConfigChange).toHaveBeenCalledWith(
+      expect.objectContaining({ duration: 1.0 })
+    );
+  });
+});
+```
+
+### Hook Testing
+
+**Custom Hook Test**
+
+```typescript
+import { renderHook, act } from '@testing-library/react';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+describe('useAnimationConfig', () => {
+  it('updates animation config correctly', () => {
+    const { result } = renderHook(() => useAnimationConfig());
+
+    act(() => {
+      result.current.setAnimationConfig({
+        type: 'slide',
+        duration: 1.0,
+      });
+    });
+
+    expect(result.current.animationConfig).toEqual({
+      type: 'slide',
+      duration: 1.0,
+    });
+  });
+});
+```
+
+### Utility Function Testing
+
+**Pure Function Test**
+
+```typescript
+import { generateAnimationCSS } from '@/utils/animationGenerator';
+
+describe('generateAnimationCSS', () => {
+  it('generates correct CSS for fade animation', () => {
+    const config = {
+      type: 'fade',
+      duration: 0.5,
+      easing: 'ease-out',
+    };
+
+    const css = generateAnimationCSS(config);
+
+    expect(css).toContain('opacity: 0');
+    expect(css).toContain('opacity: 1');
+    expect(css).toContain('0.5s');
+    expect(css).toContain('ease-out');
+  });
+});
+```
+
+## Integration Testing
+
+### Page Integration Tests
+
+**Playground Page Test**
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { PlaygroundPage } from '@/app/(main)/playground/page';
+
+describe('PlaygroundPage Integration', () => {
+  it('allows creating and previewing animation', async () => {
+    const user = userEvent.setup();
+
+    render(<PlaygroundPage />);
+
+    // Select animation type
+    const typeSelect = screen.getByLabelText(/animation type/i);
+    await user.selectOptions(typeSelect, 'fade');
+
+    // Adjust duration
+    const durationInput = screen.getByLabelText(/duration/i);
+    await user.clear(durationInput);
+    await user.type(durationInput, '1.0');
+
+    // Verify preview updates
+    const preview = screen.getByTestId('animation-preview');
+    expect(preview).toHaveAttribute('data-type', 'fade');
+    expect(preview).toHaveAttribute('data-duration', '1.0');
+  });
+});
+```
+
+### Authentication Flow Tests
+
+**Sign In Flow Test**
+
+```typescript
+import { render, screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
+import { SignInPage } from '@/app/(auth)/signin/page';
+
+describe('Authentication Flow', () => {
+  it('signs in user with valid credentials', async () => {
+    const user = userEvent.setup();
+
+    render(<SignInPage />);
+
+    await user.type(
+      screen.getByLabelText(/email/i),
+      'test@example.com'
+    );
+    await user.type(
+      screen.getByLabelText(/password/i),
+      'password123'
+    );
+    await user.click(screen.getByRole('button', { name: /sign in/i }));
+
+    // Verify successful sign in
+    expect(mockSupabaseAuth.signInWithPassword).toHaveBeenCalledWith({
+      email: 'test@example.com',
+      password: 'password123',
+    });
+  });
+});
+```
+
+## Mocking Strategies
+
+### Component Mocking
+
+**Mock Child Components**
+
+```typescript
+// Mock complex child components for unit tests
+vi.mock('@/components/AnimationPreview', () => ({
+  AnimationPreview: vi.fn(({ config }) => (
+    <div data-testid="mock-animation-preview" data-config={config.name}>
+      Animation Preview
+    </div>
+  )),
+}));
+```
+
+### API Mocking
+
+**Mock Supabase Client**
+
+```typescript
+// Global mock in vitest.setup.ts
+export const mockSupabaseAuth = {
+  signIn: vi.fn(),
+  signOut: vi.fn(),
+  getUser: vi.fn(),
+};
+
+vi.mock('@/utils/supabase/client', () => ({
+  createClient: () => ({
+    auth: mockSupabaseAuth,
+  }),
+}));
+```
+
+### Browser API Mocking
+
+**Mock Browser APIs**
+
+```typescript
+// Mock clipboard API
+Object.defineProperty(navigator, 'clipboard', {
+  value: {
+    writeText: vi.fn().mockResolvedValue(undefined),
+    readText: vi.fn().mockResolvedValue(''),
+  },
+});
+
+// Mock ResizeObserver
+global.ResizeObserver = vi.fn().mockImplementation(() => ({
+  observe: vi.fn(),
+  unobserve: vi.fn(),
+  disconnect: vi.fn(),
+}));
+```
+
+## Test Utilities
+
+### Custom Render Function
+
+```typescript
+// test-utils.tsx
+import { render } from '@testing-library/react';
+import { ReactElement } from 'react';
+import { AuthProvider } from '@/context/AuthProvider';
+import { ToastProvider } from '@/context/ToastContext';
+
+const AllProviders = ({ children }: { children: React.ReactNode }) => {
+  return (
+    <AuthProvider>
+      <ToastProvider>
+        {children}
+      </ToastProvider>
+    </AuthProvider>
+  );
+};
+
+export const renderWithProviders = (
+  ui: ReactElement,
+  options = {}
+) => {
+  return render(ui, { wrapper: AllProviders, ...options });
+};
+```
+
+### Test Fixtures
+
+```typescript
+// __fixtures__/animations.ts
+export const mockAnimationConfig = {
+  type: 'fade' as const,
+  duration: 0.5,
+  easing: 'ease-out',
+  delay: 0,
+  name: 'Test Animation',
+};
+
+export const mockUser = {
+  id: 'test-user-id',
+  email: 'test@example.com',
+  created_at: new Date().toISOString(),
+};
+```
+
+## Running Tests
+
+### Development Commands
+
+```bash
+# Run all tests once
+yarn test
+
+# Run tests in watch mode
+yarn test:watch
+
+# Run tests with coverage
+yarn test:coverage
+
+# Run specific test file
+yarn test ConfigPanel.test.tsx
+
+# Run tests matching pattern
+yarn test --grep "authentication"
+```
+
+### Coverage Reports
+
+**Coverage Thresholds**
+
+- Lines: 80%
+- Functions: 80%
+- Branches: 80%
+- Statements: 80%
+
+**Generated Reports**
+
+- Terminal: Text summary
+- HTML: Detailed interactive report at `coverage/index.html`
+- LCOV: For CI/CD integration
+
+<Callout type="tip">
+  Use `yarn test:coverage` to see which parts of your code need more test
+  coverage!
+</Callout>
+
+## Testing Best Practices
+
+### Writing Good Tests
+
+**Test Structure (Arrange, Act, Assert)**
+
+```typescript
+it('should update animation when config changes', async () => {
+  // Arrange
+  const user = userEvent.setup();
+  const mockOnChange = vi.fn();
+  render(<ConfigPanel onChange={mockOnChange} />);
+
+  // Act
+  await user.click(screen.getByText('Fade'));
+
+  // Assert
+  expect(mockOnChange).toHaveBeenCalledWith(
+    expect.objectContaining({ type: 'fade' })
+  );
+});
+```
+
+**Test Naming Conventions**
+
+- Describe what the component/function does
+- Use "should" statements for behavior
+- Be specific about the scenario being tested
+
+**What to Test**
+
+- User interactions and their outcomes
+- Component props and their effects
+- Error handling and edge cases
+- Accessibility features
+
+**What Not to Test**
+
+- Implementation details
+- Third-party library internals
+- Styling unless it affects functionality
+
+### Performance Testing
+
+**Animation Performance**
+
+```typescript
+it('should complete animation within expected time', async () => {
+  const startTime = performance.now();
+
+  render(<AnimationComponent duration={0.5} />);
+
+  // Trigger animation
+  await user.click(screen.getByRole('button', { name: /play/i }));
+
+  // Wait for animation to complete
+  await waitFor(() => {
+    const endTime = performance.now();
+    expect(endTime - startTime).toBeLessThan(600); // 0.5s + buffer
+  });
+});
+```
+
+### Accessibility Testing
+
+**Screen Reader Testing**
+
+```typescript
+it('should be accessible to screen readers', () => {
+  render(<ConfigPanel />);
+
+  expect(screen.getByLabelText(/duration/i)).toBeInTheDocument();
+  expect(screen.getByRole('slider')).toHaveAccessibleName();
+});
+```
+
+## Continuous Integration
+
+### GitHub Actions
+
+```yaml
+# .github/workflows/test.yml
+name: Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-node@v3
+        with:
+          node-version: '18'
+      - run: yarn install --frozen-lockfile
+      - run: yarn test:coverage
+      - uses: codecov/codecov-action@v3
+```
+
+### Quality Gates
+
+Tests must pass for:
+
+- All pull requests
+- Main branch deployments
+- Release candidates
+
+**Automated Checks**
+
+- Unit test coverage > 80%
+- No failing tests
+- TypeScript type checking passes
+- ESLint rules pass
+
+<Callout type="success">
+  **Testing is integral to our development process.** Well-tested code leads to
+  more confident deployments and better user experiences.
+</Callout>
+
+## Debugging Tests
+
+### Common Issues
+
+**Tests Timing Out**
+
+```typescript
+// Increase timeout for slow operations
+it('should handle slow animation', async () => {
+  // ...test code
+}, 10000); // 10 second timeout
+```
+
+**Mock Not Working**
+
+```typescript
+// Ensure mocks are cleared between tests
+beforeEach(() => {
+  vi.clearAllMocks();
+});
+```
+
+**Async Testing Issues**
+
+```typescript
+// Use waitFor for async operations
+await waitFor(() => {
+  expect(screen.getByText('Loaded')).toBeInTheDocument();
+});
+```
+
+### Debug Mode
+
+```bash
+# Run tests with debug output
+yarn test --reporter=verbose
+
+# Debug specific test
+yarn test --grep "specific test" --reporter=verbose
+```
+
+Ready to contribute to the project? Check out our [Contributing Guide](/development/contributing) to learn how to submit your improvements and new features.
