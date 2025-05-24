@@ -134,13 +134,24 @@ Test files are primarily located in the `src/tests/` directory, mirroring the st
 
 ## Documentation
 
-API and component documentation can be generated using TypeDoc:
+📚 **Comprehensive documentation is available at:** [docs.page/abdullahaltun70/animation-playground](https://docs.page/abdullahaltun70/animation-playground)
 
-```bash
-yarn typedoc
-```
+The documentation includes:
 
-This will generate HTML documentation in the `docs/` directory.
+- **Getting Started Guide** - Setup and installation instructions
+- **User Guide** - How to create, configure, and share animations
+- **Developer Documentation** - Project structure, testing, and contributing
+- **API Reference** - Complete TypeDoc-generated API documentation
+
+### Alternative Documentation Access
+
+If the docs.page link is not accessible, you can also:
+
+1. **Generate TypeDoc locally**: Run `yarn typedoc` to create API documentation in the `docs/` directory
+2. **Browse documentation files**: View the comprehensive guides in the `/docs` folder of this repository
+3. **Access during development**: API docs are available at `/docs` when running the dev server
+
+> **Note:** The docs.page site may take a few minutes to sync after repository changes are pushed to GitHub.
 
 ## Contributing
 
