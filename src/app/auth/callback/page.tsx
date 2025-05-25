@@ -12,14 +12,30 @@ export default function AuthCallbackPage() {
 
   useEffect(() => {
     const syncSessionAndRedirect = async () => {
-      const supabase = createClient();
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
+      try {
+        const supabase = createClient();
+        const {
+          data: { user },
+          error,
+        } = await supabase.auth.getUser();
 
-      if (user) {
-        router.push(`${window.location.origin}/`);
-      } else {
+        if (error) {
+          console.error('Error getting user in auth callback:', error);
+          // If it's an AuthSessionMissingError, redirect to login
+          if (error.message?.includes('Auth session missing')) {
+            console.log('No active session found in auth callback');
+            router.replace(`${window.location.origin}/login`);
+            return;
+          }
+        }
+
+        if (user) {
+          router.push(`${window.location.origin}/`);
+        } else {
+          router.replace(`${window.location.origin}/login`);
+        }
+      } catch (error) {
+        console.error('Error in auth callback:', error);
         router.replace(`${window.location.origin}/login`);
       }
     };

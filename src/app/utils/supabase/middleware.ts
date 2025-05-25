@@ -37,7 +37,14 @@ export async function updateSession(request: NextRequest) {
 
   const {
     data: { user },
+    error,
   } = await supabase.auth.getUser();
+
+  // Handle auth session missing error
+  if (error && error.message?.includes('Auth session missing')) {
+    console.log('No active session found in middleware');
+    // Treat as no user, continue with middleware logic
+  }
 
   // for api testing purposes
   const authHeader = request.headers.get('Authorization');

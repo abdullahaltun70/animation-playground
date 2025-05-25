@@ -20,9 +20,12 @@ describe('DocsPage Component (TypeDoc Documentation)', () => {
   describe('Rendering TypeDoc Documentation', () => {
     it('should render an iframe with TypeDoc documentation', () => {
       renderDocsPage();
-      const iframe = screen.getByTitle('Playground API Documentation');
+      const iframe = screen.getByTitle('Animation Library Documentation');
       expect(iframe).toBeInTheDocument();
-      expect(iframe).toHaveAttribute('src', '/docs/index.html');
+      expect(iframe).toHaveAttribute(
+        'src',
+        'https://docs.page/abdullahaltun70/animation-playground'
+      );
     });
 
     it('should be wrapped in Radix Theme', () => {
