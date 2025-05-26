@@ -6,7 +6,7 @@ import { Theme } from '@radix-ui/themes';
 import { render, screen, waitFor } from '@testing-library/react';
 import { vi, describe, test, expect, beforeEach } from 'vitest';
 
-import AccessibilityDemo from '../../app/(main)/bla/page';
+import AccessibilityDemo from '../../app/(main)/acc-demo/page';
 
 // Mock performance API
 const mockPerformance = {

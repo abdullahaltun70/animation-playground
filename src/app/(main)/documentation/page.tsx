@@ -9,15 +9,21 @@ function DocumentationPage() {
     <Theme accentColor="indigo" grayColor="slate">
       <Box
         style={{
-          height: '100vh',
+          height: '100%',
           display: 'flex',
           flexDirection: 'column',
+          flex: 1,
         }}
       >
         <iframe
           src="https://docs.page/abdullahaltun70/animation-playground"
           title="Animation Library Documentation"
-          style={{ width: '100vw', height: '100vh', border: 'none' }}
+          style={{
+            width: '100%',
+            height: '100%',
+            border: 'none',
+            minHeight: '85vh',
+          }}
         />
       </Box>
     </Theme>
