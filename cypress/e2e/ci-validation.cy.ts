@@ -2,6 +2,11 @@ describe('CI Environment Validation', () => {
   before(() => {
     // Check application health before running any tests
     cy.checkAppHealth();
+
+    // Extra delay in CI to ensure everything is fully ready
+    if (Cypress.env('CI')) {
+      cy.wait(3000);
+    }
   });
 
   it('should connect to application health endpoint', () => {

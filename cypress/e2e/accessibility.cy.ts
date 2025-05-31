@@ -1,9 +1,13 @@
 describe('Basic Accessibility Testing', () => {
+  before(() => {
+    // Check application health before running any tests
+    cy.checkAppHealth();
+  });
+
   beforeEach(() => {
     cy.clearLocalStorage();
     cy.clearAllSessionStorage();
     cy.clearCookies();
-    cy.loginAsTestUser();
   });
 
   describe('Login Page Accessibility', () => {

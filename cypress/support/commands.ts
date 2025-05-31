@@ -16,6 +16,9 @@
 Cypress.Commands.add('checkAppHealth', () => {
   cy.log('Checking application health...');
 
+  // Add a small delay to ensure the server has fully started
+  cy.wait(2000);
+
   // Check if the health endpoint is responding
   cy.request({
     url: '/api/health',
@@ -66,7 +69,8 @@ Cypress.Commands.add('waitForPageLoad', () => {
   cy.document().should('have.property', 'readyState', 'complete');
 
   // Wait a bit longer for any dynamic content to load in CI
-  cy.wait(Cypress.env('CI') ? 2000 : 500);
+  const waitTime = Cypress.env('CI') ? 3000 : 1000;
+  cy.wait(waitTime);
 
   // Ensure basic page elements are loaded
   cy.get('body').should('be.visible');

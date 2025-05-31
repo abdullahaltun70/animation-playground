@@ -40,6 +40,19 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
+      - name: Pre-warm Next.js build
+        run: |
+          echo "Pre-warming Next.js application..."
+          timeout 30s yarn start &
+          SERVER_PID=$!
+          sleep 15
+          kill $SERVER_PID 2>/dev/null || true
+          echo "Pre-warm complete"
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
