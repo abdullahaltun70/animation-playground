@@ -49,10 +49,7 @@ jobs:
         with:
           name: build-${{ github.sha }}
           if-no-files-found: error
-          path: |
-            .next
-            dist
-            build
+          path: .next
           retention-days: 1
 
   # Parallel Chrome tests - 4 workers
