@@ -42,6 +42,12 @@ declare global {
   namespace Cypress {
     interface Chainable {
       /**
+       * Custom command to check application health
+       * @example cy.checkAppHealth()
+       */
+      checkAppHealth(): Chainable;
+
+      /**
        * Custom command to login with test user
        * @example cy.loginAsTestUser()
        */

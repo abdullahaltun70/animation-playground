@@ -40,30 +40,6 @@ jobs:
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
 
-      - name: Start application for health check
-        run: |
-          yarn start &
-          APP_PID=$!
-          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
-          sleep 30  # Wait for app to start
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-      - name: Health check
-        run: |
-          echo "Testing application health..."
-          curl -f http://localhost:3000/api/health || (echo "Health check failed" && exit 1)
-          echo "Health check passed!"
-
-      - name: Stop application
-        run: |
-          if [ ! -z "$APP_PID" ]; then
-            kill $APP_PID || true
-            sleep 5
-          fi
-
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
@@ -73,6 +49,7 @@ jobs:
           browser: chrome
           record: true
           group: 'E2E Tests'
+          spec: 'cypress/e2e/ci-validation.cy.ts,cypress/e2e/**/*.cy.ts'
           config: 'baseUrl=http://localhost:3000,defaultCommandTimeout=15000,requestTimeout=15000,responseTimeout=15000,pageLoadTimeout=60000'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}

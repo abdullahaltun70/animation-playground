@@ -10,6 +10,25 @@
 
 /// <reference types="cypress" />
 
+/**
+ * Custom command to check application health before running tests
+ */
+Cypress.Commands.add('checkAppHealth', () => {
+  cy.log('Checking application health...');
+
+  // Check if the health endpoint is responding
+  cy.request({
+    url: '/api/health',
+    timeout: 30000,
+    retryOnStatusCodeFailure: true,
+    retryOnNetworkFailure: true,
+  }).then((response) => {
+    expect(response.status).to.eq(200);
+    expect(response.body).to.have.property('status', 'ok');
+    cy.log('Health check passed!');
+  });
+});
+
 // Custom command for logging in as a test user
 Cypress.Commands.add('loginAsTestUser', () => {
   // Visit login page with retry logic for CI

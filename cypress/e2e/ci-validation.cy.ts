@@ -1,4 +1,9 @@
 describe('CI Environment Validation', () => {
+  before(() => {
+    // Check application health before running any tests
+    cy.checkAppHealth();
+  });
+
   it('should connect to application health endpoint', () => {
     cy.request('/api/health').then((response) => {
       expect(response.status).to.eq(200);
