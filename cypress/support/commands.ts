@@ -67,14 +67,9 @@ Cypress.Commands.add('checkA11y', () => {
   });
 });
 
-// Declare global types for custom commands
-declare global {
-  namespace Cypress {
-    interface Chainable {
-      loginAsTestUser(): Chainable<any>;
-      waitForPageLoad(): Chainable<any>;
-      waitForAnimation(): Chainable<any>;
-      checkA11y(): Chainable<any>;
-    }
-  }
-}
+// Custom command for tab navigation
+Cypress.Commands.add('tab', () => {
+  cy.get('body').trigger('keydown', { key: 'Tab' });
+});
+
+// Type declarations are handled in e2e.ts to avoid duplication

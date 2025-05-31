@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-import { PersonIcon } from '@radix-ui/react-icons';
 import { Avatar } from '@radix-ui/themes';
 
 import { useAuth } from '@/context/AuthProvider';

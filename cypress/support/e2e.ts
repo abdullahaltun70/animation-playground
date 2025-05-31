@@ -30,7 +30,7 @@ beforeEach(() => {
 });
 
 // Handle uncaught exceptions
-Cypress.on('uncaught:exception', (err, runnable) => {
+Cypress.on('uncaught:exception', (err) => {
   // returning false here prevents Cypress from failing the test
   // You might want to log these exceptions instead
   console.error('Uncaught exception:', err);
@@ -45,25 +45,31 @@ declare global {
        * Custom command to login with test user
        * @example cy.loginAsTestUser()
        */
-      loginAsTestUser(): Chainable<Element>;
+      loginAsTestUser(): Chainable;
 
       /**
        * Custom command to wait for page load
        * @example cy.waitForPageLoad()
        */
-      waitForPageLoad(): Chainable<Element>;
+      waitForPageLoad(): Chainable;
 
       /**
        * Custom command to wait for animation to complete
        * @example cy.waitForAnimation()
        */
-      waitForAnimation(): Chainable<Element>;
+      waitForAnimation(): Chainable;
 
       /**
        * Custom command to check accessibility
        * @example cy.checkA11y()
        */
-      checkA11y(): Chainable<Element>;
+      checkA11y(): Chainable;
+
+      /**
+       * Custom command for tab navigation
+       * @example cy.tab()
+       */
+      tab(): Chainable;
     }
   }
 }

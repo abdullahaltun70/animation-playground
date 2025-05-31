@@ -203,6 +203,8 @@ describe('Navigation and User Experience', () => {
         const pageLoadTime = measures.find((m) => m.name === 'page-load-time');
 
         // Page should load within reasonable time (adjust as needed)
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         expect(pageLoadTime.duration).to.be.lessThan(5000);
       });
     });

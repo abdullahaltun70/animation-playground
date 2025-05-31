@@ -16,13 +16,18 @@
 // Import commands.js using ES2015 syntax:
 import './commands';
 
-// Example use:
-// import { mount } from 'cypress/react18'
+// Component testing support file
+// This file is processed and loaded automatically before component test files
 
 // Augment the Cypress namespace to include type definitions for
-// your custom command.
+// your custom command if using component testing
 // Alternatively, can be defined in cypress/support/component.d.ts
 // with a <reference path="./component" /> at the top of your spec.
+
+// Uncomment and modify the following if you're using React component testing:
+
+/*
+import { mount } from 'cypress/react18';
 
 declare global {
   namespace Cypress {
@@ -32,8 +37,8 @@ declare global {
   }
 }
 
-// import { mount } from 'cypress/react18'
-// Cypress.Commands.add('mount', mount)
+Cypress.Commands.add('mount', mount);
+*/
 
 // Example use:
 // cy.mount(<MyComponent />)

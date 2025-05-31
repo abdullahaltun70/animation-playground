@@ -104,7 +104,7 @@ const MenuItem = ({
               marginTop: '5px', // Small gap between button and menu
             }}
           >
-            {subItems.map((item, index) => (
+            {subItems.map((item) => (
               <>
                 <div
                   style={{

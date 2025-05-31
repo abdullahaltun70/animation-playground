@@ -77,8 +77,8 @@ export default function ErrorPage() {
               }}
               data-cy="error-message"
             >
-              Sorry, we couldn't find the page you're looking for. The page may
-              have been moved, deleted, or the URL might be incorrect.
+              Sorry, we couldn&apos;t find the page you&apos;re looking for. The
+              page may have been moved, deleted, or the URL might be incorrect.
             </Text>
 
             <Animate type="slide" duration={0.6} delay={0.4} axis="y">

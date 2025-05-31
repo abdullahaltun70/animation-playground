@@ -103,7 +103,7 @@ describe('Animation Sharing and Export', () => {
         .and('contain', 'Code copied to clipboard!');
     });
   });
-  
+
   describe('Animation Library Integration', () => {
     it('should verify basic playground functionality', () => {
       // Visit the playground page
