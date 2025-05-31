@@ -38,6 +38,11 @@ jobs:
           # Disable running of tests within install job
           runTests: false
           build: yarn build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL_FOR_CI }}
+          CI: true
 
       - name: Save build folder
         uses: actions/upload-artifact@v4
