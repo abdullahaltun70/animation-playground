@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
+import { PersonIcon } from '@radix-ui/react-icons';
 import { Avatar } from '@radix-ui/themes';
 
 import { useAuth } from '@/context/AuthProvider';
@@ -70,7 +71,11 @@ export function UserAvatar() {
         radius="full"
         className={styles.userAvatar}
         fallback={
-          'https://img.icons8.com/?size=100&id=Cssf43cjx2fu&format=png&color=000000'
+          // make this url the fallback for the avatar
+          <PersonIcon
+            style={{ width: '100%', height: '100%' }}
+            className={styles.personIcon}
+          />
         } // Radix UI PersonIcon as fallback
         data-cy="user-profile"
       />

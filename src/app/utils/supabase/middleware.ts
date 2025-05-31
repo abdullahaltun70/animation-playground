@@ -50,12 +50,47 @@ export async function updateSession(request: NextRequest) {
   const authHeader = request.headers.get('Authorization');
   const hasBearerToken = authHeader?.startsWith('Bearer ');
 
+  // Define public routes that don't require authentication
+  const publicRoutes = [
+    '/',
+    '/login',
+    '/auth',
+    '/api/auth',
+    '/documentation',
+    '/terms',
+    '/privacy',
+    '/api/health',
+    '/playground', // Allow public access to playground
+    '/acc-demo', // Accessibility demo
+    '/error', // Error pages
+    '/test', // Test pages
+    '/server-component-test',
+  ];
+
+  // Define protected routes that explicitly require authentication
+  const protectedRoutes = [
+    '/profile',
+    '/api/configs', // User-specific configuration APIs
+  ];
+
+  // Check if the current path is a public route
+  const isPublicRoute = publicRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // Check if the current path is explicitly protected
+  const isProtectedRoute = protectedRoutes.some((route) =>
+    request.nextUrl.pathname.startsWith(route)
+  );
+
+  // For root path, redirect to login if not authenticated
+  const isRootPath = request.nextUrl.pathname === '/';
+
   if (
-    !user && // Geen op cookies gebaseerde gebruiker
-    !hasBearerToken && // EN geen Bearer token aanwezig
-    !request.nextUrl.pathname.startsWith('/login') &&
-    !request.nextUrl.pathname.startsWith('/auth') &&
-    !request.nextUrl.pathname.startsWith('/api/auth')
+    !user && // No cookie-based user
+    !hasBearerToken && // AND no Bearer token present
+    (isProtectedRoute || isRootPath) && // AND is a protected route or root
+    !isPublicRoute // AND not explicitly public
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();

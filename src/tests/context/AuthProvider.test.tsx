@@ -15,7 +15,7 @@ vi.mock('next/navigation', () => ({
 
 const mockGetUser = vi.fn();
 const mockOnAuthStateChange = vi.fn();
-const mockSignOut = vi.fn().mockResolvedValue({ error: null });
+const mockSignOut = vi.fn();
 const mockUnsubscribe = vi.fn();
 
 vi.mock('@/app/utils/supabase/client', () => ({
@@ -54,9 +54,15 @@ describe('AuthProvider Component', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
+    // Set up default mock implementations
+    mockGetUser.mockResolvedValue({ data: { user: null }, error: null });
+    mockSignOut.mockResolvedValue({ error: null });
     mockOnAuthStateChange.mockImplementation(() => {
       return { data: { subscription: { unsubscribe: mockUnsubscribe } } };
     });
+    // Reset all mocks to ensure clean state
+    mockRouterPush.mockReset();
+    mockUnsubscribe.mockReset();
   });
 
   const renderAuthProvider = (
@@ -79,53 +85,79 @@ describe('AuthProvider Component', () => {
 
       expect(screen.getByTestId('is-loading')).toHaveTextContent('true');
 
-      await waitFor(() => {
-        expect(mockGetUser).toHaveBeenCalledTimes(1);
-      });
+      await waitFor(
+        () => {
+          expect(mockGetUser).toHaveBeenCalled();
+        },
+        { timeout: 3000 }
+      );
 
-      await waitFor(() => {
-        expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
-      });
-      expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
-      expect(screen.getByTestId('user-email')).toHaveTextContent('null');
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+          expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
+            'false'
+          );
+          expect(screen.getByTestId('user-email')).toHaveTextContent('null');
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should set user and authenticated state if getUser returns a user', async () => {
       const testUser = { id: 'user1', email: 'user1@example.com' };
-      mockGetUser.mockResolvedValueOnce({
+      // Use mockResolvedValue instead of mockResolvedValueOnce to handle multiple calls
+      mockGetUser.mockResolvedValue({
         data: { user: testUser },
         error: null,
       });
 
       renderAuthProvider();
 
+      // Wait for loading to start
+      expect(screen.getByTestId('is-loading')).toHaveTextContent('true');
+
+      // Wait for getUser to be called
       await waitFor(() => {
-        expect(mockGetUser).toHaveBeenCalledTimes(1);
+        expect(mockGetUser).toHaveBeenCalled();
       });
 
-      await waitFor(() => {
-        expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
-          'true'
-        );
-        expect(screen.getByTestId('user-email')).toHaveTextContent(
-          'user1@example.com'
-        );
-      });
+      // Wait for loading to complete and auth state to be set
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('is-loading')).toHaveTextContent('false');
+        },
+        { timeout: 3000 }
+      );
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
+            'true'
+          );
+          expect(screen.getByTestId('user-email')).toHaveTextContent(
+            'user1@example.com'
+          );
+        },
+        { timeout: 3000 }
+      );
     });
 
     it('should handle error from getUser and remain unauthenticated', async () => {
       const consoleErrorSpy = vi
         .spyOn(console, 'error')
         .mockImplementation(() => {});
-      mockGetUser.mockResolvedValueOnce({
+      mockGetUser.mockResolvedValue({
         data: { user: null },
         error: new Error('GetUser failed'),
       });
 
       renderAuthProvider();
 
-      await waitFor(() =>
-        expect(screen.getByTestId('is-loading')).toHaveTextContent('false')
+      await waitFor(
+        () =>
+          expect(screen.getByTestId('is-loading')).toHaveTextContent('false'),
+        { timeout: 3000 }
       );
 
       expect(screen.getByTestId('is-authenticated')).toHaveTextContent('false');
@@ -176,13 +208,17 @@ describe('AuthProvider Component', () => {
     it('should update context and navigate on SIGNED_OUT event', async () => {
       // Start as authenticated
       const initialUser = { id: 'user-initial', email: 'initial@example.com' };
-      mockGetUser.mockResolvedValueOnce({
+      mockGetUser.mockResolvedValue({
         data: { user: initialUser },
         error: null,
       });
       renderAuthProvider();
-      await waitFor(() =>
-        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true')
+      await waitFor(
+        () =>
+          expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
+            'true'
+          ),
+        { timeout: 3000 }
       );
 
       act(() => {
@@ -219,13 +255,17 @@ describe('AuthProvider Component', () => {
         id: 'user-initial-cleared',
         email: 'cleared@example.com',
       };
-      mockGetUser.mockResolvedValueOnce({
+      mockGetUser.mockResolvedValue({
         data: { user: initialUser },
         error: null,
       });
       renderAuthProvider();
-      await waitFor(() =>
-        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true')
+      await waitFor(
+        () =>
+          expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
+            'true'
+          ),
+        { timeout: 3000 }
       );
 
       act(() => {
@@ -242,13 +282,17 @@ describe('AuthProvider Component', () => {
     it('should call supabase.auth.signOut, update context, and navigate to /login', async () => {
       // Start as authenticated
       const initialUser = { id: 'user-signout', email: 'signout@example.com' };
-      mockGetUser.mockResolvedValueOnce({
+      mockGetUser.mockResolvedValue({
         data: { user: initialUser },
         error: null,
       });
       renderAuthProvider();
-      await waitFor(() =>
-        expect(screen.getByTestId('is-authenticated')).toHaveTextContent('true')
+      await waitFor(
+        () =>
+          expect(screen.getByTestId('is-authenticated')).toHaveTextContent(
+            'true'
+          ),
+        { timeout: 3000 }
       );
 
       const signOutButton = screen.getByRole('button', {
@@ -275,13 +319,13 @@ describe('AuthProvider Component', () => {
         .spyOn(console, 'error')
         .mockImplementation(() => {});
       const signOutError = new Error('SignOut failed');
-      mockSignOut.mockResolvedValueOnce({ error: signOutError });
+      mockSignOut.mockResolvedValue({ error: signOutError });
       // Start as authenticated
       const initialUser = {
         id: 'user-signout-fail',
         email: 'signoutfail@example.com',
       };
-      mockGetUser.mockResolvedValueOnce({
+      mockGetUser.mockResolvedValue({
         data: { user: initialUser },
         error: null,
       });

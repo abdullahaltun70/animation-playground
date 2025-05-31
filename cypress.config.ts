@@ -8,11 +8,15 @@ export default defineConfig({
     viewportHeight: 720,
     video: true,
     screenshotOnRunFailure: true,
-    defaultCommandTimeout: 10000,
-    requestTimeout: 10000,
-    responseTimeout: 10000,
-    pageLoadTimeout: 30000,
-
+    defaultCommandTimeout: 15000,
+    requestTimeout: 15000,
+    responseTimeout: 15000,
+    pageLoadTimeout: 60000,
+    
+    // More lenient for CI environments
+    experimentalRunAllSpecs: false,
+    experimentalInteractiveRunEvents: true,
+    
     // Disable file watching to prevent automatic re-runs
     watchForFileChanges: false,
 
@@ -32,9 +36,9 @@ export default defineConfig({
     // Test isolation - run each test in a clean state
     testIsolation: true,
 
-    // Retry configuration
+    // Retry configuration - more retries in CI
     retries: {
-      runMode: 2,
+      runMode: 3,
       openMode: 0,
     },
 

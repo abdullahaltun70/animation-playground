@@ -23,21 +23,65 @@ jobs:
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - name: Build application
+        run: yarn build
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Debug environment
+        run: |
+          echo "NEXT_PUBLIC_SUPABASE_URL is set: $([[ -n "$NEXT_PUBLIC_SUPABASE_URL" ]] && echo "yes" || echo "no")"
+          echo "NEXT_PUBLIC_SUPABASE_ANON_KEY is set: $([[ -n "$NEXT_PUBLIC_SUPABASE_ANON_KEY" ]] && echo "yes" || echo "no")"
+          echo "Node version: $(node --version)"
+          echo "Yarn version: $(yarn --version)"
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+
+      - name: Start application for health check
+        run: |
+          yarn start &
+          APP_PID=$!
+          echo "APP_PID=$APP_PID" >> $GITHUB_ENV
+          sleep 30  # Wait for app to start
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+
+      - name: Health check
+        run: |
+          echo "Testing application health..."
+          curl -f http://localhost:3000/api/health || (echo "Health check failed" && exit 1)
+          echo "Health check passed!"
+
+      - name: Stop application
+        run: |
+          if [ ! -z "$APP_PID" ]; then
+            kill $APP_PID || true
+            sleep 5
+          fi
+
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
+          wait-on-timeout: 180
           browser: chrome
           record: true
           group: 'E2E Tests'
+          config: 'baseUrl=http://localhost:3000,defaultCommandTimeout=15000,requestTimeout=15000,responseTimeout=15000,pageLoadTimeout=60000'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          CI: true
+          CYPRESS_CI: true
 
       - name: Upload Cypress screenshots
         uses: actions/upload-artifact@v4

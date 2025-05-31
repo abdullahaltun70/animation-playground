@@ -1,4 +1,20 @@
 describe('Basic Navigation', () => {
+  describe('Environment Check', () => {
+    it('should verify application is running', () => {
+      cy.log('Testing environment connectivity...');
+      cy.request({
+        method: 'GET',
+        url: '/',
+        timeout: 30000,
+        retryOnNetworkFailure: true,
+        failOnStatusCode: false
+      }).then((response) => {
+        cy.log(`Response status: ${response.status}`);
+        expect(response.status).to.be.oneOf([200, 302, 307]); // Allow redirects
+      });
+    });
+  });
+
   describe('Unauthenticated Navigation', () => {
     beforeEach(() => {
       cy.clearLocalStorage();
