@@ -31,11 +31,34 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setIsLoading(true);
       const {
         data: { user },
+        error,
       } = await supabase.auth.getUser();
+      if (error) {
+        // If it's an AuthSessionMissingError, treat as no user (not logged in)
+        if (error.message?.includes('Auth session missing')) {
+          console.log('No active session found during refresh');
+          setUser(null);
+          setIsAuthenticated(false);
+          return;
+        }
+        console.error('Error refreshing session:', error);
+      }
       setUser(user);
       setIsAuthenticated(!!user);
     } catch (error) {
-      console.error('Error refreshing session:', error);
+      // Handle AuthSessionMissingError specifically
+      if (
+        error instanceof Error &&
+        error.message?.includes('Auth session missing')
+      ) {
+        console.log('No active session found during refresh (catch block)');
+        setUser(null);
+        setIsAuthenticated(false);
+      } else {
+        console.error('Error refreshing session:', error);
+        setUser(null);
+        setIsAuthenticated(false);
+      }
     } finally {
       setIsLoading(false);
     }
@@ -52,7 +75,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
           error: getUserError,
         } = await supabase.auth.getUser();
         if (getUserError) {
-          console.error('Error fetching initial user:', getUserError);
+          // If it's an AuthSessionMissingError, treat as no user (not logged in)
+          if (getUserError.message?.includes('Auth session missing')) {
+            console.log('No active session found, user not authenticated');
+          } else {
+            console.error('Error fetching initial user:', getUserError);
+          }
         }
         if (!didUnmount) {
           setUser(user);
@@ -99,7 +127,19 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         });
         unsubRef.current = () => subscription.unsubscribe();
       } catch (error) {
-        console.error('Error initializing auth:', error);
+        // Handle AuthSessionMissingError specifically
+        if (
+          error instanceof Error &&
+          error.message?.includes('Auth session missing')
+        ) {
+          console.log('No active session found during initialization');
+          if (!didUnmount) {
+            setUser(null);
+            setIsAuthenticated(false);
+          }
+        } else {
+          console.error('Error initializing auth:', error);
+        }
       } finally {
         if (!didUnmount) setIsLoading(false);
       }
