@@ -13,15 +13,15 @@ export const Footer = () => {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className={styles.footer}>
+    <footer className={styles.footer} data-cy="site-footer">
       <div className={styles.footerContent}>
         <Text size="2">© {currentYear} Animation Playground</Text>
 
         <div className={styles.footerLinks}>
-          <RadixLink href="/terms" size={'2'}>
+          <RadixLink href="/terms" size={'2'} data-cy="footer-terms">
             Terms
           </RadixLink>
-          <RadixLink href="/privacy" size={'2'}>
+          <RadixLink href="/privacy" size={'2'} data-cy="footer-privacy">
             Privacy
           </RadixLink>
           <RadixLink
@@ -29,6 +29,7 @@ export const Footer = () => {
             size="2"
             target="_blank"
             rel="noopener noreferrer"
+            data-cy="footer-github"
           >
             GitHub
           </RadixLink>

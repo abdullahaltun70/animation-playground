@@ -225,7 +225,7 @@ export function ConfigPanel({
   return (
     <>
       <h2 className={styles.title}>Animation Configuration</h2>
-      <div className={styles.configPanel}>
+      <div className={styles.configPanel} data-cy="config-panel">
         <div className={styles.field}>
           <LabelPrimitive.Root id={nameLabelId} htmlFor={nameInputId}>
             <Text weight="bold">Configuration Name</Text>
@@ -237,6 +237,7 @@ export function ConfigPanel({
             value={config.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
             disabled={isReadOnly}
+            data-cy="animation-name-input"
           />
         </div>
 
@@ -254,6 +255,7 @@ export function ConfigPanel({
             value={config.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
             disabled={isReadOnly}
+            data-cy="animation-description-input"
           />
         </div>
 
@@ -272,13 +274,24 @@ export function ConfigPanel({
               <Select.Trigger
                 aria-labelledby={animationTypeLabelId}
                 placeholder="Select animation type"
+                data-cy="animation-type-trigger"
               />
               <Select.Content>
-                <Select.Item value="fade">Fade</Select.Item>
-                <Select.Item value="slide">Slide</Select.Item>
-                <Select.Item value="scale">Scale</Select.Item>
-                <Select.Item value="rotate">Rotate</Select.Item>
-                <Select.Item value="bounce">Bounce</Select.Item>
+                <Select.Item value="fade" data-cy="animation-type-fade">
+                  Fade
+                </Select.Item>
+                <Select.Item value="slide" data-cy="animation-type-slide">
+                  Slide
+                </Select.Item>
+                <Select.Item value="scale" data-cy="animation-type-scale">
+                  Scale
+                </Select.Item>
+                <Select.Item value="rotate" data-cy="animation-type-rotate">
+                  Rotate
+                </Select.Item>
+                <Select.Item value="bounce" data-cy="animation-type-bounce">
+                  Bounce
+                </Select.Item>
               </Select.Content>
             </Select.Root>
           </Flex>
@@ -299,14 +312,28 @@ export function ConfigPanel({
               <Select.Trigger
                 aria-labelledby={easingFunctionLabelId}
                 placeholder="Select easing function"
+                data-cy="easing-trigger"
               />
               <Select.Content>
-                <Select.Item value="ease">Ease</Select.Item>
-                <Select.Item value="ease-in">Ease In</Select.Item>
-                <Select.Item value="ease-out">Ease Out</Select.Item>
-                <Select.Item value="ease-in-out">Ease In Out</Select.Item>
-                <Select.Item value="linear">Linear</Select.Item>
-                <Select.Item value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+                <Select.Item value="ease" data-cy="easing-ease">
+                  Ease
+                </Select.Item>
+                <Select.Item value="ease-in" data-cy="easing-ease-in">
+                  Ease In
+                </Select.Item>
+                <Select.Item value="ease-out" data-cy="easing-ease-out">
+                  Ease Out
+                </Select.Item>
+                <Select.Item value="ease-in-out" data-cy="easing-ease-in-out">
+                  Ease In Out
+                </Select.Item>
+                <Select.Item value="linear" data-cy="easing-linear">
+                  Linear
+                </Select.Item>
+                <Select.Item
+                  value="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+                  data-cy="easing-elastic"
+                >
                   Elastic
                 </Select.Item>
               </Select.Content>
@@ -328,6 +355,7 @@ export function ConfigPanel({
               step={1}
               onValueChange={(value) => handleChange('duration', value[0] / 10)}
               disabled={isReadOnly}
+              data-cy="duration-slider"
             />
             <Text size="1">{config.duration.toFixed(1)}s</Text>
           </div>
@@ -344,6 +372,7 @@ export function ConfigPanel({
               step={1}
               onValueChange={(value) => handleChange('delay', value[0] / 10)}
               disabled={isReadOnly}
+              data-cy="delay-slider"
             />
             <Text size="1">{config.delay.toFixed(1)}s</Text>
           </div>
@@ -364,6 +393,7 @@ export function ConfigPanel({
                     handleOpacityChange('start', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="start-opacity-slider"
                 />
                 <Text size="1">
                   {`${config.opacity ? (config.opacity.start * 100).toFixed(0) : 0}%`}
@@ -383,6 +413,7 @@ export function ConfigPanel({
                     handleOpacityChange('end', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="end-opacity-slider"
                 />
                 <Text size="1">
                   {`${config.opacity ? (config.opacity.end * 100).toFixed(0) : 100}%`}
@@ -405,6 +436,7 @@ export function ConfigPanel({
                   step={1}
                   onValueChange={(value) => handleChange('distance', value[0])}
                   disabled={isReadOnly}
+                  data-cy="distance-input"
                 />
                 <Text size="1">{`${config.distance || 0}px`}</Text>
               </div>
@@ -423,10 +455,15 @@ export function ConfigPanel({
                     <Select.Trigger
                       aria-labelledby={axisLabelId}
                       placeholder="Select axis"
+                      data-cy="axis-trigger"
                     />
                     <Select.Content>
-                      <Select.Item value="x">X-axis</Select.Item>
-                      <Select.Item value="y">Y-axis</Select.Item>
+                      <Select.Item value="x" data-cy="axis-x">
+                        X-axis
+                      </Select.Item>
+                      <Select.Item value="y" data-cy="axis-y">
+                        Y-axis
+                      </Select.Item>
                     </Select.Content>
                   </Select.Root>
                 </Flex>
@@ -450,6 +487,7 @@ export function ConfigPanel({
                     handleChange('scale', value[0] / 100)
                   }
                   disabled={isReadOnly}
+                  data-cy="scale-input"
                 />
                 <Text size="1">
                   {`${config.scale ? (config.scale * 100).toFixed(0) : 0}%`}
@@ -478,6 +516,7 @@ export function ConfigPanel({
                     handleDegreesChange('start', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="start-degrees-input"
                 />
                 <Text size="1">
                   {typeof config.degrees === 'object'
@@ -506,6 +545,7 @@ export function ConfigPanel({
                     handleDegreesChange('end', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="degrees-input"
                 />
                 <Text size="1">
                   {typeof config.degrees === 'object'
@@ -533,6 +573,7 @@ export function ConfigPanel({
                   step={1}
                   onValueChange={(value) => handleChange('distance', value[0])}
                   disabled={isReadOnly}
+                  data-cy="bounce-distance-input"
                 />
                 <Text size="1">{`${config.distance || 0}px`}</Text>
               </div>
@@ -561,6 +602,7 @@ export function ConfigPanel({
             variant="outline"
             className={styles.resetButton}
             disabled={isReadOnly && typeof onReset !== 'function'}
+            data-cy="reset-btn"
           >
             {isReadOnly ? 'New Animation' : 'Reset'}
           </Button>
@@ -568,6 +610,7 @@ export function ConfigPanel({
             onClick={handleSave}
             className={styles.copyButton}
             disabled={isReadOnly && typeof onSave !== 'function'}
+            data-cy="save-btn"
           >
             {isReadOnly
               ? saveButtonText === 'Save'

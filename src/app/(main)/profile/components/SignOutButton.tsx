@@ -35,6 +35,7 @@ export function SignOutButton() {
       onClick={handleSignOut}
       disabled={isLoading}
       className={styles.signOutButton}
+      data-cy="sign-out-button"
     >
       {isLoading ? 'Signing out...' : 'Sign Out'}
     </Button>

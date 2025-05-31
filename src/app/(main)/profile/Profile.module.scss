@@ -1,31 +1,137 @@
 .profileContainer {
-  max-width: 600px; // Set a reasonable max width
+  max-width: 800px;
   width: 100%;
-  margin: 3rem auto; // Center horizontally with auto margins
-  padding: 2rem 2.5rem;
-  border-radius: 12px;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  margin: 2rem auto;
+  padding: 2rem;
 
-  .dark & {
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  @media (max-width: 768px) {
+    margin: 1rem auto;
+    padding: 1rem;
+  }
+}
+
+.userInfoCard {
+  padding: 1.5rem !important;
+  background: linear-gradient(135deg, var(--accent-2) 0%, var(--accent-3) 100%);
+  border: 1px solid var(--accent-6);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+}
+
+.userInfoCardDark {
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+}
+
+.tabs {
+  .tabsList {
+    background-color: var(--gray-2);
+    border-radius: 8px;
+    padding: 4px;
+    gap: 2px;
   }
 
-  h1 {
-    text-align: center;
-    margin-bottom: 2.5rem;
-    font-size: 2rem;
-    color: var(--text-primary);
-    font-weight: 600;
+  .tabsListDark {
+    background-color: var(--gray-3);
   }
 
-  h2 {
-    font-size: 1.5rem;
-    color: var(--text-primary);
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.6rem;
-    margin-bottom: 2rem;
+  .tabsTrigger {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+    border-radius: 6px;
+    transition: all 0.2s ease;
     font-weight: 500;
+
+    &[data-state='active'] {
+      background-color: var(--card-bg);
+      color: var(--accent-11);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    &:hover:not([data-state='active']) {
+      background-color: var(--gray-4);
+    }
+  }
+
+  .tabsTriggerActiveDark {
+    background-color: var(--gray-1);
+  }
+}
+
+// Loading skeletons
+.avatarSkeleton {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: linear-gradient(
+    90deg,
+    var(--gray-4) 25%,
+    var(--gray-5) 50%,
+    var(--gray-4) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+.textSkeleton {
+  height: 16px;
+  width: 100%;
+  border-radius: 4px;
+  background: linear-gradient(
+    90deg,
+    var(--gray-4) 25%,
+    var(--gray-5) 50%,
+    var(--gray-4) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+// Legacy styles for backward compatibility
+.userInfo {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  border-radius: 8px;
+  background-color: var(--subtle-bg);
+  border: 1px solid var(--border-color);
+}
+
+.profileTitle {
+  text-align: center;
+  margin-bottom: 2.5rem;
+  font-size: 2rem;
+  color: var(--text-primary);
+  font-weight: 600;
+}
+
+.sectionTitle {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.6rem;
+  margin-bottom: 2rem;
+  font-weight: 500;
+}
+
+.shareInput {
+  transition: all 0.2s ease;
+
+  &:focus {
+    outline: none;
+    border-color: var(--accent-8) !important;
+    box-shadow: 0 0 0 2px var(--accent-4);
+  }
+
+  &:hover {
+    border-color: var(--gray-7);
   }
 }

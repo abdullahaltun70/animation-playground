@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 
-import { PersonIcon } from '@radix-ui/react-icons';
 import { Avatar } from '@radix-ui/themes';
 
 import { useAuth } from '@/context/AuthProvider';
@@ -70,7 +69,10 @@ export function UserAvatar() {
         size="2"
         radius="full"
         className={styles.userAvatar}
-        fallback={<PersonIcon width="16" height="16" />} // Radix UI PersonIcon as fallback
+        fallback={
+          'https://img.icons8.com/?size=100&id=Cssf43cjx2fu&format=png&color=000000'
+        } // Radix UI PersonIcon as fallback
+        data-cy="user-profile"
       />
     );
   }
@@ -80,9 +82,13 @@ export function UserAvatar() {
     <Avatar
       size="2"
       radius="full"
-      src={imageUrl || undefined}
+      src={
+        imageUrl ||
+        'https://img.icons8.com/?size=100&id=Cssf43cjx2fu&format=png&color=000000'
+      }
       fallback={initials}
       className={styles.userAvatar}
+      data-cy="user-profile"
     />
   );
 }

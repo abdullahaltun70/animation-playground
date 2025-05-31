@@ -43,3 +43,8 @@ next-env.d.ts
 # idea files (can opt-in for committing if needed)
 .idea
 .qodo
+
+// cypress videos, screenshots and downloads
+/cypress/videos
+/cypress/screenshots
+/cypress/downloads

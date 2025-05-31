@@ -57,7 +57,7 @@ export const ThemeToggle = () => {
   return (
     <DropdownMenu.Root>
       <Tooltip content={`Theme: ${getCurrentThemeName()}`}>
-        <DropdownMenu.Trigger>
+        <DropdownMenu.Trigger data-cy="theme-toggle">
           <IconButton variant="ghost" aria-label="Toggle theme">
             <ThemeIcon />
           </IconButton>
@@ -66,11 +66,11 @@ export const ThemeToggle = () => {
 
       <DropdownMenu.Content align="end">
         <DropdownMenu.RadioGroup value={theme} onValueChange={setTheme}>
-          <DropdownMenu.RadioItem value="light">
+          <DropdownMenu.RadioItem value="light" data-cy="theme-toggle-light">
             <SunIcon width="16" height="16" style={{ marginRight: '8px' }} />
             Light
           </DropdownMenu.RadioItem>
-          <DropdownMenu.RadioItem value="dark">
+          <DropdownMenu.RadioItem value="dark" data-cy="theme-toggle-dark">
             <MoonIcon width="16" height="16" style={{ marginRight: '8px' }} />
             Dark
           </DropdownMenu.RadioItem>

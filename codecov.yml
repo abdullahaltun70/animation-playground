@@ -1,0 +1,12 @@
+# sample regex patterns
+ignore:
+  - 'path/to/folder' # ignore folders and all its contents
+  - 'test_.*.rb' # regex accepted
+  - 'layout.*' # layout files
+  - ".*\\.html" # html files
+  - ".*\\.css" # css files
+  - ".*\\.scss" # scss files
+  - 'docs/.*' # ignore docs folder and all its contents
+  - 'public/.*' # ignore public folder and all its contents
+  - 'test-animations/.*' # ignore test-animations folder and all its contents
+  - 'terms/.*' # ignore terms folder and all its contents

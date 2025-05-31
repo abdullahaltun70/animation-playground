@@ -1,0 +1,67 @@
+{
+  "fadeAnimation": {
+    "type": "fade",
+    "duration": 500,
+    "delay": 0,
+    "easing": "ease-in-out",
+    "opacity": {
+      "from": 0,
+      "to": 1
+    }
+  },
+  "slideAnimation": {
+    "type": "slide",
+    "duration": 800,
+    "delay": 100,
+    "easing": "ease-out",
+    "transform": {
+      "from": "translateX(-100px)",
+      "to": "translateX(0)"
+    }
+  },
+  "scaleAnimation": {
+    "type": "scale",
+    "duration": 600,
+    "delay": 0,
+    "easing": "ease-in-out",
+    "transform": {
+      "from": "scale(0.5)",
+      "to": "scale(1)"
+    }
+  },
+  "rotateAnimation": {
+    "type": "rotate",
+    "duration": 1000,
+    "delay": 200,
+    "easing": "ease-in-out",
+    "transform": {
+      "from": "rotate(0deg)",
+      "to": "rotate(360deg)"
+    }
+  },
+  "bounceAnimation": {
+    "type": "bounce",
+    "duration": 1200,
+    "delay": 0,
+    "easing": "cubic-bezier(0.68, -0.55, 0.265, 1.55)",
+    "transform": {
+      "from": "translateY(-50px)",
+      "to": "translateY(0)"
+    }
+  },
+  "complexAnimation": {
+    "type": "complex",
+    "duration": 1500,
+    "delay": 300,
+    "easing": "ease-in-out",
+    "keyframes": [
+      { "offset": 0, "transform": "scale(1) rotate(0deg)", "opacity": 1 },
+      {
+        "offset": 0.5,
+        "transform": "scale(1.2) rotate(180deg)",
+        "opacity": 0.7
+      },
+      { "offset": 1, "transform": "scale(1) rotate(360deg)", "opacity": 1 }
+    ]
+  }
+}

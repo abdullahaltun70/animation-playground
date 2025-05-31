@@ -9,7 +9,7 @@ on:
     branches:
       - main
       - dev
-  workflow_dispatch: # Maakt handmatige triggering mogelijk
+  workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
   lint-typecheck-unit-tests:

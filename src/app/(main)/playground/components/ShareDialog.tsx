@@ -32,8 +32,8 @@ export function ShareDialog({
   copySuccess,
 }: ShareDialogProps) {
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content>
+    <Dialog.Root open={open} onOpenChange={onOpenChange} data-cy="share-dialog">
+      <Dialog.Content data-cy="share-dialog">
         <Dialog.Title>Share Animation Configuration</Dialog.Title>
         <Dialog.Description>
           Anyone with this link can view and edit this animation configuration.
@@ -45,8 +45,13 @@ export function ShareDialog({
             readOnly
             style={{ flexGrow: 1 }}
             aria-label="Share URL"
+            data-cy="share-url"
           />
-          <IconButton onClick={onCopyUrl} aria-label="Copy URL">
+          <IconButton
+            onClick={onCopyUrl}
+            aria-label="Copy URL"
+            data-cy="copy-url-btn"
+          >
             <CopyIcon />
           </IconButton>
         </Flex>
@@ -59,7 +64,9 @@ export function ShareDialog({
 
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
-            <Button variant="soft">Close</Button>
+            <Button variant="soft" data-cy="close-share-dialog">
+              Close
+            </Button>
           </Dialog.Close>
         </Flex>
       </Dialog.Content>

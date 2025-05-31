@@ -36,16 +36,16 @@ export function AnimationPreview({
   onExport,
 }: AnimationPreviewProps) {
   return (
-    <Box className={styles.animationArea}>
-      <AnimatedContainer config={config} />
+    <Box className={styles.animationArea} data-cy="animation-preview">
+      <AnimatedContainer config={config} data-cy="animation-preview-element" />
 
       <Flex className={styles.actionButtons} gap="2">
         {configId && ( // Share button is only rendered if there's a configId (i.e., config is saved)
-          <Button onClick={onShare}>
+          <Button onClick={onShare} data-cy="share-btn">
             <Share1Icon /> Share
           </Button>
         )}
-        <Button onClick={onExport}>
+        <Button onClick={onExport} data-cy="export-btn">
           <CodeIcon /> Export Code
         </Button>
       </Flex>
