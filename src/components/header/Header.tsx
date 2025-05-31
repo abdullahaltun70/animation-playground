@@ -32,10 +32,18 @@ export const Header = () => {
   const { user, isLoading: isLoadingAuth, isAuthenticated } = useAuth();
 
   return (
-    <header className={`${styles.header} fade-in`}>
+    <header
+      className={`${styles.header} fade-in`}
+      data-cy="main-nav"
+      role="banner"
+    >
       <div className={styles.headerContent}>
         <Flex gap="6" align="center" className={styles.leftSection}>
-          <RadixLink href="/" className={styles.logoContainer}>
+          <RadixLink
+            href="/"
+            className={styles.logoContainer}
+            data-cy="nav-home"
+          >
             <div className={styles.logo}>
               <Image
                 src="/logo.png"
@@ -51,6 +59,7 @@ export const Header = () => {
               href={'/'}
               className={pathname === '/' ? styles.active : ''}
               weight={pathname === '/' ? 'bold' : 'regular'}
+              data-cy="nav-playground"
             >
               Playground
             </RadixLink>
@@ -59,6 +68,7 @@ export const Header = () => {
               href={'/documentation'}
               className={pathname === '/documentation' ? styles.active : ''}
               weight={pathname === '/documentation' ? 'bold' : 'regular'}
+              data-cy="nav-documentation"
             >
               Documentation
             </RadixLink>
@@ -81,18 +91,19 @@ export const Header = () => {
                 {isAuthenticated ? (
                   <>
                     {user?.email && (
-                      <DropdownMenu.Label>
+                      <DropdownMenu.Label data-cy="user-email-label">
                         <Text size="2" color="gray">
                           {user.email}
                         </Text>
                       </DropdownMenu.Label>
                     )}
                     <DropdownMenu.Item asChild>
-                      <RadixLink href="/profile">
+                      <RadixLink href="/profile" data-cy="user-profile-link">
                         <PersonIcon
                           width="16"
                           height="16"
                           style={{ marginRight: '8px' }}
+                          data-cy="user-profile"
                         />
                         Profile
                       </RadixLink>
