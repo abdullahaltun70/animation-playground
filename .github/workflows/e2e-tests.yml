@@ -8,11 +8,9 @@ on:
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  # Install dependencies and build once for all test jobs
-  install:
+  # Cache Cypress binary for all jobs to share
+  cache-cypress:
     runs-on: ubuntu-latest
-    outputs:
-      cypress-cache-key: ${{ steps.cypress-cache.outputs.cache-hit }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -32,30 +30,13 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Install dependencies
-        uses: cypress-io/github-action@v6
-        with:
-          # Disable running of tests within install job
-          runTests: false
-          build: yarn build
-        env:
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL_FOR_CI }}
-          CI: true
-
-      - name: Save build folder
-        uses: actions/upload-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-          if-no-files-found: error
-          path: .next
-          retention-days: 1
+      - name: Install dependencies to populate cache
+        run: yarn install --frozen-lockfile
 
   # Parallel Chrome tests - 4 workers
   cypress-chrome:
     runs-on: ubuntu-latest
-    needs: install
+    needs: cache-cypress
     strategy:
       fail-fast: false
       matrix:
@@ -79,18 +60,10 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Download build folder
-        uses: actions/download-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Run Cypress tests in parallel
         uses: cypress-io/github-action@v6
         with:
-          install: false # Dependencies already installed
+          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
@@ -125,7 +98,7 @@ jobs:
   # Parallel Firefox tests - 2 workers
   cypress-firefox:
     runs-on: ubuntu-latest
-    needs: install
+    needs: cache-cypress
     strategy:
       fail-fast: false
       matrix:
@@ -148,18 +121,10 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Download build folder
-        uses: actions/download-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Run Cypress tests in parallel
         uses: cypress-io/github-action@v6
         with:
-          install: false
+          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
@@ -194,7 +159,7 @@ jobs:
   # Edge browser tests - single instance for compatibility checks
   cypress-edge:
     runs-on: ubuntu-latest
-    needs: install
+    needs: cache-cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -213,18 +178,10 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Download build folder
-        uses: actions/download-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
         with:
-          install: false
+          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
@@ -257,7 +214,7 @@ jobs:
   # Accessibility testing
   cypress-accessibility:
     runs-on: ubuntu-latest
-    needs: install
+    needs: cache-cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -276,11 +233,6 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Download build folder
-        uses: actions/download-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-
       - name: Install dependencies
         run: |
           yarn install --frozen-lockfile
@@ -290,6 +242,7 @@ jobs:
         uses: cypress-io/github-action@v6
         with:
           install: false
+          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
@@ -315,7 +268,7 @@ jobs:
   # Mobile viewport testing
   cypress-mobile:
     runs-on: ubuntu-latest
-    needs: install
+    needs: cache-cypress
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -334,18 +287,10 @@ jobs:
           restore-keys: |
             cypress-${{ runner.os }}-
 
-      - name: Download build folder
-        uses: actions/download-artifact@v4
-        with:
-          name: build-${{ github.sha }}
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
       - name: Run mobile viewport tests
         uses: cypress-io/github-action@v6
         with:
-          install: false
+          build: yarn build
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
