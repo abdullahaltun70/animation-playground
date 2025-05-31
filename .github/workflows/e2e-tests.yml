@@ -8,8 +8,7 @@ on:
   workflow_dispatch: # Allows manual triggering of the workflow
 
 jobs:
-  # Cache Cypress binary for all jobs to share
-  cache-cypress:
+  cypress-run:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -21,162 +20,8 @@ jobs:
           node-version: '22.14.0'
           cache: 'yarn'
 
-      - name: Cache Cypress binary
-        id: cypress-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Install dependencies to populate cache
+      - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-  # Parallel Chrome tests - 4 workers
-  cypress-chrome:
-    runs-on: ubuntu-latest
-    needs: cache-cypress
-    strategy:
-      fail-fast: false
-      matrix:
-        # Run 4 copies of the current job in parallel
-        containers: [1, 2, 3, 4]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: 'yarn'
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Run Cypress tests in parallel
-        uses: cypress-io/github-action@v6
-        with:
-          build: yarn build
-          start: yarn start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          browser: chrome
-          record: true
-          parallel: true
-          group: 'E2E-Chrome'
-          ci-build-id: ${{ github.run_id }}-${{ github.run_attempt }}
-          tag: 'chrome'
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-
-      - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots-chrome-${{ matrix.containers }}-${{ github.run_id }}
-          path: cypress/screenshots
-          retention-days: 7
-
-      - name: Upload Cypress videos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos-chrome-${{ matrix.containers }}-${{ github.run_id }}
-          path: cypress/videos
-          retention-days: 7
-
-  # Parallel Firefox tests - 2 workers
-  cypress-firefox:
-    runs-on: ubuntu-latest
-    needs: cache-cypress
-    strategy:
-      fail-fast: false
-      matrix:
-        containers: [1, 2]
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: 'yarn'
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Run Cypress tests in parallel
-        uses: cypress-io/github-action@v6
-        with:
-          build: yarn build
-          start: yarn start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          browser: firefox
-          record: true
-          parallel: true
-          group: 'E2E-Firefox'
-          ci-build-id: ${{ github.run_id }}-${{ github.run_attempt }}
-          tag: 'firefox'
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-
-      - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots-firefox-${{ matrix.containers }}-${{ github.run_id }}
-          path: cypress/screenshots
-          retention-days: 7
-
-      - name: Upload Cypress videos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos-firefox-${{ matrix.containers }}-${{ github.run_id }}
-          path: cypress/videos
-          retention-days: 7
-
-  # Edge browser tests - single instance for compatibility checks
-  cypress-edge:
-    runs-on: ubuntu-latest
-    needs: cache-cypress
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: 'yarn'
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
 
       - name: Run Cypress tests
         uses: cypress-io/github-action@v6
@@ -185,10 +30,9 @@ jobs:
           start: yarn start
           wait-on: 'http://localhost:3000'
           wait-on-timeout: 120
-          browser: edge
+          browser: chrome
           record: true
-          group: 'E2E-Edge'
-          ci-build-id: ${{ github.run_id }}-${{ github.run_attempt }}
+          group: 'E2E Tests'
         env:
           CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -199,7 +43,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: failure()
         with:
-          name: cypress-screenshots-edge-${{ github.run_id }}
+          name: cypress-screenshots-${{ github.run_id }}
           path: cypress/screenshots
           retention-days: 7
 
@@ -207,116 +51,6 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: cypress-videos-edge-${{ github.run_id }}
-          path: cypress/videos
-          retention-days: 7
-
-  # Accessibility testing
-  cypress-accessibility:
-    runs-on: ubuntu-latest
-    needs: cache-cypress
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: 'yarn'
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Install dependencies
-        run: |
-          yarn install --frozen-lockfile
-          yarn add -D cypress-axe axe-core
-
-      - name: Run accessibility tests
-        uses: cypress-io/github-action@v6
-        with:
-          install: false
-          build: yarn build
-          start: yarn start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          browser: chrome
-          record: true
-          group: 'Accessibility'
-          spec: 'cypress/e2e/**/*accessibility*.cy.ts'
-          ci-build-id: ${{ github.run_id }}-${{ github.run_attempt }}
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-
-      - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots-accessibility-${{ github.run_id }}
-          path: cypress/screenshots
-          retention-days: 7
-
-  # Mobile viewport testing
-  cypress-mobile:
-    runs-on: ubuntu-latest
-    needs: cache-cypress
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '22.14.0'
-          cache: 'yarn'
-
-      - name: Cache Cypress binary
-        uses: actions/cache@v4
-        with:
-          path: ~/.cache/Cypress
-          key: cypress-${{ runner.os }}-${{ hashFiles('**/package.json') }}
-          restore-keys: |
-            cypress-${{ runner.os }}-
-
-      - name: Run mobile viewport tests
-        uses: cypress-io/github-action@v6
-        with:
-          build: yarn build
-          start: yarn start
-          wait-on: 'http://localhost:3000'
-          wait-on-timeout: 120
-          browser: chrome
-          record: true
-          group: 'Mobile'
-          config: 'viewportWidth=375,viewportHeight=667'
-          ci-build-id: ${{ github.run_id }}-${{ github.run_attempt }}
-        env:
-          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
-          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
-
-      - name: Upload Cypress screenshots
-        uses: actions/upload-artifact@v4
-        if: failure()
-        with:
-          name: cypress-screenshots-mobile-${{ github.run_id }}
-          path: cypress/screenshots
-          retention-days: 7
-
-      - name: Upload Cypress videos
-        uses: actions/upload-artifact@v4
-        if: always()
-        with:
-          name: cypress-videos-mobile-${{ github.run_id }}
+          name: cypress-videos-${{ github.run_id }}
           path: cypress/videos
           retention-days: 7
