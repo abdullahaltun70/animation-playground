@@ -20,7 +20,7 @@ describe('Authentication Flow', () => {
       cy.contains('Sign in').should('be.visible');
     });
 
-    it('should successfully log in with valid credentials', () => {
+    it('should successfully login with valid credentials', () => {
       cy.visit('/login');
       cy.waitForPageLoad();
 

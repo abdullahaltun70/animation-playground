@@ -10,7 +10,7 @@ describe('CI Environment Validation', () => {
 
   it('should load the homepage (allowing redirects)', () => {
     cy.visit('/', { timeout: 30000 });
-    
+
     // Allow either home page or redirect to login
     cy.url().then((url) => {
       if (url.includes('/login')) {
@@ -26,8 +26,7 @@ describe('CI Environment Validation', () => {
 
   it('should access login page directly', () => {
     cy.visit('/login', { timeout: 30000 });
-    cy.waitForPageLoad();
-    
+
     cy.url().should('include', '/login');
     cy.get('input[type="email"]').should('be.visible');
     cy.get('input[type="password"]').should('be.visible');

@@ -12,11 +12,11 @@ export default defineConfig({
     requestTimeout: 15000,
     responseTimeout: 15000,
     pageLoadTimeout: 60000,
-    
+
     // More lenient for CI environments
     experimentalRunAllSpecs: false,
     experimentalInteractiveRunEvents: true,
-    
+
     // Disable file watching to prevent automatic re-runs
     watchForFileChanges: false,
 

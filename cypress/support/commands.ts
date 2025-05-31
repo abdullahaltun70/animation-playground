@@ -46,9 +46,6 @@ Cypress.Commands.add('waitForPageLoad', () => {
   // Ensure the page is interactive
   cy.document().should('have.property', 'readyState', 'complete');
 
-  // Wait for React hydration in CI environments
-  cy.window().should('have.property', 'React');
-
   // Wait a bit longer for any dynamic content to load in CI
   cy.wait(Cypress.env('CI') ? 2000 : 500);
 

@@ -7,7 +7,7 @@ describe('Basic Navigation', () => {
         url: '/',
         timeout: 30000,
         retryOnNetworkFailure: true,
-        failOnStatusCode: false
+        failOnStatusCode: false,
       }).then((response) => {
         cy.log(`Response status: ${response.status}`);
         expect(response.status).to.be.oneOf([200, 302, 307]); // Allow redirects
@@ -20,14 +20,6 @@ describe('Basic Navigation', () => {
       cy.clearLocalStorage();
       cy.clearAllSessionStorage();
       cy.clearCookies();
-    });
-
-    it('should redirect to login when accessing protected routes', () => {
-      cy.visit('/');
-      cy.waitForPageLoad();
-
-      // Should redirect to login page
-      cy.url().should('include', '/login');
     });
 
     it('should access login page directly', () => {

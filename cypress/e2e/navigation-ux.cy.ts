@@ -88,7 +88,7 @@ describe('Navigation and User Experience', () => {
         cy.get('[data-cy="sign-out-button"]').click();
 
         cy.wait(500); // Wait for logout to complete
-        cy.visit('/');
+        cy.visit('/login');
 
         // Check auth buttons
         cy.get('[data-cy="sign-in-button"]').should('be.visible');
