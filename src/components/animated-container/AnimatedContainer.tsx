@@ -16,10 +16,12 @@ import styles from './AnimatedContainer.module.scss';
  * @description Defines the props for the AnimatedContainer component.
  * @property {React.ReactNode} [children] - Optional children to render inside the animated area. If not provided, a default "Animate Me!" text is shown.
  * @property {AnimationConfig} config - The animation configuration object from `animation-library-test-abdullah-altun`.
+ * @property {string} [data-cy] - Optional Cypress test selector attribute.
  */
 interface AnimatedContainerProps {
   children?: React.ReactNode;
   config: AnimationConfig;
+  'data-cy'?: string;
 }
 
 /**
@@ -33,6 +35,7 @@ interface AnimatedContainerProps {
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
   config,
+  'data-cy': dataCy,
 }) => {
   const { ref, key, replay } = useAnimation<HTMLDivElement>(config);
 
@@ -50,12 +53,17 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
               key={key} // Ensures animation replays
               ref={ref} // Attaches animation controls to this element
               className={styles.animatableElement}
+              data-cy={dataCy}
             >
               <Text>Animate Me!</Text>
             </div>
           )}
         </div>
-        <Button className={styles.replayButton} onClick={replay}>
+        <Button
+          className={styles.replayButton}
+          onClick={replay}
+          data-cy="play-animation-btn"
+        >
           <ResetIcon /> Replay Animation
         </Button>
       </div>

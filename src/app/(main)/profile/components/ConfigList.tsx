@@ -102,6 +102,7 @@ export const ConfigList: React.FC<ConfigListProps> = ({
     <Flex direction="column" gap="3">
       {configs.map((cfg) => (
         <ConfigCard
+          data-cy="config-card"
           key={cfg.id}
           config={cfg}
           onDeleteAction={onDeleteAction} // Pass down the delete handler

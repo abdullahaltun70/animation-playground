@@ -135,6 +135,7 @@ export function ConfigCard({
               color="red"
               onClick={() => onDeleteAction(config.id)}
               size="1"
+              data-cy="delete-config-button"
             >
               <TrashIcon /> Delete
             </Button>

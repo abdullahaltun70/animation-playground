@@ -70,7 +70,14 @@ export function UserAvatar() {
         size="2"
         radius="full"
         className={styles.userAvatar}
-        fallback={<PersonIcon width="16" height="16" />} // Radix UI PersonIcon as fallback
+        fallback={
+          // make this url the fallback for the avatar
+          <PersonIcon
+            style={{ width: '100%', height: '100%' }}
+            className={styles.personIcon}
+          />
+        } // Radix UI PersonIcon as fallback
+        data-cy="user-profile"
       />
     );
   }
@@ -80,9 +87,13 @@ export function UserAvatar() {
     <Avatar
       size="2"
       radius="full"
-      src={imageUrl || undefined}
+      src={
+        imageUrl ||
+        'https://img.icons8.com/?size=100&id=Cssf43cjx2fu&format=png&color=000000'
+      }
       fallback={initials}
       className={styles.userAvatar}
+      data-cy="user-profile"
     />
   );
 }

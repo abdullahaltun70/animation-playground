@@ -70,7 +70,7 @@ export function ExportDialog({
 
   return (
     <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content>
+      <Dialog.Content data-cy="export-dialog">
         <Dialog.Title>Export Animation Code</Dialog.Title>
         <Dialog.Description>
           Copy the generated code to use this animation in your project.
@@ -80,19 +80,24 @@ export function ExportDialog({
           defaultValue="react"
           value={exportTab}
           onValueChange={onExportTabChange}
+          data-cy="export-tabs"
         >
           <Tabs.List>
-            <Tabs.Trigger value="react">React Component</Tabs.Trigger>
-            <Tabs.Trigger value="css">CSS</Tabs.Trigger>
+            <Tabs.Trigger value="react" data-cy="export-tab-react">
+              React Component
+            </Tabs.Trigger>
+            <Tabs.Trigger value="css" data-cy="export-tab-css">
+              CSS
+            </Tabs.Trigger>
           </Tabs.List>
           <Box pt="3">
             <Tabs.Content value="react">
-              <pre className={styles.codeBlock}>
+              <pre className={styles.codeBlock} data-cy="export-code-react">
                 {exportTab === 'react' ? currentCode : ''}
               </pre>
             </Tabs.Content>
             <Tabs.Content value="css">
-              <pre className={styles.codeBlock}>
+              <pre className={styles.codeBlock} data-cy="export-code-css">
                 {exportTab === 'css' ? currentCode : ''}
               </pre>
             </Tabs.Content>
@@ -100,16 +105,22 @@ export function ExportDialog({
         </Tabs.Root>
 
         <Flex gap="3" mt="4" justify="end">
-          <Button onClick={handleCopyCode}>
+          <Button onClick={handleCopyCode} data-cy="copy-code-btn">
             <CopyIcon /> Copy Code
           </Button>
           <Dialog.Close>
-            <Button variant="soft">Close</Button>
+            <Button variant="soft" data-cy="close-export-dialog">
+              Close
+            </Button>
           </Dialog.Close>
         </Flex>
 
         {copySuccess && (
-          <Text mt="2" className="text-green-600">
+          <Text
+            mt="2"
+            className="text-green-600"
+            data-cy="copy-success-message"
+          >
             Code copied to clipboard!
           </Text>
         )}
