@@ -32,35 +32,6 @@ import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
  *     responses:
  *       200:
  *         description: Successfully retrieved the configuration.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 id:
- *                   type: string
- *                 userId:
- *                   type: string
- *                 title:
- *                   type: string
- *                 description:
- *                   type: string
- *                   nullable: true
- *                 configData:
- *                   type: object // Assuming configData is a JSON object
- *                 isPublic:
- *                   type: boolean
- *                 isReadOnly:
- *                   type: boolean
- *                 createdAt:
- *                   type: string
- *                   format: date-time
- *                 updatedAt:
- *                   type: string
- *                   format: date-time
- *                 authorName:
- *                   type: string
- *                   nullable: true
  *       400:
  *         description: Invalid configuration ID provided.
  *       403:
@@ -75,9 +46,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ): Promise<NextResponse> {
   try {
-    // User might be authenticated or not, we fetch the config, then check ownership/access
     const authResult = await authenticateUser(request);
-    const configId = (await params).id;
+    const configId = params.id; // params is already an object
 
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
@@ -86,7 +56,6 @@ export async function GET(
       );
     }
 
-    // Fetch config regardless of authentication, visibility is checked afterwards
     const result = await getConfigByIdAction(configId);
 
     if (!result.success || !result.data) {
@@ -97,20 +66,17 @@ export async function GET(
     }
 
     const config = result.data;
+    let isReadOnly = true;
 
-    let isReadOnly = true; // Default to read-only
     if (authResult.user) {
-      // If user is logged in, check if their ID matches the config's userId
       isReadOnly = config.userId !== authResult.user.id;
     } else if (!config.isPublic) {
-      // If user is not logged in AND config is not public, deny access
       return NextResponse.json(
         { error: 'Forbidden - Configuration is private.' },
         { status: 403 }
       );
     }
-    // If user is not owner AND config is not public, deny access
-    // This condition is an additional safeguard, typically covered by the above logic.
+
     if (isReadOnly && !config.isPublic) {
       return NextResponse.json(
         {
@@ -165,26 +131,9 @@ export async function GET(
  *         application/json:
  *           schema:
  *             type: object
- *             properties:
- *               title:
- *                 type: string
- *               description:
- *                 type: string
- *                 nullable: true
- *               configData:
- *                 type: object // Assuming configData is a JSON object
- *               isPublic:
- *                 type: boolean
- *             required:
- *               - title
- *               - configData
  *     responses:
  *       200:
  *         description: Successfully updated the configuration.
- *         content:
- *           application/json:
- *             schema:
- *               $ref: '#/components/schemas/AnimationConfig' // Assuming you have a schema defined
  *       400:
  *         description: Invalid input, object invalid, or configuration ID missing.
  *       401:
@@ -202,11 +151,23 @@ export async function PUT(
 ): Promise<NextResponse> {
   try {
     const authResult = await authenticateUser(request);
-    if (authResult.error) {
-      return authResult.error; // Returns 401 Unauthorized
+    if (authResult.error || !authResult.user) {
+      return (
+        authResult.error ||
+        NextResponse.json(
+          { error: 'User authentication failed.' },
+          { status: 401 }
+        )
+      );
     }
 
-    const configId = (await params).id;
+    const authenticatedUserId = authResult.user.id;
+    const authenticatedAuthorName =
+      authResult.user.user_metadata?.full_name ||
+      authResult.user.email ||
+      'Anonymous';
+
+    const configId = params.id;
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
         { error: 'Invalid configuration ID provided for update' },
@@ -214,9 +175,10 @@ export async function PUT(
       );
     }
 
-    // Verify the user owns the config before attempting an update.
-    // updateConfigAction also performs this check, but this provides an earlier exit.
-    const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
+    const ownershipCheck = await getConfigByUserIdAndConfigIdAction(
+      configId,
+      authenticatedUserId
+    );
     if (!ownershipCheck.success) {
       return NextResponse.json(
         {
@@ -224,15 +186,11 @@ export async function PUT(
             ownershipCheck.message ||
             'Configuration not found or not owned by user',
         },
-        // Use 403 if the config exists but isn't owned, 404 if it doesn't exist.
-        // The action message might not distinguish, so 404 is a safe default.
         { status: ownershipCheck.message?.includes('not owned') ? 403 : 404 }
       );
     }
 
     const body = await request.json();
-
-    // Basic validation for request body
     if (!body.title || !body.configData) {
       return NextResponse.json(
         { error: 'Title and configuration data are required' },
@@ -243,34 +201,34 @@ export async function PUT(
     const updateData: Partial<{
       title: string;
       description: string | null;
-      configData: string | null; // Assuming configData is stringified JSON
+      configData: string | null;
       isPublic?: boolean;
     }> = {};
-
     updateData.title = body.title;
     if (body.description !== undefined) {
       updateData.description = body.description;
     }
-    updateData.configData = body.configData;
+    updateData.configData = body.configData; // Assuming it's a stringified JSON
     if (typeof body.isPublic === 'boolean') {
       updateData.isPublic = body.isPublic;
     }
 
-    const updateResult = await updateConfigAction(configId, updateData);
+    const updateResult = await updateConfigAction(
+      configId,
+      updateData,
+      authenticatedUserId,
+      authenticatedAuthorName
+    );
 
     if (!updateResult.success || !updateResult.data) {
       let status = 500;
-      if (updateResult.message?.includes('not found')) {
-        status = 404;
-      } else if (updateResult.message?.includes('cannot exceed')) {
-        status = 400;
-      }
+      if (updateResult.message?.includes('not found')) status = 404;
+      else if (updateResult.message?.includes('cannot exceed')) status = 400;
       return NextResponse.json(
         { error: updateResult.message || 'Failed to update configuration' },
         { status }
       );
     }
-
     return NextResponse.json(updateResult.data, { status: 200 });
   } catch (error) {
     console.error(`[API PUT /api/configs/${params.id}] Error:`, error);
@@ -278,6 +236,12 @@ export async function PUT(
       error instanceof Error
         ? error.message
         : 'An unknown server error occurred.';
+    if (error instanceof SyntaxError) {
+      return NextResponse.json(
+        { error: 'Invalid JSON payload' },
+        { status: 400 }
+      );
+    }
     return NextResponse.json(
       { error: `Failed to update configuration: ${message}` },
       { status: 500 }
@@ -305,14 +269,6 @@ export async function PUT(
  *     responses:
  *       200:
  *         description: Successfully deleted the configuration.
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Configuration deleted successfully.
  *       400:
  *         description: Invalid configuration ID provided.
  *       401:
@@ -330,11 +286,18 @@ export async function DELETE(
 ): Promise<NextResponse> {
   try {
     const authResult = await authenticateUser(request);
-    if (authResult.error) {
-      return authResult.error; // Returns 401 Unauthorized
+    if (authResult.error || !authResult.user) {
+      return (
+        authResult.error ||
+        NextResponse.json(
+          { error: 'User authentication failed.' },
+          { status: 401 }
+        )
+      );
     }
+    const authenticatedUserId = authResult.user.id;
 
-    const configId = (await params).id;
+    const configId = params.id;
     if (!configId || configId === 'undefined') {
       return NextResponse.json(
         { error: 'Invalid configuration ID provided for deletion' },
@@ -342,9 +305,10 @@ export async function DELETE(
       );
     }
 
-    // Verify the user owns the config before attempting deletion.
-    // removeConfigAction also performs this check.
-    const ownershipCheck = await getConfigByUserIdAndConfigIdAction(configId);
+    const ownershipCheck = await getConfigByUserIdAndConfigIdAction(
+      configId,
+      authenticatedUserId
+    );
     if (!ownershipCheck.success) {
       return NextResponse.json(
         {
@@ -356,19 +320,19 @@ export async function DELETE(
       );
     }
 
-    const deleteResult = await removeConfigAction(configId);
+    const deleteResult = await removeConfigAction(
+      configId,
+      authenticatedUserId
+    );
 
     if (!deleteResult.success) {
       let status = 500;
-      if (deleteResult.message?.includes('not found')) {
-        status = 404;
-      }
+      if (deleteResult.message?.includes('not found')) status = 404;
       return NextResponse.json(
         { error: deleteResult.message || 'Failed to delete configuration' },
         { status }
       );
     }
-
     return NextResponse.json(
       { message: 'Configuration deleted successfully' },
       { status: 200 }

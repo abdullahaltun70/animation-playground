@@ -9,16 +9,31 @@ import { authenticateUser } from '@/app/utils/supabase/authenticateUser';
 /**
  * GET /api/configs
  * Retrieves all public configurations.
+ * If the user is authenticated, their own configurations are excluded.
  * @returns NextResponse with all configurations or an error message.
  */
-export async function GET() {
+export async function GET(request: NextRequest) {
+  // Added request parameter
   try {
-    const allConfigs = (await getAllConfigsAction()).data;
+    const authResult = await authenticateUser(request); // Attempt to authenticate
+    const authenticatedUserId = authResult.user?.id; // Get user ID if authenticated
 
-    return NextResponse.json(allConfigs);
+    const result = await getAllConfigsAction(authenticatedUserId); // Pass user ID to action
+
+    if (result.success) {
+      return NextResponse.json(result.data || []);
+    } else {
+      return NextResponse.json(
+        { error: result.message || 'Failed to fetch configurations' },
+        { status: 500 }
+      );
+    }
   } catch (error) {
+    console.error('[API GET /api/configs] Error:', error);
     return NextResponse.json(
-      { error: `Failed to fetch configurations: ${error}` },
+      {
+        error: `Failed to fetch configurations: ${error instanceof Error ? error.message : 'Unknown error'}`,
+      },
       { status: 500 }
     );
   }
@@ -32,73 +47,76 @@ export async function GET() {
  */
 export async function POST(request: NextRequest) {
   try {
-    // Authenticate the user
     const authResult = await authenticateUser(request);
 
-    // If authentication failed, return the error response
-    if (authResult.error) {
-      return authResult.error;
+    if (authResult.error || !authResult.user) {
+      console.error(
+        'Authentication failed in POST /api/configs route:',
+        authResult.error
+      );
+      return (
+        authResult.error ||
+        NextResponse.json(
+          { error: 'User authentication failed.' },
+          { status: 401 }
+        )
+      );
     }
 
     const userId = authResult.user.id;
+    const authorName =
+      authResult.user.user_metadata?.full_name ||
+      authResult.user.email ||
+      'Anonymous';
+
     const body = await request.json();
 
-    // Validate title and configData before inserting
     if (!body.title || !body.configData) {
       return NextResponse.json(
         { error: 'Title and configuration data are required' },
         { status: 400 }
       );
     }
-
     const isPublic = typeof body.isPublic === 'boolean' ? body.isPublic : false;
 
-    // Call the server action to save the configuration
     const result = await saveConfigAction(
       body.title,
       body.description || null,
       body.configData,
       isPublic,
-      userId
+      userId,
+      authorName
     );
 
-    // Handle the server action's response
     if (result.success && result.data && result.data.length > 0) {
-      // Return the first created config from the data array (server action might return an array)
       return NextResponse.json(result.data[0], { status: 201 });
     } else {
-      // Determine status code based on error message content
-      const status =
-        result.message?.includes('cannot exceed') ||
-        result.message?.includes('enter a config title')
-          ? 400
-          : 500;
       return NextResponse.json(
+        { error: result.message || `Failed to save configuration.` },
         {
-          error:
-            result.message || `Failed to save configuration ${result.message}`,
-        },
-        { status }
+          status:
+            result.message?.includes('cannot exceed') ||
+            result.message?.includes('enter a config title')
+              ? 400
+              : 500,
+        }
       );
     }
-  } catch (error) {
-    console.error('Error creating configuration:', error);
-
-    // Handle JSON parsing errors or other unexpected errors
-    const message =
-      error instanceof Error
-        ? error.message
-        : 'An internal server error occurred';
-
+  } catch (error: unknown) {
+    console.error(
+      'Error creating configuration in POST /api/configs route:',
+      error
+    );
     if (error instanceof SyntaxError) {
       return NextResponse.json(
         { error: 'Invalid JSON payload' },
         { status: 400 }
       );
     }
-
     return NextResponse.json(
-      { error: `Failed to create configuration: ${message}` },
+      {
+        error: `Failed to create configuration: ${error instanceof Error ? error.message : 'An internal server error occurred'}`,
+      },
       { status: 500 }
     );
   }

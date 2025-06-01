@@ -41,8 +41,6 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
 
     // Ensure user object is available after successful authentication
     if (!authResult.user) {
-      // This case should ideally be handled by authenticateUser returning an error,
-      // but as a safeguard:
       return NextResponse.json(
         { error: 'Authentication successful but user data missing' },
         { status: 500 }
@@ -55,15 +53,12 @@ export async function GET(request: NextRequest): Promise<NextResponse> {
     const result = await getConfigsByUserIdAction(userId);
 
     if (!result.success) {
-      // If the action failed (e.g., database error)
       return NextResponse.json(
         { error: result.message || 'Failed to retrieve configurations' },
-        { status: 500 } // Or a more specific error code if available
+        { status: 500 }
       );
     }
-
-    // Return the configurations (data will be an array, or empty array if none found)
-    return NextResponse.json(result.data || [], { status: 200 }); // Ensure data is not undefined
+    return NextResponse.json(result.data || [], { status: 200 });
   } catch (error) {
     console.error('[API GET /api/configs/my-configs] Error:', error);
     const message =
