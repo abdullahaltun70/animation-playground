@@ -3,7 +3,7 @@
 
 import { revalidatePath } from 'next/cache';
 
-import { createClient } from '@/app/utils/supabase/server';
+import { createClient } from '@/app/utils/supabase/server'; // Keep for DB operations if needed by DB functions
 import { createConfig } from '@/db/queries/create';
 import { deleteConfig } from '@/db/queries/delete';
 import {
@@ -16,26 +16,23 @@ import { Config } from '@/db/schema';
 
 /**
  * **Server action that fetches all public configurations from the database.**
- * This action does not require authentication.
+ * Optionally excludes configurations belonging to the authenticated user if their ID is provided.
  *
+ * @param authenticatedUserId - Optional ID of the authenticated user to exclude their configs.
  * @returns Promise<{
  *   success: boolean;
  *   message: string;
  *   data?: Config[]; // Array of configuration objects
  * }>
  */
-// This action fetches all public configurations, excluding the user's own configurations.
-// It uses Supabase to query the database and returns the results (respecting RLS).
-export async function getAllConfigsAction(): Promise<{
+export async function getAllConfigsAction(
+  authenticatedUserId?: string
+): Promise<{
   success: boolean;
   message: string;
   data?: Config[];
 }> {
-  const supabase = createClient();
-
-  const {
-    data: { user },
-  } = await (await supabase).auth.getUser();
+  const supabase = createClient(); // For DB query construction
 
   try {
     let query = (await supabase)
@@ -46,11 +43,11 @@ export async function getAllConfigsAction(): Promise<{
         isPublic: is_public
       `
       )
-      .eq('is_public', true); // Start by selecting only public configs
+      .eq('is_public', true);
 
-    // If a user is logged in, add a condition to exclude their own configs
-    if (user) {
-      query = query.neq('user_id', user.id);
+    // If an authenticated user ID is provided, add a condition to exclude their own configs
+    if (authenticatedUserId) {
+      query = query.neq('user_id', authenticatedUserId);
     }
 
     const { data: configsData, error } = await query.order('updated_at', {
@@ -64,7 +61,7 @@ export async function getAllConfigsAction(): Promise<{
 
     return {
       success: true,
-      message: 'All Public Configurations (excluding own) fetched successfully',
+      message: 'Public Configurations fetched successfully',
       data: (configsData as Config[]) || [],
     };
   } catch (error) {
@@ -103,12 +100,8 @@ export async function getConfigByIdAction(configId: string): Promise<{
       data: null,
     };
   }
-
   try {
-    // Note: No auth check here, as public configs should be fetchable.
-    // The API route or component calling this should handle authorization.
-    const config = await getConfigById(configId); // Returns array or empty array
-
+    const config = await getConfigById(configId);
     if (!config || config.length === 0) {
       return {
         success: false,
@@ -116,11 +109,10 @@ export async function getConfigByIdAction(configId: string): Promise<{
         data: null,
       };
     }
-
     return {
       success: true,
       message: 'Configuration fetched successfully.',
-      data: config[0], // Return the single config object
+      data: config[0],
     };
   } catch (error) {
     console.error(
@@ -138,43 +130,6 @@ export async function getConfigByIdAction(configId: string): Promise<{
 }
 
 /**
- * **Server action that fetches all configurations from the database.**
- * This action does not require authentication.
- *
- * @returns Promise<{
- *   success: boolean;
- *   message: string;
- *   data?: Config[]; // Array of configuration objects
- * }>
- */
-
-// Uses Drizzle to fetch all configs, but does not respect RLS
-// export async function getAllConfigsAction(): Promise<{
-//   success: boolean;
-//   message: string;
-//   data?: Config[];
-// }> {
-//   try {
-//     const configs = await getAllConfigs();
-
-//     return {
-//       success: true,
-//       message: 'All Configurations fetched successfully',
-//       data: configs,
-//     };
-//   } catch (error) {
-//     console.error('[Server Action] Error fetching configs:', error);
-//     return {
-//       success: false,
-//       message:
-//         error instanceof Error
-//           ? error.message
-//           : 'Failed to fetch configurations',
-//     };
-//   }
-// }
-
-/**
  * Server action to fetch configurations associated with a specific user ID.
  * Wraps the `getConfigsByUserId` database query with error handling.
  *
@@ -186,7 +141,6 @@ export async function getConfigsByUserIdAction(
 ): Promise<{ success: boolean; message: string; data?: Config[] }> {
   try {
     const configs = await getConfigsByUserId(userId);
-
     return {
       success: true,
       message: 'User-specific configurations fetched successfully',
@@ -205,9 +159,10 @@ export async function getConfigsByUserIdAction(
 }
 
 /**
- * **Server action that fetches a specific configuration only if it belongs to the currently authenticated user.**
+ * **Server action that fetches a specific configuration only if it belongs to the provided user ID.**
  *
  * @param configId - The ID of the configuration to fetch.
+ * @param authenticatedUserId - The ID of the authenticated user.
  * @returns Promise<{
  *   success: boolean;
  *   message: string;
@@ -215,30 +170,22 @@ export async function getConfigsByUserIdAction(
  * }>
  */
 export async function getConfigByUserIdAndConfigIdAction(
-  configId: string
+  configId: string,
+  authenticatedUserId: string
 ): Promise<{
   success: boolean;
   message: string;
   data?: Config | null;
 }> {
-  const supabase = await createClient();
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    console.error(
-      '[Server Action] Get specific config: Auth error:',
-      authError
-    );
+  if (!authenticatedUserId) {
+    // This check is crucial if this action could be called without a pre-verified user.
+    // However, the API route should always provide a valid authenticatedUserId.
     return {
       success: false,
-      message: 'Authentication required to fetch user-specific configuration.',
+      message: 'Authenticated user ID is required.',
       data: null,
     };
   }
-
   if (!configId) {
     return {
       success: false,
@@ -246,11 +193,11 @@ export async function getConfigByUserIdAndConfigIdAction(
       data: null,
     };
   }
-
   try {
-    // Use the authenticated user's ID for the query
-    const config = await getConfigsByUserIdAndConfigId(user.id, configId); // Returns object or undefined
-
+    const config = await getConfigsByUserIdAndConfigId(
+      authenticatedUserId,
+      configId
+    );
     if (!config) {
       return {
         success: false,
@@ -258,15 +205,14 @@ export async function getConfigByUserIdAndConfigIdAction(
         data: null,
       };
     }
-
     return {
       success: true,
       message: 'User-specific configuration fetched successfully.',
-      data: config, // Return the config object
+      data: config,
     };
   } catch (error) {
     console.error(
-      `[Server Action] Error fetching config by UserID ${user.id} and ConfigID ${configId}:`,
+      `[Server Action] Error fetching config by UserID ${authenticatedUserId} and ConfigID ${configId}:`,
       error
     );
     const errorMessage =
@@ -280,69 +226,39 @@ export async function getConfigByUserIdAndConfigIdAction(
 }
 
 /**
- * **Server action that saves a new configuration to the database.**
- * Fetches author name from user session.
+ * **Server action that saves a new configuration to the database for a given user.**
  *
  * @param title - Configuration title (required, max 50 chars)
  * @param description - Optional configuration description (max 255 chars)
  * @param configData - Optional JSON configuration data (max 10000 chars)
  * @param isPublic - Whether the configuration is public
- * @param userId - The ID of the user saving the config
+ * @param userId - The ID of the user saving the config.
+ * @param authorName - The name of the author saving the config.
  *
  * @returns Promise<{
  *   success: boolean - Indicates if operation was successful
  *   message: string - Status or error message
  *   data?: Config[] - Array of created config(s) if successful
  * }>
- *
- * @throws Will redirect to /login if no valid session exists
- *
- * @example
- * const result = await saveConfig(
- *   title: "My Config",
- *   description: "Config description",
- *   configData: JSON.stringify({ key: "value" }),
- *   isPublic: false,
- *   userId: "user-id"
- * );
  */
 export async function saveConfigAction(
   title: string,
   description: string | null,
   configData: string | null,
   isPublic: boolean,
-  userId: string
+  userId: string,
+  authorName: string
 ): Promise<{ success: boolean; message: string; data?: Config[] }> {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-    error,
-  } = await supabase.auth.getUser();
-
-  if (error || !user) {
-    console.error('[Server Action] Authentication error:', error);
-    return {
-      success: false,
-      message: 'Authentication required or session invalid.',
-    };
-  }
-
-  // Fetch author name from user metadata
-  const authorName = user.user_metadata?.full_name || user.email || 'Anonymous';
-
   try {
     if (!title?.trim()) {
       return { success: false, message: 'Please enter a config title.' };
     }
-
     if (title.length > 50) {
       return {
         success: false,
         message: 'Title cannot exceed 50 characters.',
       };
     }
-
     if (description && description.length > 255) {
       return {
         success: false,
@@ -360,7 +276,7 @@ export async function saveConfigAction(
     );
 
     if (newConfig && newConfig.length > 0) {
-      revalidatePath('/profile'); // Removes cache for the profile page to ensure clean correct data being displayed
+      revalidatePath('/profile');
       return {
         success: true,
         message: 'Config saved successfully!',
@@ -383,11 +299,12 @@ export async function saveConfigAction(
           'Failed to save config. Database operation might have failed or returned no data.',
       };
     }
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('[Server Action] Error saving config:', error);
-    const errorMessage =
-      error instanceof Error ? error.message : 'An unknown error occurred.';
-    return { success: false, message: `Error saving config: ${errorMessage}` };
+    return {
+      success: false,
+      message: `Error saving config: ${error instanceof Error ? error.message : 'An unknown error occurred.'}`,
+    };
   }
 }
 
@@ -396,42 +313,26 @@ export async function saveConfigAction(
  * Ensures the configuration belongs to the authenticated user before deletion.
  *
  * @param configId - ID of the configuration to delete.
- * @param userId - The ID of the user attempting the deletion (verified against session).
+ * @param authenticatedUserId - The ID of the user attempting the deletion.
  *
  * @returns Promise<{
  *   success: boolean - Indicates if operation was successful
  *   message: string - Status or error message
  * }>
- *
- * @throws Will return { success: false, ... } if no valid session exists or deletion fails.
- *
- * @example
- * const result = await removeConfigAction("some-uuid", "user-id-from-session");
- * if (result.success) {
- *   // Deletion successful
- * }
  */
 export async function removeConfigAction(
-  configId: string
+  configId: string,
+  authenticatedUserId: string
 ): Promise<{ success: boolean; message: string }> {
-  const supabase = await createClient();
-
+  if (!authenticatedUserId) {
+    return {
+      success: false,
+      message: 'Authenticated user ID is required for deletion.',
+    };
+  }
   try {
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      return {
-        success: false,
-        message: 'Authentication required or session invalid.',
-      };
-    }
-
-    await deleteConfig(configId, user.id);
+    await deleteConfig(configId, authenticatedUserId);
     revalidatePath('/profile');
-
     return {
       success: true,
       message: 'Configuration deleted successfully',
@@ -450,58 +351,37 @@ export async function removeConfigAction(
 
 /**
  * **Server action that updates an existing configuration in the database.**
- * Automatically updates the authorName based on the current user.
  *
  * @param configId - ID of the configuration to update
  * @param updatedData - Object containing fields to update (e.g., { title?, description?, configData?, isPublic? })
- *                      NOTE: userId, authorName, createdAt, updatedAt are handled internally or ignored.
+ * @param authenticatedUserId - The ID of the user making the update.
+ * @param authenticatedAuthorName - The name of the author for the update.
  *
  * @returns Promise<{
  *   success: boolean - Indicates if operation was successful
  *   message: string - Status or error message
  *   data?: Config - Updated config object if successful
  * }>
- *
- * @throws Will redirect to /login if no valid session exists
- *
- * @example
- * const result = await updateConfig(
- *   configId: "some-uuid",
- *   updatedData: { title: "New Title" }
- * );
  */
 export async function updateConfigAction(
   configId: string,
   updatedData: Partial<
     Omit<Config, 'id' | 'userId' | 'createdAt' | 'updatedAt' | 'authorName'>
-  >
+  >,
+  authenticatedUserId: string,
+  authenticatedAuthorName: string
 ): Promise<{ success: boolean; message: string; data: Config | null }> {
-  const supabase = await createClient();
-
+  if (!authenticatedUserId) {
+    return {
+      success: false,
+      message: 'Authenticated user ID is required for update.',
+      data: null,
+    };
+  }
   try {
-    const {
-      data: { user },
-      error: authError,
-    } = await supabase.auth.getUser();
-
-    if (authError || !user) {
-      console.error('[Server Action] Update: Authentication error:', authError);
-      return {
-        success: false,
-        message: 'Authentication required or session invalid for update.',
-        data: null,
-      };
-    }
-
-    // Fetch author name from user metadata
-    const authorName =
-      user.user_metadata?.full_name || user.email || 'Anonymous';
-
-    // --- Validation ---
     if (updatedData.title && !updatedData.title.trim()) {
       return { success: false, message: 'Title cannot be empty.', data: null };
     }
-
     if (updatedData.title && updatedData.title.length > 50) {
       return {
         success: false,
@@ -509,7 +389,6 @@ export async function updateConfigAction(
         data: null,
       };
     }
-
     if (updatedData.description && updatedData.description.length > 255) {
       return {
         success: false,
@@ -518,18 +397,18 @@ export async function updateConfigAction(
       };
     }
 
-    // --- Prepare final data for DB update ---
     const dataForDb: Partial<
       Omit<Config, 'id' | 'userId' | 'createdAt' | 'updatedAt'>
     > = {
       ...updatedData,
-      authorName: authorName,
+      authorName: authenticatedAuthorName, // Use passed author name
     };
 
-    // --------------------------------------
-
-    // Call the database query function to update
-    const updatedConfig = await updateConfig(configId, user.id, dataForDb);
+    const updatedConfig = await updateConfig(
+      configId,
+      authenticatedUserId,
+      dataForDb
+    ); // Use passed user ID
 
     if (!updatedConfig || updatedConfig.length === 0) {
       return {
@@ -540,7 +419,7 @@ export async function updateConfigAction(
     }
 
     revalidatePath('/profile');
-    revalidatePath(`/playground?id=${configId}`); // Revalidate the specific config page
+    revalidatePath(`/playground?id=${configId}`);
     return {
       success: true,
       message: 'Config updated successfully!',
