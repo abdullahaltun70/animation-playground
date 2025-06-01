@@ -1,0 +1,277 @@
+---
+title: AnimatedContainer
+description: The main animation wrapper component for creating animated content.
+icon: play
+---
+
+# AnimatedContainer
+
+The `AnimatedContainer` component is the core wrapper that applies animations to its children. It handles the animation logic and provides a smooth, performant animation experience.
+
+## Import
+
+```typescript
+import { AnimatedContainer } from '@/components/animated-container';
+```
+
+## Basic Usage
+
+```tsx
+import { AnimatedContainer } from '@/components/animated-container';
+
+function BasicExample() {
+  const config = {
+    type: 'fade' as const,
+    duration: 0.5,
+    easing: 'ease-out',
+    delay: 0,
+  };
+
+  return (
+    <AnimatedContainer config={config}>
+      <div className="p-4 bg-blue-500 text-white rounded">
+        This content will fade in!
+      </div>
+    </AnimatedContainer>
+  );
+}
+```
+
+## Props
+
+### `config` (required)
+
+**Type:** `AnimationConfig`
+
+The animation configuration object that defines how the animation should behave.
+
+```typescript
+interface AnimationConfig {
+  type: AnimationType; // 'fade' | 'slide' | 'scale' | 'rotate' | 'bounce'
+  duration: number; // Animation duration in seconds
+  easing: EasingFunction; // CSS easing function
+  delay?: number; // Delay before animation starts (seconds)
+  name?: string; // Optional name for the animation
+}
+```
+
+### `children` (required)
+
+**Type:** `React.ReactNode`
+
+The content to be animated. Can be any valid React node.
+
+### `className` (optional)
+
+**Type:** `string`
+
+Additional CSS classes to apply to the container.
+
+### `style` (optional)
+
+**Type:** `React.CSSProperties`
+
+Additional inline styles to apply to the container.
+
+### `onAnimationStart` (optional)
+
+**Type:** `() => void`
+
+Callback function that fires when the animation starts.
+
+### `onAnimationEnd` (optional)
+
+**Type:** `() => void`
+
+Callback function that fires when the animation completes.
+
+## Animation Types
+
+### Fade Animation
+
+```tsx
+<AnimatedContainer config={{ type: 'fade', duration: 0.5, easing: 'ease-out' }}>
+  <div>Fades in smoothly</div>
+</AnimatedContainer>
+```
+
+**Effect:** Transitions opacity from 0 to 1
+
+### Slide Animation
+
+```tsx
+<AnimatedContainer
+  config={{ type: 'slide', duration: 0.8, easing: 'ease-out' }}
+>
+  <div>Slides in from the left</div>
+</AnimatedContainer>
+```
+
+**Effect:** Slides in from the left using transform: translateX()
+
+### Scale Animation
+
+```tsx
+<AnimatedContainer
+  config={{ type: 'scale', duration: 0.6, easing: 'ease-out' }}
+>
+  <div>Scales up from small</div>
+</AnimatedContainer>
+```
+
+**Effect:** Scales from 0.8 to 1.0 using transform: scale()
+
+### Rotate Animation
+
+```tsx
+<AnimatedContainer
+  config={{ type: 'rotate', duration: 1.0, easing: 'ease-out' }}
+>
+  <div>Rotates into view</div>
+</AnimatedContainer>
+```
+
+**Effect:** Rotates from -180deg to 0deg
+
+### Bounce Animation
+
+```tsx
+<AnimatedContainer
+  config={{ type: 'bounce', duration: 1.2, easing: 'ease-out' }}
+>
+  <div>Bounces into view</div>
+</AnimatedContainer>
+```
+
+**Effect:** Combines scale and translate with a bouncing effect
+
+## Advanced Examples
+
+### With Callbacks
+
+```tsx
+function CallbackExample() {
+  const handleAnimationStart = () => {
+    console.log('Animation started!');
+  };
+
+  const handleAnimationEnd = () => {
+    console.log('Animation completed!');
+  };
+
+  return (
+    <AnimatedContainer
+      config={{ type: 'fade', duration: 1.0, easing: 'ease-in-out' }}
+      onAnimationStart={handleAnimationStart}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      <div>Content with callbacks</div>
+    </AnimatedContainer>
+  );
+}
+```
+
+### Sequential Animations
+
+```tsx
+function SequentialExample() {
+  return (
+    <div className="space-y-4">
+      <AnimatedContainer config={{ type: 'fade', duration: 0.5, delay: 0 }}>
+        <div>First item (no delay)</div>
+      </AnimatedContainer>
+
+      <AnimatedContainer config={{ type: 'fade', duration: 0.5, delay: 0.2 }}>
+        <div>Second item (0.2s delay)</div>
+      </AnimatedContainer>
+
+      <AnimatedContainer config={{ type: 'fade', duration: 0.5, delay: 0.4 }}>
+        <div>Third item (0.4s delay)</div>
+      </AnimatedContainer>
+    </div>
+  );
+}
+```
+
+### Custom Styling
+
+```tsx
+function StyledExample() {
+  return (
+    <AnimatedContainer
+      config={{
+        type: 'scale',
+        duration: 0.8,
+        easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+      }}
+      className="custom-animation-wrapper"
+      style={{
+        background: 'linear-gradient(45deg, #ff6b6b, #4ecdc4)',
+        borderRadius: '12px',
+        padding: '20px',
+      }}
+    >
+      <div>Custom styled animated content</div>
+    </AnimatedContainer>
+  );
+}
+```
+
+## Performance Considerations
+
+### GPU Acceleration
+
+The component automatically applies GPU acceleration for better performance:
+
+```css
+/* Automatically applied */
+.animated-container {
+  will-change: transform, opacity;
+  transform: translateZ(0); /* Triggers GPU layer */
+}
+```
+
+### Memory Management
+
+- Animations are automatically cleaned up when the component unmounts
+- Event listeners are properly removed
+- No memory leaks in animation callbacks
+
+### Best Practices
+
+1. **Avoid excessive duration**: Keep animations under 1.5 seconds for better UX
+2. **Use appropriate easing**: `ease-out` is generally preferred for UI animations
+3. **Limit concurrent animations**: Too many simultaneous animations can impact performance
+4. **Prefer transform-based animations**: They perform better than layout-affecting properties
+
+## Browser Support
+
+- **Modern browsers**: Full support with CSS animations
+- **Older browsers**: Graceful degradation (content appears without animation)
+- **Reduced motion**: Respects `prefers-reduced-motion` user preference
+
+## Troubleshooting
+
+### Animation Not Playing
+
+1. Check that `duration` is greater than 0
+2. Verify the `type` is a valid AnimationType
+3. Ensure the component is properly mounted
+
+### Performance Issues
+
+1. Reduce the number of concurrent animations
+2. Use simpler easing functions
+3. Avoid animating layout-affecting properties
+
+### Styling Conflicts
+
+1. Check for CSS that might override animation styles
+2. Use specific selectors or CSS modules
+3. Avoid important declarations on animated properties
+
+## Related
+
+- [`ConfigPanel`](/api/components/config-panel) - For creating animation configuration UIs
+- [`useAnimationConfig`](/api/hooks/use-animation-config) - Hook for managing animation state
+- [`AnimationConfig`](/api/types/animation-config) - Type definitions for animation configuration

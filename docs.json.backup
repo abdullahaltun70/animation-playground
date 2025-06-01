@@ -1,0 +1,111 @@
+{
+  "$schema": "https://docs.page/schema.json",
+  "name": "Animation Playground",
+  "description": "Create, preview, and share web animations with ease using the Animation Playground.",
+  "logo": "/logo.png",
+  "github": "abdullahaltun70/animation-playground",
+  "logo": "/logo.png",
+  "github": "abdullahaltun70/animation-playground",
+  "base": "/",
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        {
+          "title": "Introduction",
+          "href": "/",
+          "icon": "book-open"
+        },
+        {
+          "title": "Features",
+          "href": "/features",
+          "icon": "sparkles"
+        },
+        {
+          "title": "Quick Start",
+          "href": "/setup",
+          "icon": "rocket"
+        }
+      ]
+    },
+    {
+      "group": "User Guide",
+      "pages": [
+        {
+          "title": "Creating Animations",
+          "href": "/guide/creating-animations",
+          "icon": "play"
+        },
+        {
+          "title": "Sharing & Exporting",
+          "href": "/guide/sharing-exporting",
+          "icon": "share"
+        },
+        {
+          "title": "User Accounts",
+          "href": "/guide/user-accounts",
+          "icon": "user"
+        }
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        {
+          "title": "Project Structure",
+          "href": "/development/project-structure",
+          "icon": "folder"
+        },
+        {
+          "title": "Available Scripts",
+          "href": "/available-scripts",
+          "icon": "terminal"
+        },
+        {
+          "title": "Core Technologies",
+          "href": "/core-technologies",
+          "icon": "cpu-chip"
+        },
+        {
+          "title": "Testing",
+          "href": "/development/testing",
+          "icon": "beaker"
+        },
+        {
+          "title": "Contributing",
+          "href": "/development/contributing",
+          "icon": "heart"
+        }
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        {
+          "title": "TypeDoc Documentation",
+          "href": "/api",
+          "icon": "code"
+        }
+      ]
+    }
+  ],
+  "toc": {
+    "depth": 3
+  },
+  "theme": {
+    "primary": "#3B82F6",
+    "sidebar": {
+      "width": 280
+    }
+  },
+  "redirects": {
+    "/api": "/docs/index.html"
+  },
+  "socials": {
+    "github": "https://github.com/abdullahaltun70/animation-playground"
+  },
+  "editPage": {
+    "text": "Edit this page on GitHub",
+    "href": "https://github.com/abdullahaltun70/animation-playground/edit/main/docs"
+  }
+}

@@ -110,8 +110,6 @@ export const useAuth = (): UseAuthReturn => {
   });
 
   const supabase = createClient();
-  // const router = useRouter(); // router is not directly used in this hook after previous changes.
-                                // It was only part of handleSignIn's dependency array.
 
   // Validate email and execute action if valid
   const validateAndExecute = useCallback(

@@ -1,0 +1,224 @@
+---
+title: Quick Start
+description: Get the Animation Playground up and running on your local machine in minutes.
+icon: rocket
+---
+
+# Quick Start Guide
+
+<Info>
+  Get Animation Playground running on your local machine in just a few steps.
+  This guide will walk you through everything from prerequisites to your first
+  animation.
+</Info>
+
+## Prerequisites
+
+<Warning>
+  Before you begin, make sure you have the following installed on your system.
+</Warning>
+
+<CardGroup cols={2}>
+<Card title="Required Software" icon="check-circle">
+**Essential Dependencies**
+
+- Node.js (version 18.x or higher recommended)
+- Yarn, npm, or pnpm package manager
+- Git for version control
+
+</Card>
+<Card title="Optional Software" icon="plus-circle">
+**Enhanced Experience**
+
+- Supabase Account: For backend features like saving configurations
+- VS Code: Recommended for the best development experience
+</Card>
+</CardGroup>
+
+## Installation
+
+<Steps>
+<Step title="Clone the Repository">
+Get the source code from GitHub:
+
+```bash
+git clone https://github.com/abdullahaltun70/animation-playground.git
+cd animation-playground
+```
+
+</Step>
+
+<Step title="Install Dependencies">
+Choose your preferred package manager:
+
+```bash
+# Using Yarn (recommended)
+yarn install
+
+# Using npm
+npm install
+
+# Using pnpm
+pnpm install
+```
+
+<Success>
+We recommend using Yarn as it's what the project was developed with, but npm and pnpm work just as well.
+</Success>
+</Step>
+
+<Step title="Environment Configuration">
+Create a `.env.local` file in the root directory and add your environment variables:
+
+```env
+# Supabase Configuration (required for user accounts and saving)
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+
+# Optional: Advanced Supabase configuration
+SUPABASE_JWT_SECRET=your_supabase_jwt_secret
+```
+
+</Step>
+
+<Step title="Get Supabase Credentials (Optional)">
+<Card title="Supabase Setup" icon="database">
+For user accounts and saving functionality:
+
+<Steps>
+<Step title="Create Account">
+Go to [supabase.com](https://supabase.com) and create an account
+</Step>
+<Step title="Create Project">
+Create a new project in your Supabase dashboard
+</Step>
+<Step title="Get Credentials">
+Go to Settings > API and copy the Project URL and anon/public key
+</Step>
+<Step title="Add to Environment">
+Paste them into your `.env.local` file
+</Step>
+</Steps>
+</Card>
+</Step>
+
+<Step title="Database Setup (Optional)">
+If you're planning to use the save/load functionality, set up the database:
+
+```bash
+# Generate migration files (if schema changes were made)
+yarn drizzle-kit generate
+
+# Apply migrations to your database
+yarn drizzle-kit migrate
+```
+
+<Info>
+The app will work without database setup, but you won't be able to save or share animations.
+</Info>
+</Step>
+
+<Step title="Start Development Server">
+Launch the development server:
+
+```bash
+yarn dev
+```
+
+<Success>
+Open [http://localhost:3000](http://localhost:3000) in your browser to see the Animation Playground!
+</Success>
+</Step>
+</Steps>
+
+## Verification
+
+<Card title="Installation Check" icon="check-square">
+Once the server is running, you should see:
+
+1. **Homepage**: The main landing page with navigation
+2. **Playground**: The animation creation interface
+3. **Live Preview**: Real-time animation preview as you make changes
+
+### Test the Installation
+
+<Steps>
+<Step title="Navigate to Playground">
+Go to the playground page from the main navigation
+</Step>
+<Step title="Create Animation">
+Try creating a simple fade animation using the controls
+</Step>
+<Step title="Test Live Preview">
+Adjust the duration and see the live preview update in real-time
+</Step>
+<Step title="Generate Code">
+Test the code generation feature to export your animation
+</Step>
+</Steps>
+</Card>
+
+## Troubleshooting
+
+<Warning>
+  If you encounter issues during setup, try these common solutions.
+</Warning>
+
+<CardGroup cols={2}>
+<Card title="Port Issues" icon="network-wired">
+**Port 3000 already in use**
+
+```bash
+# Use a different port
+yarn dev -p 3001
+```
+
+</Card>
+<Card title="Module Errors" icon="exclamation-triangle">
+**Module not found errors**
+
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules yarn.lock
+yarn install
+```
+
+</Card>
+</CardGroup>
+
+<Card title="Database Connection Issues" icon="database">
+**Supabase connection problems**
+
+- Verify your `.env.local` file has the correct credentials
+- Check that your Supabase project is active
+- Ensure the database URL is accessible
+
+<Info>
+Most issues are related to environment variables. Double-check your `.env.local` file formatting.
+</Info>
+</Card>
+
+### Getting Help
+
+<Card title="Support Resources" icon="question-circle">
+If you encounter issues:
+
+1. Check the [troubleshooting section](https://docs.page/abdullahaltun70/animation-playground/setup#troubleshooting) above
+2. Review the [project structure documentation](https://docs.page/abdullahaltun70/animation-playground/development/project-structure)
+3. Check the [GitHub Issues](https://github.com/abdullahaltun70/animation-playground/issues) for similar problems
+4. Create a new issue with detailed information about your setup and error messages
+5. Review the [project structure](https://docs.page/abdullahaltun70/animation-playground/development/project-structure) documentation
+6. Open an issue on [GitHub](https://github.com/abdullahaltun70/animation-playground/issues)
+</Card>
+
+## Next Steps
+
+Now that you have Animation Playground running:
+
+- **Learn the Basics**: Check out [Creating Animations](https://docs.page/abdullahaltun70/animation-playground/guide/creating-animations)
+- **Explore Features**: See all available [features](https://docs.page/abdullahaltun70/animation-playground/features)
+- **Development**: Read about the [project structure](https://docs.page/abdullahaltun70/animation-playground/development/project-structure)
+- **Contributing**: Learn how to [contribute](https://docs.page/abdullahaltun70/animation-playground/development/contributing) to the project
+
+> ✅ **Success:** > **🎉 Congratulations!** You now have Animation Playground running locally.
+> Start creating amazing animations!

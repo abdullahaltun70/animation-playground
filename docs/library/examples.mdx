@@ -1,0 +1,857 @@
+---
+title: Examples & Best Practices
+description: Real-world examples and best practices for using the animation library effectively
+icon: academic-cap
+---
+
+# Examples & Best Practices
+
+<Info>
+  This guide provides practical examples and best practices for using the
+  animation library in real-world applications.
+</Info>
+
+## Common Use Cases
+
+<CardGroup cols={2}>
+  <Card title="Page Transitions" icon="arrow-right-arrow-left">
+    Create smooth transitions between pages and routes
+  </Card>
+  <Card title="Modal Animations" icon="window-maximize">
+    Enhance modal dialogs with entrance and exit effects
+  </Card>
+  <Card title="List Animations" icon="list">
+    Animate list items with staggered timing effects
+  </Card>
+  <Card title="Form Interactions" icon="clipboard">
+    Add subtle animations to form fields and inputs
+  </Card>
+  <Card title="Loading States" icon="spinner">
+    Create engaging loading animations and skeleton screens
+  </Card>
+  <Card title="Scroll Reveals" icon="eye">
+    Trigger animations when elements come into view
+  </Card>
+</CardGroup>
+
+### Page Transitions
+
+Create smooth page transitions for better user experience:
+
+```jsx
+import { useRouter } from 'next/router';
+import { useState, useEffect } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function PageTransition({ children }) {
+  const router = useRouter();
+  const [isVisible, setIsVisible] = useState(true);
+
+  useEffect(() => {
+    const handleRouteChange = () => {
+      setIsVisible(false);
+      setTimeout(() => setIsVisible(true), 100);
+    };
+
+    router.events.on('routeChangeStart', handleRouteChange);
+    return () => router.events.off('routeChangeStart', handleRouteChange);
+  }, [router]);
+
+  return (
+    <Animate
+      type="fade"
+      duration={0.3}
+      opacity={{ start: 0, end: 1 }}
+      trigger={isVisible}
+    >
+      {children}
+    </Animate>
+  );
+}
+
+// Usage in _app.js
+function MyApp({ Component, pageProps }) {
+  return (
+    <PageTransition>
+      <Component {...pageProps} />
+    </PageTransition>
+  );
+}
+```
+
+### Modal Animations
+
+Enhance modal dialogs with entrance animations:
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AnimatedModal({ isOpen, onClose, children }) {
+  return (
+    <>
+      {/* Backdrop */}
+      <Animate
+        type="fade"
+        duration={0.2}
+        opacity={{ start: 0, end: 1 }}
+        trigger={isOpen}
+      >
+        <div
+          className="modal-backdrop"
+          onClick={onClose}
+          style={{
+            position: 'fixed',
+            inset: 0,
+            backgroundColor: 'rgba(0, 0, 0, 0.5)',
+            zIndex: 1000,
+          }}
+        />
+      </Animate>
+
+      {/* Modal Content */}
+      <Animate
+        type="scale"
+        duration={0.3}
+        delay={0.1}
+        scale={{ start: 0.8, end: 1 }}
+        opacity={{ start: 0, end: 1 }}
+        trigger={isOpen}
+      >
+        <div
+          className="modal-content"
+          style={{
+            position: 'fixed',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
+            backgroundColor: 'white',
+            borderRadius: '8px',
+            padding: '2rem',
+            boxShadow: '0 20px 25px -5px rgba(0, 0, 0, 0.1)',
+            zIndex: 1001,
+          }}
+        >
+          {children}
+        </div>
+      </Animate>
+    </>
+  );
+}
+```
+
+### List Item Animations
+
+Animate list items with staggered delays:
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AnimatedList({ items }) {
+  return (
+    <ul>
+      {items.map((item, index) => (
+        <Animate
+          key={item.id}
+          type="slide"
+          duration={0.4}
+          delay={index * 0.1} // Stagger by 100ms
+          distance={-30} // Slide up from 30px below
+          axis="y"
+          opacity={{ start: 0, end: 1 }}
+        >
+          <li className="list-item">{item.content}</li>
+        </Animate>
+      ))}
+    </ul>
+  );
+}
+```
+
+### Form Field Animations
+
+Enhance form interactions with subtle animations:
+
+```jsx
+import { useState } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AnimatedForm() {
+  const [focusedField, setFocusedField] = useState(null);
+
+  return (
+    <form>
+      {['name', 'email', 'message'].map((field, index) => (
+        <Animate
+          key={field}
+          type="slide"
+          duration={0.3}
+          delay={index * 0.15}
+          distance={-20} // Slide in from left
+          axis="x"
+          opacity={{ start: 0, end: 1 }}
+        >
+          <div className="form-field">
+            <label htmlFor={field}>
+              {field.charAt(0).toUpperCase() + field.slice(1)}
+            </label>
+            <input
+              id={field}
+              type={field === 'email' ? 'email' : 'text'}
+              onFocus={() => setFocusedField(field)}
+              onBlur={() => setFocusedField(null)}
+              style={{
+                transform: focusedField === field ? 'scale(1.02)' : 'scale(1)',
+                transition: 'transform 0.2s ease-out',
+              }}
+            />
+          </div>
+        </Animate>
+      ))}
+    </form>
+  );
+}
+```
+
+### Loading States
+
+Create engaging loading animations:
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function LoadingSpinner() {
+  return (
+    <div className="loading-container">
+      <Animate
+        type="scale"
+        duration={0.4}
+        scale={{ start: 0, end: 1 }}
+        opacity={{ start: 0, end: 1 }}
+      >
+        <div className="spinner" />
+      </Animate>
+
+      <Animate
+        type="slide"
+        delay={0.2}
+        duration={0.3}
+        distance={-20}
+        axis="y"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <p>Loading your content...</p>
+      </Animate>
+    </div>
+  );
+}
+
+// Skeleton loading
+function SkeletonLoader() {
+  return (
+    <div className="skeleton-container">
+      {[...Array(3)].map((_, i) => (
+        <Animate
+          key={i}
+          type="fade"
+          duration={0.4}
+          delay={i * 0.1}
+          opacity={{ start: 0, end: 1 }}
+        >
+          <div className="skeleton-item" />
+        </Animate>
+      ))}
+    </div>
+  );
+}
+```
+
+## Advanced Patterns
+
+### Scroll-Triggered Animations
+
+Combine with Intersection Observer for scroll animations:
+
+```jsx
+import { useInView } from 'react-intersection-observer';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function ScrollReveal({ children, ...animationProps }) {
+  const { ref, inView } = useInView({
+    triggerOnce: true,
+    threshold: 0.1,
+  });
+
+  return (
+    <div ref={ref}>
+      <Animate {...animationProps} trigger={inView}>
+        {children}
+      </Animate>
+    </div>
+  );
+}
+
+// Usage
+function BlogPost() {
+  return (
+    <article>
+      <ScrollReveal
+        type="slide"
+        duration={0.6}
+        distance={-30}
+        axis="y"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <h1>Article Title</h1>
+      </ScrollReveal>
+
+      <ScrollReveal
+        type="slide"
+        delay={0.2}
+        distance={-40}
+        axis="x"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <p>First paragraph...</p>
+      </ScrollReveal>
+
+      <ScrollReveal
+        type="slide"
+        delay={0.3}
+        distance={40}
+        axis="x"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <p>Second paragraph...</p>
+      </ScrollReveal>
+    </article>
+  );
+}
+```
+
+### Animation Orchestration
+
+Coordinate complex animation sequences:
+
+```jsx
+import { useState, useEffect } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AnimationSequence() {
+  const [currentStep, setCurrentStep] = useState(0);
+  const totalSteps = 4;
+
+  useEffect(() => {
+    if (currentStep < totalSteps) {
+      const timer = setTimeout(() => {
+        setCurrentStep((prev) => prev + 1);
+      }, 500);
+      return () => clearTimeout(timer);
+    }
+  }, [currentStep]);
+
+  return (
+    <div className="sequence-container">
+      <Animate
+        type="fade"
+        trigger={currentStep >= 0}
+        duration={0.4}
+        opacity={{ start: 0, end: 1 }}
+      >
+        <h1>Welcome</h1>
+      </Animate>
+
+      <Animate
+        type="slide"
+        trigger={currentStep >= 1}
+        duration={0.5}
+        distance={-40}
+        axis="x"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <p>To our amazing platform</p>
+      </Animate>
+
+      <Animate
+        type="bounce"
+        trigger={currentStep >= 2}
+        duration={0.6}
+        distance={20}
+        axis="y"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <button>Get Started</button>
+      </Animate>
+
+      <Animate
+        type="slide"
+        trigger={currentStep >= 3}
+        duration={0.4}
+        distance={-20}
+        axis="y"
+        opacity={{ start: 0, end: 1 }}
+      >
+        <p>Join thousands of happy users</p>
+      </Animate>
+    </div>
+  );
+}
+```
+
+### Conditional Animations
+
+Apply different animations based on conditions:
+
+```jsx
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function ConditionalAnimation({ isSuccess, isError, children }) {
+  const getAnimationProps = () => {
+    if (isSuccess) {
+      return {
+        type: 'bounce',
+        duration: 0.6,
+        distance: 15,
+        axis: 'y',
+        opacity: { start: 0, end: 1 },
+      };
+    }
+
+    if (isError) {
+      return {
+        type: 'rotate',
+        duration: 0.3,
+        degrees: { start: -5, end: 5 }, // Shake effect
+        opacity: { start: 0.5, end: 1 },
+      };
+    }
+
+    return {
+      type: 'fade',
+      duration: 0.6,
+      opacity: { start: 0, end: 1 },
+    };
+  };
+
+  return (
+    <Animate
+      {...getAnimationProps()}
+      key={`${isSuccess}-${isError}`} // Force re-animation
+    >
+      {children}
+    </Animate>
+  );
+}
+```
+
+### Performance-Optimized Lists
+
+Handle large lists efficiently:
+
+```jsx
+import { FixedSizeList as List } from 'react-window';
+import { useState } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function VirtualizedAnimatedList({ items }) {
+  const [visibleRange, setVisibleRange] = useState({ start: 0, end: 10 });
+
+  const Row = ({ index, style }) => {
+    const item = items[index];
+    const isVisible = index >= visibleRange.start && index <= visibleRange.end;
+
+    return (
+      <div style={style}>
+        <Animate
+          type="slide"
+          duration={0.3}
+          trigger={isVisible}
+          delay={(index % 10) * 0.05} // Stagger within viewport
+          distance={-20}
+          axis="x"
+          opacity={{ start: 0, end: 1 }}
+        >
+          <div className="list-item">{item.content}</div>
+        </Animate>
+      </div>
+    );
+  };
+
+  const handleItemsRendered = ({ visibleStartIndex, visibleStopIndex }) => {
+    setVisibleRange({
+      start: visibleStartIndex,
+      end: visibleStopIndex,
+    });
+  };
+
+  return (
+    <List
+      height={400}
+      itemCount={items.length}
+      itemSize={60}
+      onItemsRendered={handleItemsRendered}
+    >
+      {Row}
+    </List>
+  );
+}
+```
+
+## Best Practices
+
+<Warning>
+  Following these best practices will help you create smooth, performant, and
+  accessible animations.
+</Warning>
+
+### Performance Guidelines
+
+<Steps>
+<Step title="Limit Concurrent Animations" icon="gauge">
+
+Avoid running too many animations simultaneously to maintain performance:
+
+```jsx
+import { useState } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+const MAX_ANIMATIONS = 12;
+
+function AnimationManager() {
+  const [activeAnimations, setActiveAnimations] = useState(0);
+
+  const canAnimate = activeAnimations < MAX_ANIMATIONS;
+
+  const handleAnimationStart = () => {
+    setActiveAnimations((prev) => prev + 1);
+  };
+
+  const handleAnimationEnd = () => {
+    setActiveAnimations((prev) => prev - 1);
+  };
+
+  return (
+    <Animate
+      type="fade"
+      trigger={canAnimate}
+      opacity={{ start: 0, end: 1 }}
+      onAnimationStart={handleAnimationStart}
+      onAnimationEnd={handleAnimationEnd}
+    >
+      {/* Content */}
+    </Animate>
+  );
+}
+```
+
+</Step>
+<Step title="Use Hardware Acceleration" icon="microchip">
+
+Optimize animations for better performance:
+
+```scss
+.optimized-animation {
+  // Force hardware acceleration
+  will-change: transform, opacity;
+  transform: translateZ(0);
+
+  // Improve rendering performance
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+```
+
+</Step>
+<Step title="Respect User Preferences" icon="universal-access">
+
+Always consider accessibility and user motion preferences:
+
+```jsx
+import { useState, useEffect } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AccessibleAnimation({ children, ...props }) {
+  const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
+
+  useEffect(() => {
+    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    setPrefersReducedMotion(mediaQuery.matches);
+
+    const handler = (e) => setPrefersReducedMotion(e.matches);
+    mediaQuery.addEventListener('change', handler);
+
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
+
+  if (prefersReducedMotion) {
+    return <div>{children}</div>; // No animation
+  }
+
+  return <Animate {...props}>{children}</Animate>;
+}
+```
+
+</Step>
+</Steps>
+```
+
+### UX Guidelines
+
+<CardGroup cols={3}>
+<Card title="Animation Timing" icon="clock">
+Use appropriate durations for different contexts
+
+```jsx
+const TIMING = {
+  micro: 0.15, // Hover effects
+  quick: 0.3, // Button clicks
+  standard: 0.6, // Most UI animations
+  complex: 0.9, // Page changes
+  slow: 1.2, // Attention-grabbing
+};
+```
+
+<CardGroup cols={2}>
+<Card title="Staggered Effects" icon="layer-group">
+Create rhythm with delayed animations
+
+```jsx
+function StaggeredList({ items, staggerDelay = 0.1 }) {
+  return (
+    <>
+      {items.map((item, index) => (
+        <Animate
+          key={item.id}
+          type="slide"
+          delay={index * staggerDelay}
+          duration={0.4}
+          distance={-30}
+          axis="y"
+          opacity={{ start: 0, end: 1 }}
+        >
+          <ListItem>{item.content}</ListItem>
+        </Animate>
+      ))}
+    </>
+  );
+}
+```
+
+</Card>
+<Card title="Animation Hierarchy" icon="sitemap">
+Show importance through animation order
+
+```jsx
+// Primary content first
+<Animate type="fade" duration={0.4}>
+  <h1>Main Content</h1>
+</Animate>
+
+// Secondary content follows
+<Animate type="slide" delay={0.2}>
+  <p>Supporting text</p>
+</Animate>
+
+// Actions appear last
+<Animate type="bounce" delay={0.5}>
+  <Button>Call to Action</Button>
+</Animate>
+```
+
+</Card>
+</CardGroup>
+```
+
+### Debugging and Testing
+
+#### Animation Inspector
+
+```jsx
+import { useState } from 'react';
+import { Animate } from 'animation-library-test-abdullah-altun';
+
+function AnimationDebugger({ children, ...props }) {
+  const [debugInfo, setDebugInfo] = useState(null);
+
+  if (process.env.NODE_ENV === 'development') {
+    return (
+      <div className="animation-debug">
+        <Animate
+          {...props}
+          onAnimationStart={() => {
+            setDebugInfo({
+              type: props.type,
+              duration: props.duration,
+              timestamp: Date.now(),
+            });
+          }}
+        >
+          {children}
+        </Animate>
+        {debugInfo && (
+          <div className="debug-info">{JSON.stringify(debugInfo, null, 2)}</div>
+        )}
+      </div>
+    );
+  }
+
+  return <Animate {...props}>{children}</Animate>;
+}
+```
+
+#### Testing Animations
+
+```jsx
+// Test utilities
+export const animationTestUtils = {
+  skipAnimations: () => {
+    const style = document.createElement('style');
+    style.textContent = `
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-delay: 0ms !important;
+        transition-duration: 0.01ms !important;
+        transition-delay: 0ms !important;
+      }
+    `;
+    document.head.appendChild(style);
+    return () => document.head.removeChild(style);
+  },
+
+  waitForAnimation: (element, timeout = 1000) => {
+    return new Promise((resolve, reject) => {
+      const timer = setTimeout(
+        () => reject(new Error('Animation timeout')),
+        timeout
+      );
+
+      element.addEventListener(
+        'animationend',
+        () => {
+          clearTimeout(timer);
+          resolve();
+        },
+        { once: true }
+      );
+    });
+  },
+};
+
+// Jest test example
+test('component animates correctly', async () => {
+  const { getByTestId } = render(<AnimatedComponent />);
+  const element = getByTestId('animated-element');
+
+  // Wait for animation to complete
+  await animationTestUtils.waitForAnimation(element);
+
+  expect(element).toHaveClass('animation-complete');
+});
+```
+
+## Common Pitfalls
+
+<Error>
+  Avoid these common mistakes when implementing animations to ensure the best
+  user experience.
+</Error>
+
+<CardGroup>
+<Card title="❌ Overusing Animations" icon="exclamation-triangle">
+**Problem:** Too many simultaneous animations
+
+```jsx
+// Bad: Everything animates at once
+<div>
+  <Animate type="bounce">
+    <h1>Title</h1>
+  </Animate>
+  <Animate type="rotate">
+    <p>Text</p>
+  </Animate>
+  <Animate type="scale">
+    <button>Button</button>
+  </Animate>
+  <Animate type="slide">
+    <img src="..." />
+  </Animate>
+</div>
+```
+
+**Solution:** Be selective and purposeful
+
+```jsx
+// Good: Selective animations
+<div>
+  <Animate type="fade">
+    <h1>Title</h1>
+  </Animate>
+  <p>Text</p> {/* Not everything needs animation */}
+  <Animate type="slide" delay={0.3}>
+    <button>Button</button>
+  </Animate>
+  <img src="..." /> {/* Static content */}
+</div>
+```
+
+</Card>
+<Card title="❌ Performance Issues" icon="tachometer">
+**Problem:** Animating expensive properties
+
+```css
+/* Bad: Causes layout thrashing */
+@keyframes slideExpensive {
+  from {
+    left: -100px;
+    width: 200px;
+  }
+  to {
+    left: 0;
+    width: 300px;
+  }
+}
+```
+
+**Solution:** Use transform and opacity
+
+```css
+/* Good: Hardware accelerated */
+@keyframes slideEfficient {
+  from {
+    transform: translateX(-100px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0) scale(1);
+    opacity: 1;
+  }
+}
+```
+
+</Card>
+<Card title="❌ Accessibility Ignored" icon="universal-access">
+**Problem:** Not respecting motion preferences
+
+```jsx
+// Bad: No motion consideration
+<Animate type="bounce" duration={2}>
+  <ImportantContent />
+</Animate>
+```
+
+**Solution:** Use AccessibleAnimation wrapper
+
+```jsx
+// Good: Respects user preferences
+<AccessibleAnimation type="fade" duration={0.3}>
+  <ImportantContent />
+</AccessibleAnimation>
+```
+
+</Card>
+</CardGroup>
+
+<Success>
+  This comprehensive guide should help you implement animations effectively
+  while avoiding common pitfalls and following best practices for performance
+  and accessibility.
+</Success>

@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { Box, Button, Flex, Text } from '@radix-ui/themes';
+import { Card, Skeleton } from '@radix-ui/themes'; // Import Skeleton and Card
 
 import { ConfigCard } from '@/components/config-card/ConfigCard';
 import { ConfigModel } from '@/types/animations';
@@ -101,6 +102,7 @@ export const ConfigList: React.FC<ConfigListProps> = ({
     <Flex direction="column" gap="3">
       {configs.map((cfg) => (
         <ConfigCard
+          data-cy="config-card"
           key={cfg.id}
           config={cfg}
           onDeleteAction={onDeleteAction} // Pass down the delete handler
@@ -116,49 +118,24 @@ export default ConfigList;
 
 /**
  * `ConfigCardSkeleton` is a React functional component that renders a skeleton placeholder
- * for a `ConfigCard`. This is used to indicate loading content before the actual data is available.
+ * for a `ConfigCard` using Radix UI `Skeleton` components. This provides a consistent
+ * shimmer effect during loading states.
  */
 const ConfigCardSkeleton = () => (
-  <Box
-    p="4"
-    style={{
-      border: '1px solid var(--gray-a5)',
-      borderRadius: 'var(--radius-3)',
-    }}
-  >
-    <Flex direction="column" gap="3">
-      <div
-        className={styles.skeletonBar}
-        style={{ height: '24px', width: '60%' }}
-      />
-      {/* Title */}
-      <div
-        className={styles.skeletonBar}
-        style={{ height: '16px', width: '90%' }}
-      />
-      {/* Description line 1 */}
-      <div
-        className={styles.skeletonBar}
-        style={{ height: '16px', width: '80%' }}
-      />
-      {/* Description line 2 */}
-      <div
-        className={styles.skeletonBar}
-        style={{ height: '16px', width: '40%' }}
-      />
-      {/* Meta info */}
-      <Flex justify="end" gap="2" mt="3">
-        <div
-          className={styles.skeletonBar}
-          style={{ height: '32px', width: '70px' }}
-        />
-        {/* Button */}
-        <div
-          className={styles.skeletonBar}
-          style={{ height: '32px', width: '70px' }}
-        />
-        {/* Button */}
-      </Flex>
+  <Card>
+    {' '}
+    {/* Using Card to match the structure of actual ConfigCard more closely */}
+    <Skeleton height="24px" width="70%" mb="2" /> {/* Title */}
+    <Skeleton height="16px" width="90%" mb="3" /> {/* Description */}
+    <Flex gap="2" direction="row" align="center" wrap="wrap" mb="3">
+      <Skeleton height="14px" width="100px" /> {/* Meta info 1 */}
+      <Skeleton height="14px" width="120px" /> {/* Meta info 2 */}
+      <Skeleton height="14px" width="70px" />{' '}
+      {/* Meta info 3 (e.g., visibility) */}
     </Flex>
-  </Box>
+    <Flex mt="3" gap="2" justify="end">
+      <Skeleton height="32px" width="80px" /> {/* Button 1 */}
+      <Skeleton height="32px" width="80px" /> {/* Button 2 */}
+    </Flex>
+  </Card>
 );

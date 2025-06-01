@@ -1,0 +1,536 @@
+---
+title: AnimationType Enum
+description: Enumeration of all supported animation types in Animation Playground.
+icon: play
+---
+
+# AnimationType Enum
+
+The `AnimationType` enum defines all supported animation types available in the Animation Playground.
+
+## Import
+
+```typescript
+import type { AnimationType } from '@/types/animation';
+```
+
+## Enum Definition
+
+```typescript
+type AnimationType =
+  | 'fade'
+  | 'slide'
+  | 'scale'
+  | 'rotate'
+  | 'bounce'
+  | 'flip'
+  | 'shake'
+  | 'pulse'
+  | 'swing'
+  | 'wobble'
+  | 'zoom'
+  | 'rollIn'
+  | 'rollOut'
+  | 'lightSpeedIn'
+  | 'lightSpeedOut'
+  | 'hinge'
+  | 'jackInTheBox'
+  | 'heartBeat'
+  | 'backInDown'
+  | 'backInLeft'
+  | 'backInRight'
+  | 'backInUp'
+  | 'backOutDown'
+  | 'backOutLeft'
+  | 'backOutRight'
+  | 'backOutUp'
+  | 'bounceIn'
+  | 'bounceInDown'
+  | 'bounceInLeft'
+  | 'bounceInRight'
+  | 'bounceInUp'
+  | 'bounceOut'
+  | 'bounceOutDown'
+  | 'bounceOutLeft'
+  | 'bounceOutRight'
+  | 'bounceOutUp'
+  | 'custom';
+```
+
+## Animation Types
+
+### Basic Animations
+
+#### `fade`
+
+Opacity-based fade in/out animation.
+
+```typescript
+const fadeConfig: AnimationConfig = {
+  type: 'fade',
+  duration: 800,
+  easing: 'ease-in-out',
+};
+```
+
+**Characteristics:**
+
+- Changes opacity from 0 to 1 (or vice versa)
+- Smooth transition effect
+- Commonly used for revealing/hiding elements
+
+#### `slide`
+
+Movement-based animation along X or Y axis.
+
+```typescript
+const slideConfig: AnimationConfig = {
+  type: 'slide',
+  duration: 1000,
+  easing: 'ease-out',
+  transform: {
+    x: 200, // Slide 200px to the right
+    y: 0,
+  },
+};
+```
+
+**Characteristics:**
+
+- Translates element position
+- Can be combined with other transforms
+- Supports multiple directions
+
+#### `scale`
+
+Size transformation animation.
+
+```typescript
+const scaleConfig: AnimationConfig = {
+  type: 'scale',
+  duration: 600,
+  easing: 'ease-in-out',
+  transform: {
+    scale: 1.2, // Scale to 120%
+  },
+};
+```
+
+**Characteristics:**
+
+- Changes element size
+- Maintains aspect ratio by default
+- Can scale on individual axes
+
+#### `rotate`
+
+Rotation transformation animation.
+
+```typescript
+const rotateConfig: AnimationConfig = {
+  type: 'rotate',
+  duration: 1500,
+  easing: 'linear',
+  transform: {
+    rotate: 360, // Full rotation
+  },
+};
+```
+
+**Characteristics:**
+
+- Rotates element around its center
+- Supports 3D rotations
+- Can be continuous or specific angle
+
+### Advanced Animations
+
+#### `bounce`
+
+Spring-like bouncing effect.
+
+```typescript
+const bounceConfig: AnimationConfig = {
+  type: 'bounce',
+  duration: 1000,
+  easing: 'ease-out',
+};
+```
+
+**Characteristics:**
+
+- Creates spring/bounce effect
+- Multiple oscillations
+- Natural feeling motion
+
+#### `flip`
+
+3D flip animation around an axis.
+
+```typescript
+const flipConfig: AnimationConfig = {
+  type: 'flip',
+  duration: 800,
+  easing: 'ease-in-out',
+  transform: {
+    rotateY: 180, // Flip horizontally
+  },
+};
+```
+
+**Characteristics:**
+
+- 3D transformation effect
+- Can flip on X or Y axis
+- Creates card-flip effect
+
+#### `shake`
+
+Rapid side-to-side movement.
+
+```typescript
+const shakeConfig: AnimationConfig = {
+  type: 'shake',
+  duration: 600,
+  easing: 'ease-in-out',
+};
+```
+
+**Characteristics:**
+
+- Quick oscillating movement
+- Attention-grabbing effect
+- Often used for error states
+
+#### `pulse`
+
+Rhythmic scaling animation.
+
+```typescript
+const pulseConfig: AnimationConfig = {
+  type: 'pulse',
+  duration: 1000,
+  easing: 'ease-in-out',
+  iterations: 'infinite',
+};
+```
+
+**Characteristics:**
+
+- Rhythmic size changes
+- Often continuous
+- Breathing-like effect
+
+### Entrance Animations
+
+#### `bounceIn` Series
+
+Bouncy entrance animations from different directions.
+
+```typescript
+// Bounce in from top
+const bounceInDown: AnimationConfig = {
+  type: 'bounceInDown',
+  duration: 1000,
+  easing: 'ease-out',
+};
+
+// Bounce in from left
+const bounceInLeft: AnimationConfig = {
+  type: 'bounceInLeft',
+  duration: 1000,
+  easing: 'ease-out',
+};
+```
+
+**Available directions:**
+
+- `bounceIn` - General bounce in
+- `bounceInDown` - From top
+- `bounceInUp` - From bottom
+- `bounceInLeft` - From left
+- `bounceInRight` - From right
+
+#### `backIn` Series
+
+Entrance animations with overshoot effect.
+
+```typescript
+const backInUp: AnimationConfig = {
+  type: 'backInUp',
+  duration: 800,
+  easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+};
+```
+
+**Available directions:**
+
+- `backInDown` - From top with overshoot
+- `backInUp` - From bottom with overshoot
+- `backInLeft` - From left with overshoot
+- `backInRight` - From right with overshoot
+
+### Exit Animations
+
+#### `bounceOut` Series
+
+Bouncy exit animations in different directions.
+
+```typescript
+const bounceOutUp: AnimationConfig = {
+  type: 'bounceOutUp',
+  duration: 800,
+  easing: 'ease-in',
+};
+```
+
+#### `backOut` Series
+
+Exit animations with overshoot effect.
+
+```typescript
+const backOutDown: AnimationConfig = {
+  type: 'backOutDown',
+  duration: 600,
+  easing: 'cubic-bezier(0.68, -0.55, 0.265, 1.55)',
+};
+```
+
+### Special Effects
+
+#### `lightSpeedIn` / `lightSpeedOut`
+
+High-speed movement with blur effect.
+
+```typescript
+const lightSpeed: AnimationConfig = {
+  type: 'lightSpeedIn',
+  duration: 500,
+  easing: 'ease-out',
+};
+```
+
+#### `hinge`
+
+Falling door effect.
+
+```typescript
+const hingeConfig: AnimationConfig = {
+  type: 'hinge',
+  duration: 2000,
+  easing: 'ease-in-out',
+};
+```
+
+#### `jackInTheBox`
+
+Pop-up surprise effect.
+
+```typescript
+const jackInBox: AnimationConfig = {
+  type: 'jackInTheBox',
+  duration: 1000,
+  easing: 'ease-out',
+};
+```
+
+### Custom Animations
+
+#### `custom`
+
+User-defined keyframe animations.
+
+```typescript
+const customConfig: AnimationConfig = {
+  type: 'custom',
+  duration: 2000,
+  easing: 'ease-in-out',
+  keyframes: [
+    { offset: 0, transform: { scale: 1, rotate: 0 } },
+    { offset: 0.5, transform: { scale: 1.5, rotate: 180 } },
+    { offset: 1, transform: { scale: 1, rotate: 360 } },
+  ],
+};
+```
+
+## Usage Examples
+
+### Animation Type Selection
+
+```typescript
+import { AnimationType } from '@/types/animation';
+
+function AnimationSelector() {
+  const [selectedType, setSelectedType] = useState<AnimationType>('fade');
+
+  const animationTypes: AnimationType[] = [
+    'fade', 'slide', 'scale', 'rotate', 'bounce',
+    'flip', 'shake', 'pulse', 'swing', 'wobble'
+  ];
+
+  return (
+    <select
+      value={selectedType}
+      onChange={(e) => setSelectedType(e.target.value as AnimationType)}
+    >
+      {animationTypes.map(type => (
+        <option key={type} value={type}>
+          {type.charAt(0).toUpperCase() + type.slice(1)}
+        </option>
+      ))}
+    </select>
+  );
+}
+```
+
+### Type Guards
+
+```typescript
+function isEntranceAnimation(type: AnimationType): boolean {
+  const entranceTypes: AnimationType[] = [
+    'bounceIn',
+    'bounceInDown',
+    'bounceInLeft',
+    'bounceInRight',
+    'bounceInUp',
+    'backInDown',
+    'backInLeft',
+    'backInRight',
+    'backInUp',
+    'lightSpeedIn',
+    'jackInTheBox',
+  ];
+
+  return entranceTypes.includes(type);
+}
+
+function isExitAnimation(type: AnimationType): boolean {
+  const exitTypes: AnimationType[] = [
+    'bounceOut',
+    'bounceOutDown',
+    'bounceOutLeft',
+    'bounceOutRight',
+    'bounceOutUp',
+    'backOutDown',
+    'backOutLeft',
+    'backOutRight',
+    'backOutUp',
+    'lightSpeedOut',
+    'hinge',
+  ];
+
+  return exitTypes.includes(type);
+}
+```
+
+### Animation Categories
+
+```typescript
+const animationCategories = {
+  basic: ['fade', 'slide', 'scale', 'rotate'] as AnimationType[],
+
+  attention: [
+    'bounce',
+    'flash',
+    'pulse',
+    'shake',
+    'swing',
+    'wobble',
+    'heartBeat',
+  ] as AnimationType[],
+
+  entrance: [
+    'bounceIn',
+    'bounceInDown',
+    'bounceInLeft',
+    'bounceInRight',
+    'bounceInUp',
+    'backInDown',
+    'backInLeft',
+    'backInRight',
+    'backInUp',
+    'lightSpeedIn',
+    'jackInTheBox',
+  ] as AnimationType[],
+
+  exit: [
+    'bounceOut',
+    'bounceOutDown',
+    'bounceOutLeft',
+    'bounceOutRight',
+    'bounceOutUp',
+    'backOutDown',
+    'backOutLeft',
+    'backOutRight',
+    'backOutUp',
+    'lightSpeedOut',
+    'hinge',
+  ] as AnimationType[],
+
+  special: ['flip', 'rollIn', 'rollOut', 'zoom', 'custom'] as AnimationType[],
+};
+```
+
+### Default Configurations by Type
+
+```typescript
+const defaultConfigsByType: Record<AnimationType, Partial<AnimationConfig>> = {
+  fade: { duration: 800, easing: 'ease-in-out' },
+  slide: { duration: 1000, easing: 'ease-out' },
+  scale: { duration: 600, easing: 'ease-in-out' },
+  rotate: { duration: 1000, easing: 'ease-in-out' },
+  bounce: { duration: 1000, easing: 'ease-out' },
+  shake: { duration: 600, easing: 'ease-in-out' },
+  pulse: { duration: 1000, easing: 'ease-in-out', iterations: 'infinite' },
+  // ... more defaults
+};
+```
+
+## Performance Considerations
+
+### GPU-Accelerated Animations
+
+These animation types are optimized for GPU acceleration:
+
+- `scale`, `rotate`, `fade` (opacity)
+- Any animation using `transform` properties
+
+### CPU-Intensive Animations
+
+These may be more resource-intensive:
+
+- Complex `custom` keyframe animations
+- Animations modifying layout properties
+- Multiple simultaneous animations
+
+### Recommended Usage
+
+```typescript
+// Good: GPU-accelerated
+const goodConfig: AnimationConfig = {
+  type: 'scale',
+  duration: 800,
+  easing: 'ease-out',
+  transform: { scale: 1.2 },
+};
+
+// Avoid: Layout-triggering
+const avoidConfig: AnimationConfig = {
+  type: 'custom',
+  duration: 800,
+  keyframes: [
+    { offset: 0, width: '100px' }, // Triggers layout
+    { offset: 1, width: '200px' },
+  ],
+};
+```
+
+## Related Types
+
+- [`AnimationConfig`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-config) - Uses AnimationType
+- [`EasingFunction`](https://docs.page/abdullahaltun70/animation-playground/api/types/easing-function) - Animation timing functions
+
+## Related Components
+
+- [`AnimatedContainer`](https://docs.page/abdullahaltun70/animation-playground/api/components/animated-container) - Applies AnimationType
+- [`ConfigPanel`](https://docs.page/abdullahaltun70/animation-playground/api/components/config-panel) - Selects AnimationType

@@ -1,0 +1,206 @@
+{
+  "name": "Animation Playground",
+  "description": "Create, preview, and share web animations with ease using the Animation Playground.",
+  "logo": {
+    "light": "/logo.png",
+    "dark": "/logo.png"
+  },
+  "social": {
+    "github": "abdullahaltun70/animation-playground"
+  },
+  "sidebar": [
+    {
+      "group": "Getting Started",
+      "pages": [
+        {
+          "title": "Introduction",
+          "href": "/",
+          "icon": "book-open"
+        },
+        {
+          "title": "Features",
+          "href": "/features",
+          "icon": "sparkles"
+        },
+        {
+          "title": "Quick Start",
+          "href": "/setup",
+          "icon": "rocket"
+        }
+      ]
+    },
+    {
+      "group": "User Guide",
+      "pages": [
+        {
+          "title": "Creating Animations",
+          "href": "/guide/creating-animations",
+          "icon": "play"
+        },
+        {
+          "title": "Sharing & Exporting",
+          "href": "/guide/sharing-exporting",
+          "icon": "share"
+        },
+        {
+          "title": "User Accounts",
+          "href": "/guide/user-accounts",
+          "icon": "user"
+        }
+      ]
+    },
+    {
+      "group": "Development",
+      "pages": [
+        {
+          "title": "Project Structure",
+          "href": "/development/project-structure",
+          "icon": "folder"
+        },
+        {
+          "title": "Available Scripts",
+          "href": "/available-scripts",
+          "icon": "terminal"
+        },
+        {
+          "title": "Core Technologies",
+          "href": "/core-technologies",
+          "icon": "cpu-chip"
+        },
+        {
+          "title": "Testing",
+          "href": "/development/testing",
+          "icon": "beaker"
+        },
+        {
+          "title": "Contributing",
+          "href": "/development/contributing",
+          "icon": "heart"
+        }
+      ]
+    },
+    {
+      "group": "API Reference",
+      "pages": [
+        {
+          "title": "Overview",
+          "href": "/api",
+          "icon": "code"
+        },
+        {
+          "group": "Components",
+          "pages": [
+            {
+              "title": "AnimatedContainer",
+              "href": "/api/components/animated-container",
+              "icon": "cube"
+            },
+            {
+              "title": "ConfigPanel",
+              "href": "/api/components/config-panel",
+              "icon": "adjustments-horizontal"
+            },
+            {
+              "title": "AnimationPreview",
+              "href": "/api/components/animation-preview",
+              "icon": "eye"
+            }
+          ]
+        },
+        {
+          "group": "Hooks",
+          "pages": [
+            {
+              "title": "useAnimationConfig",
+              "href": "/api/hooks/use-animation-config",
+              "icon": "cog"
+            },
+            {
+              "title": "useAuth",
+              "href": "/api/hooks/use-auth",
+              "icon": "key"
+            },
+            {
+              "title": "useShareExport",
+              "href": "/api/hooks/use-share-export",
+              "icon": "share"
+            }
+          ]
+        },
+        {
+          "group": "Types",
+          "pages": [
+            {
+              "title": "AnimationConfig",
+              "href": "/api/types/animation-config",
+              "icon": "cog"
+            },
+            {
+              "title": "AnimationType",
+              "href": "/api/types/animation-type",
+              "icon": "play"
+            },
+            {
+              "title": "EasingFunction",
+              "href": "/api/types/easing-function",
+              "icon": "chart-line"
+            }
+          ]
+        },
+        {
+          "group": "Utilities",
+          "pages": [
+            {
+              "title": "Animation Utils",
+              "href": "/api/utils/animations",
+              "icon": "wrench-screwdriver"
+            },
+            {
+              "title": "Supabase Client",
+              "href": "/api/utils/supabase",
+              "icon": "database"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "group": "Animation Library",
+      "pages": [
+        {
+          "title": "Installation",
+          "href": "/library/installation",
+          "icon": "download"
+        },
+        {
+          "title": "Usage Examples",
+          "href": "/library/usage",
+          "icon": "code"
+        },
+        {
+          "title": "Animation Types",
+          "href": "/library/animations",
+          "icon": "sparkles"
+        },
+        {
+          "title": "API Reference",
+          "href": "/library/api",
+          "icon": "book-open"
+        },
+        {
+          "title": "Customization",
+          "href": "/library/customization",
+          "icon": "palette"
+        },
+        {
+          "title": "Examples & Best Practices",
+          "href": "/library/examples",
+          "icon": "academic-cap"
+        }
+      ]
+    }
+  ],
+  "theme": {
+    "primary": "#3B82F6"
+  }
+}

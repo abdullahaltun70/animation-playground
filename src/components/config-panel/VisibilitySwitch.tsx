@@ -1,4 +1,3 @@
-// src/components/config-panel/VisibilitySwitch.tsx
 import React from 'react';
 
 import { EyeOpenIcon, LockClosedIcon } from '@radix-ui/react-icons';
@@ -6,6 +5,14 @@ import { Flex, SegmentedControl, Text } from '@radix-ui/themes';
 
 import styles from './VisibilitySwitch.module.scss';
 
+/**
+ * @interface VisibilitySwitchProps
+ * @description Defines the props for the VisibilitySwitch component.
+ * @property {boolean} isPublic - Indicates if the current state is public.
+ * @property {(isPublic: boolean) => void} onChange - Callback function triggered when the visibility state changes.
+ * @property {boolean} [disabled=false] - Optional flag to disable the control.
+ * @property {string} ['aria-label'] - Optional aria-label for accessibility.
+ */
 interface VisibilitySwitchProps {
   isPublic: boolean;
   onChange: (isPublic: boolean) => void;
@@ -14,11 +21,10 @@ interface VisibilitySwitchProps {
 }
 
 /**
- * A segmented control component for toggling visibility between public and private states.
- * Uses Radix UI components with themed icons and consistent styling.
- * @param isPublic - Boolean flag indicating if the current state is public
- * @param onChange - Callback function triggered when visibility state changes
- * @param disabled - Optional flag to disable the control
+ * @component VisibilitySwitch
+ * @description A segmented control component for toggling visibility between public and private states.
+ * It utilizes Radix UI's SegmentedControl, Flex, and Text components, along with custom icons.
+ * @param {VisibilitySwitchProps} props - The props for the component.
  */
 export function VisibilitySwitch({
   isPublic,
@@ -33,7 +39,7 @@ export function VisibilitySwitch({
   };
 
   return (
-    // Using SegmentedControl for clear choice presentation
+    // SegmentedControl provides a clear visual choice between "Private" and "Public".
     <SegmentedControl.Root
       value={currentValue}
       onValueChange={handleValueChange}
@@ -43,20 +49,17 @@ export function VisibilitySwitch({
       className={styles.visibilitySwitchRoot}
       aria-label={ariaLabel}
     >
-      {/* Private Option */}
       <SegmentedControl.Item value="private">
         <Flex gap="2" align="center" title="Set visibility to Private">
           <LockClosedIcon
             width="16"
             height="16"
-            // color="var(--gray-11)"
-            color="var(--red-11)"
+            color="var(--red-11)" // Icon color for private state
           />
           <Text size="2">Private</Text>
         </Flex>
       </SegmentedControl.Item>
 
-      {/* Public Option */}
       <SegmentedControl.Item value="public">
         <Flex gap="2" align="center" title="Set visibility to Public">
           <EyeOpenIcon width="16" height="16" color="var(--accent-9)" />

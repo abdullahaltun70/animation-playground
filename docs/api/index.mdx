@@ -1,0 +1,238 @@
+---
+title: API Reference
+description: Complete API reference for Animation Playground components, hooks, and utilities.
+icon: code
+---
+
+# API Reference
+
+<Info>
+  Complete API reference for Animation Playground components, hooks, and
+  utilities. This documentation covers the React application API, not the
+  animation library.
+</Info>
+
+## 🎯 Quick Navigation
+
+<CardGroup cols={2}>
+<Card title="Core Components" icon="puzzle-piece">
+**Main Building Blocks**
+
+- [`AnimatedContainer`](https://docs.page/abdullahaltun70/animation-playground/api/components/animated-container) - Main animation wrapper component
+- [`ConfigPanel`](https://docs.page/abdullahaltun70/animation-playground/api/components/config-panel) - Animation configuration interface
+- [`AnimationPreview`](https://docs.page/abdullahaltun70/animation-playground/api/components/animation-preview) - Live animation preview component
+
+</Card>
+<Card title="Custom Hooks" icon="magic">
+**State Management & Logic**
+
+- [`useAnimationConfig`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-animation-config) - Animation configuration management
+- [`useAuth`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-auth) - Authentication state and methods
+- [`useShareExport`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-share-export) - Sharing and export functionality
+</Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+<Card title="Types & Interfaces" icon="tags">
+**TypeScript Definitions**
+
+- [`AnimationConfig`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-config) - Core animation configuration interface
+- [`AnimationType`](https://docs.page/abdullahaltun70/animation-playground/api/types/animation-type) - Supported animation types
+- [`EasingFunction`](https://docs.page/abdullahaltun70/animation-playground/api/types/easing-function) - Animation easing options
+
+</Card>
+<Card title="Utilities" icon="tools">
+**Helper Functions**
+
+- [`Animation Utils`](https://docs.page/abdullahaltun70/animation-playground/api/utils/animations) - Animation generation and manipulation
+- [`Supabase Client`](https://docs.page/abdullahaltun70/animation-playground/api/utils/supabase) - Database and authentication utilities
+</Card>
+</CardGroup>
+
+## 📋 Overview
+
+<CardGroup cols={2}>
+<Card title="Components" icon="react">
+The Animation Playground provides several React components for building animation interfaces:
+
+```typescript
+import { AnimatedContainer } from '@/components/animated-container';
+import { ConfigPanel } from '@/components/config-panel';
+```
+
+<Success>
+All components are fully typed with TypeScript for better development experience.
+</Success>
+</Card>
+<Card title="Hooks" icon="magic-wand">
+Custom hooks for managing animation state and user interactions:
+
+```typescript
+import { useAnimationConfig } from '@/hooks/use-animation-config';
+import { useAuth } from '@/hooks/use-auth';
+```
+
+<Info>
+Hooks follow React best practices and provide clean state management.
+</Info>
+</Card>
+</CardGroup>
+### Types
+
+<Card title="TypeScript Support" icon="typescript">
+TypeScript interfaces and types for type-safe development:
+
+```typescript
+import type { AnimationConfig, AnimationType } from '@/types/animations';
+```
+
+<Warning>
+Ensure you have proper TypeScript configuration to leverage full type safety.
+</Warning>
+</Card>
+
+## 🚀 Getting Started
+
+<Steps>
+<Step title="Import Components">
+Start by importing the core components you need:
+
+```tsx
+import { AnimatedContainer } from '@/components/animated-container';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+```
+
+</Step>
+
+<Step title="Create Your Component">
+Build your animation interface:
+
+```tsx
+function MyComponent() {
+  const { animationConfig, setAnimationConfig } = useAnimationConfig();
+
+  return (
+    <AnimatedContainer config={animationConfig}>
+      <div>Your animated content</div>
+    </AnimatedContainer>
+  );
+}
+```
+
+</Step>
+
+<Step title="Customize & Configure">
+Use the configuration hooks and utilities to build complex animations and user interfaces.
+</Step>
+</Steps>
+    <AnimatedContainer config={animationConfig}>
+      <div>Your animated content</div>
+    </AnimatedContainer>
+  );
+}
+```
+
+### With Configuration Panel
+
+For a complete animation interface:
+
+```tsx
+import { AnimatedContainer } from '@/components/animated-container';
+import { ConfigPanel } from '@/components/config-panel';
+import { useAnimationConfig } from '@/hooks/useAnimationConfig';
+
+function AnimationPlayground() {
+  const { animationConfig, setAnimationConfig } = useAnimationConfig();
+
+  return (
+    <div className="flex gap-4">
+      <ConfigPanel
+        initialConfig={animationConfig}
+        onConfigChange={setAnimationConfig}
+      />
+      <AnimatedContainer config={animationConfig}>
+        <div>Preview your animation here</div>
+      </AnimatedContainer>
+    </div>
+  );
+}
+```
+
+## 📊 Type Safety
+
+All APIs are fully typed with TypeScript. Import types for better development experience:
+
+```typescript
+import type {
+  AnimationConfig,
+  AnimationType,
+  EasingFunction,
+  ConfigModel,
+  ApiResponse,
+} from '@/types/animations';
+```
+
+## 🔧 Configuration
+
+### Default Animation Config
+
+```typescript
+const defaultConfig: AnimationConfig = {
+  type: 'fade',
+  duration: 0.5,
+  easing: 'ease-out',
+  delay: 0,
+  name: 'My Animation',
+};
+```
+
+### Supported Animation Types
+
+- `fade` - Opacity transitions
+- `slide` - Transform-based sliding
+- `scale` - Size scaling animations
+- `rotate` - Rotation transforms
+- `bounce` - Spring-based bouncing
+
+### Easing Functions
+
+- `ease`, `ease-in`, `ease-out`, `ease-in-out`
+- `linear`
+- `cubic-bezier(n,n,n,n)` - Custom cubic bezier curves
+
+## 🛠️ Advanced Usage
+
+### Custom Animations
+
+Create custom animation configurations:
+
+```typescript
+const customConfig: AnimationConfig = {
+  type: 'slide',
+  duration: 1.2,
+  easing: 'cubic-bezier(0.4, 0, 0.2, 1)',
+  delay: 0.3,
+  name: 'Custom Slide',
+  // Additional custom properties...
+};
+```
+
+### Programmatic Control
+
+Control animations programmatically:
+
+```typescript
+import { generateAnimationCSS } from '@/utils/animations';
+
+const cssString = generateAnimationCSS(animationConfig);
+// Use the generated CSS for custom implementations
+```
+
+## 📚 Next Steps
+
+- Explore individual [component documentation](/api/components/animated-container)
+- Learn about [custom hooks](/api/hooks/use-animation-config)
+- Check out [type definitions](/api/types/animation-config)
+- Review [utility functions](/api/utils/animations)
+
+> 💡 **Tip:** All examples in this documentation are fully functional and can be copied directly into your project.

@@ -22,6 +22,16 @@ import {
 
 import styles from './ConfigPanel.module.scss';
 
+/**
+ * @interface ConfigPanelProps
+ * @description Defines the props for the ConfigPanel component.
+ * @property {AnimationConfig} [initialConfig] - The initial configuration to populate the panel.
+ * @property {(config: AnimationConfig) => void} [onConfigChange] - Callback fired when any configuration value changes (excluding name/description, which are part of save).
+ * @property {(config: AnimationConfig) => void} [onSave] - Callback fired when the save button is clicked.
+ * @property {() => void} [onReset] - Callback fired when the reset button is clicked.
+ * @property {boolean} [isReadOnly=false] - If true, disables editing of configuration options.
+ * @property {string} [saveButtonText='Save'] - Text to display on the save button.
+ */
 interface ConfigPanelProps {
   initialConfig?: AnimationConfig;
   onConfigChange?: (config: AnimationConfig) => void;
@@ -31,6 +41,15 @@ interface ConfigPanelProps {
   saveButtonText?: string;
 }
 
+/**
+ * @component ConfigPanel
+ * @description A comprehensive panel for configuring various animation properties.
+ * It allows users to define animation types, durations, delays, easing functions,
+ * and type-specific parameters like opacity, distance, scale, and rotation.
+ * It also includes fields for naming and describing the configuration, and controls for saving and resetting.
+ * The panel can be set to a read-only mode.
+ * @param {ConfigPanelProps} props - The props for the component.
+ */
 export function ConfigPanel({
   initialConfig,
   onConfigChange,
@@ -61,11 +80,10 @@ export function ConfigPanel({
 
   const [isPublic, setIsPublic] = useState<boolean>(config.isPublic || false);
 
-  // Unique IDs for associating labels
-  const nameInputId = React.useId();
-  const descriptionInputId = React.useId();
+  const nameInputId = React.useId(); // Unique ID for name input
+  const descriptionInputId = React.useId(); // Unique ID for description input
 
-  // Generate unique IDs for accessibility
+  // Generate unique IDs for accessibility attributes (aria-labelledby)
   const nameLabelId = useId();
   const descriptionLabelId = useId();
   const animationTypeLabelId = useId();
@@ -91,14 +109,11 @@ export function ConfigPanel({
     }
   }, [initialConfig]);
 
-  // New useEffect to propagate config changes
+  // Effect to propagate changes upwards via onConfigChange,
+  // excluding name and description which are typically part of a save action.
   useEffect(() => {
     if (onConfigChange && !isReadOnly) {
-      // We only want to propagate changes that are not related to name and description,
-      // as those are typically handled by a save action.
-
       const { name, description, ...restOfConfig } = config;
-
       const {
         name: prevName,
         description: prevDescription,
@@ -107,36 +122,39 @@ export function ConfigPanel({
 
       // Deep comparison for the rest of the config to avoid unnecessary calls
       if (JSON.stringify(restOfConfig) !== JSON.stringify(restOfPrevConfig)) {
-        onConfigChange(config);
+        onConfigChange(config); // Propagate the full config state
       }
     }
-    prevConfigRef.current = config;
+    prevConfigRef.current = config; // Update ref after processing
   }, [config, isReadOnly, onConfigChange]);
 
+  // Generic handler for most config changes.
+  // Direct onConfigChange calls were removed from here to be centralized in the useEffect.
   const handleChange = (
     key: keyof AnimationConfig,
     value: string | number | boolean | AnimationType | EasingFunction
   ) => {
     if (isReadOnly) return;
     setConfig((prevConfig) => ({ ...prevConfig, [key]: value }));
-    // Removed direct onConfigChange call
   };
 
+  // Specific handler for opacity changes.
   const handleOpacityChange = (key: 'start' | 'end', value: number) => {
     if (isReadOnly) return;
     setConfig((prev) => {
       const newConfig = {
         ...prev,
         opacity: {
-          ...(prev.opacity || { start: 0, end: 1 }),
-          [key]: value / 100,
+          ...(prev.opacity || { start: 0, end: 1 }), // Ensure opacity object exists
+          [key]: value / 100, // Convert percentage to decimal
         },
       };
-      // Removed direct onConfigChange call
       return newConfig;
     });
   };
 
+  // Resets the configuration to default values.
+  // Calls onReset prop if provided, regardless of read-only state (as per test expectations).
   const handleReset = () => {
     if (!isReadOnly) {
       const resetConfigData: AnimationConfig = {
@@ -156,45 +174,50 @@ export function ConfigPanel({
       setConfig(resetConfigData);
       setIsPublic(false);
     }
-    // Call onReset regardless of isReadOnly, as per test expectations.
     if (onReset) {
       onReset();
     }
   };
 
+  // Handles saving the configuration.
+  // Calls onSave prop. Also calls onConfigChange if not read-only (as per test expectations).
   const handleSave = () => {
     const configToSave =
       isReadOnly && initialConfig ? initialConfig : { ...config, isPublic };
     if (onSave) {
       onSave(configToSave);
     }
-    // Manually call onConfigChange if it exists and not in read-only mode,
-    // as per test expectations for save.
     if (!isReadOnly && onConfigChange) {
       onConfigChange({ ...config, isPublic });
     }
   };
 
+  // Specific handler for rotation degrees (start/end).
   const handleDegreesChange = (key: 'start' | 'end', value: number) => {
     if (isReadOnly) return;
     setConfig((prev) => {
       const currentDegrees = prev.degrees;
       let newDegreesState: number | { start: number; end: number };
 
+      // Handle conversion from simple number to object if necessary
       if (typeof currentDegrees === 'object') {
         newDegreesState = { ...currentDegrees, [key]: value };
       } else {
+        // If currentDegrees is a number, initialize as object
         if (key === 'start') {
           newDegreesState = {
             start: value,
-            end: typeof currentDegrees === 'number' ? currentDegrees : 360,
+            end: typeof currentDegrees === 'number' ? currentDegrees : 360, // Default end if was number
           };
         } else {
-          newDegreesState = { start: 0, end: value };
+          // key === 'end'
+          newDegreesState = {
+            start: 0, // Default start
+            end: value,
+          };
         }
       }
       const newConfig = { ...prev, degrees: newDegreesState };
-      // Removed direct onConfigChange call
       return newConfig;
     });
   };
@@ -202,20 +225,19 @@ export function ConfigPanel({
   return (
     <>
       <h2 className={styles.title}>Animation Configuration</h2>
-      <div className={styles.configPanel}>
+      <div className={styles.configPanel} data-cy="config-panel">
         <div className={styles.field}>
           <LabelPrimitive.Root id={nameLabelId} htmlFor={nameInputId}>
-            {' '}
-            {/* Give Label an ID */}
             <Text weight="bold">Configuration Name</Text>
           </LabelPrimitive.Root>
           <TextField.Root
             id={nameInputId}
-            aria-labelledby={nameLabelId} // Explicitly label
+            aria-labelledby={nameLabelId}
             placeholder="My Animation"
             value={config.name || ''}
             onChange={(e) => handleChange('name', e.target.value)}
             disabled={isReadOnly}
+            data-cy="animation-name-input"
           />
         </div>
 
@@ -228,19 +250,18 @@ export function ConfigPanel({
           </LabelPrimitive.Root>
           <TextField.Root
             id={descriptionInputId}
-            aria-labelledby={descriptionLabelId} // Explicitly label
+            aria-labelledby={descriptionLabelId}
             placeholder="Describe your animation"
             value={config.description || ''}
             onChange={(e) => handleChange('description', e.target.value)}
             disabled={isReadOnly}
+            data-cy="animation-description-input"
           />
         </div>
 
         <div className={styles.field}>
           <Flex gap="1" direction={'column'}>
             <LabelPrimitive.Root id={animationTypeLabelId}>
-              {' '}
-              {/* ID for labelling */}
               <Text weight="bold">Animation Type</Text>
             </LabelPrimitive.Root>
             <Select.Root
@@ -253,14 +274,24 @@ export function ConfigPanel({
               <Select.Trigger
                 aria-labelledby={animationTypeLabelId}
                 placeholder="Select animation type"
-              />{' '}
-              {/* Label trigger */}
+                data-cy="animation-type-trigger"
+              />
               <Select.Content>
-                <Select.Item value="fade">Fade</Select.Item>
-                <Select.Item value="slide">Slide</Select.Item>
-                <Select.Item value="scale">Scale</Select.Item>
-                <Select.Item value="rotate">Rotate</Select.Item>
-                <Select.Item value="bounce">Bounce</Select.Item>
+                <Select.Item value="fade" data-cy="animation-type-fade">
+                  Fade
+                </Select.Item>
+                <Select.Item value="slide" data-cy="animation-type-slide">
+                  Slide
+                </Select.Item>
+                <Select.Item value="scale" data-cy="animation-type-scale">
+                  Scale
+                </Select.Item>
+                <Select.Item value="rotate" data-cy="animation-type-rotate">
+                  Rotate
+                </Select.Item>
+                <Select.Item value="bounce" data-cy="animation-type-bounce">
+                  Bounce
+                </Select.Item>
               </Select.Content>
             </Select.Root>
           </Flex>
@@ -281,14 +312,28 @@ export function ConfigPanel({
               <Select.Trigger
                 aria-labelledby={easingFunctionLabelId}
                 placeholder="Select easing function"
+                data-cy="easing-trigger"
               />
               <Select.Content>
-                <Select.Item value="ease">Ease</Select.Item>
-                <Select.Item value="ease-in">Ease In</Select.Item>
-                <Select.Item value="ease-out">Ease Out</Select.Item>
-                <Select.Item value="ease-in-out">Ease In Out</Select.Item>
-                <Select.Item value="linear">Linear</Select.Item>
-                <Select.Item value="cubic-bezier(0.175, 0.885, 0.32, 1.275)">
+                <Select.Item value="ease" data-cy="easing-ease">
+                  Ease
+                </Select.Item>
+                <Select.Item value="ease-in" data-cy="easing-ease-in">
+                  Ease In
+                </Select.Item>
+                <Select.Item value="ease-out" data-cy="easing-ease-out">
+                  Ease Out
+                </Select.Item>
+                <Select.Item value="ease-in-out" data-cy="easing-ease-in-out">
+                  Ease In Out
+                </Select.Item>
+                <Select.Item value="linear" data-cy="easing-linear">
+                  Linear
+                </Select.Item>
+                <Select.Item
+                  value="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+                  data-cy="easing-elastic"
+                >
                   Elastic
                 </Select.Item>
               </Select.Content>
@@ -300,18 +345,17 @@ export function ConfigPanel({
         <Theme>
           <div className={styles.field}>
             <LabelPrimitive.Root id={durationLabelId}>
-              {' '}
-              {/* Label has ID */}
               Duration (seconds)
             </LabelPrimitive.Root>
             <Slider
-              aria-labelledby={durationLabelId} // Slider.Root is labelled by this
-              value={[config.duration * 10]}
-              min={1}
-              max={30}
+              aria-labelledby={durationLabelId}
+              value={[config.duration * 10]} // Multiply by 10 for slider precision
+              min={1} // Represents 0.1s
+              max={30} // Represents 3.0s
               step={1}
               onValueChange={(value) => handleChange('duration', value[0] / 10)}
               disabled={isReadOnly}
+              data-cy="duration-slider"
             />
             <Text size="1">{config.duration.toFixed(1)}s</Text>
           </div>
@@ -322,12 +366,13 @@ export function ConfigPanel({
             </LabelPrimitive.Root>
             <Slider
               aria-labelledby={delayLabelId}
-              value={[config.delay * 10]}
-              min={0}
-              max={20}
+              value={[config.delay * 10]} // Multiply by 10 for slider precision
+              min={0} // Represents 0.0s
+              max={20} // Represents 2.0s
               step={1}
               onValueChange={(value) => handleChange('delay', value[0] / 10)}
               disabled={isReadOnly}
+              data-cy="delay-slider"
             />
             <Text size="1">{config.delay.toFixed(1)}s</Text>
           </div>
@@ -340,7 +385,7 @@ export function ConfigPanel({
                 </LabelPrimitive.Root>
                 <Slider
                   aria-labelledby={startOpacityLabelId}
-                  value={[config.opacity ? config.opacity.start * 100 : 0]}
+                  value={[config.opacity ? config.opacity.start * 100 : 0]} // Value in percentage
                   min={0}
                   max={100}
                   step={1}
@@ -348,6 +393,7 @@ export function ConfigPanel({
                     handleOpacityChange('start', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="start-opacity-slider"
                 />
                 <Text size="1">
                   {`${config.opacity ? (config.opacity.start * 100).toFixed(0) : 0}%`}
@@ -359,7 +405,7 @@ export function ConfigPanel({
                 </LabelPrimitive.Root>
                 <Slider
                   aria-labelledby={endOpacityLabelId}
-                  value={[config.opacity ? config.opacity.end * 100 : 100]}
+                  value={[config.opacity ? config.opacity.end * 100 : 100]} // Value in percentage
                   min={0}
                   max={100}
                   step={1}
@@ -367,6 +413,7 @@ export function ConfigPanel({
                     handleOpacityChange('end', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="end-opacity-slider"
                 />
                 <Text size="1">
                   {`${config.opacity ? (config.opacity.end * 100).toFixed(0) : 100}%`}
@@ -386,9 +433,10 @@ export function ConfigPanel({
                   value={[config.distance || 0]}
                   min={-200}
                   max={200}
-                  step={10}
+                  step={1}
                   onValueChange={(value) => handleChange('distance', value[0])}
                   disabled={isReadOnly}
+                  data-cy="distance-input"
                 />
                 <Text size="1">{`${config.distance || 0}px`}</Text>
               </div>
@@ -407,10 +455,15 @@ export function ConfigPanel({
                     <Select.Trigger
                       aria-labelledby={axisLabelId}
                       placeholder="Select axis"
+                      data-cy="axis-trigger"
                     />
                     <Select.Content>
-                      <Select.Item value="x">X-axis</Select.Item>
-                      <Select.Item value="y">Y-axis</Select.Item>
+                      <Select.Item value="x" data-cy="axis-x">
+                        X-axis
+                      </Select.Item>
+                      <Select.Item value="y" data-cy="axis-y">
+                        Y-axis
+                      </Select.Item>
                     </Select.Content>
                   </Select.Root>
                 </Flex>
@@ -426,14 +479,15 @@ export function ConfigPanel({
                 </LabelPrimitive.Root>
                 <Slider
                   aria-labelledby={scaleLabelId}
-                  value={[config.scale ? config.scale * 100 : 0]}
-                  min={0}
-                  max={200}
+                  value={[config.scale ? config.scale * 100 : 0]} // Value in percentage
+                  min={0} // Represents 0%
+                  max={200} // Represents 200%
                   step={1}
                   onValueChange={(value) =>
                     handleChange('scale', value[0] / 100)
                   }
                   disabled={isReadOnly}
+                  data-cy="scale-input"
                 />
                 <Text size="1">
                   {`${config.scale ? (config.scale * 100).toFixed(0) : 0}%`}
@@ -453,7 +507,7 @@ export function ConfigPanel({
                   value={[
                     typeof config.degrees === 'object'
                       ? config.degrees.start
-                      : 0, // Default to 0 if not an object or if converting
+                      : 0, // Default start rotation to 0 if not an object
                   ]}
                   min={0}
                   max={360}
@@ -462,6 +516,7 @@ export function ConfigPanel({
                     handleDegreesChange('start', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="start-degrees-input"
                 />
                 <Text size="1">
                   {typeof config.degrees === 'object'
@@ -480,8 +535,8 @@ export function ConfigPanel({
                     typeof config.degrees === 'object'
                       ? config.degrees.end
                       : typeof config.degrees === 'number'
-                        ? config.degrees
-                        : 360, // Default to 360 or current number value
+                        ? config.degrees // Use number if it's the simple type
+                        : 360, // Default end rotation
                   ]}
                   min={0}
                   max={360}
@@ -490,6 +545,7 @@ export function ConfigPanel({
                     handleDegreesChange('end', value[0])
                   }
                   disabled={isReadOnly}
+                  data-cy="degrees-input"
                 />
                 <Text size="1">
                   {typeof config.degrees === 'object'
@@ -514,9 +570,10 @@ export function ConfigPanel({
                   value={[config.distance || 0]}
                   min={-200}
                   max={200}
-                  step={10}
+                  step={1}
                   onValueChange={(value) => handleChange('distance', value[0])}
                   disabled={isReadOnly}
+                  data-cy="bounce-distance-input"
                 />
                 <Text size="1">{`${config.distance || 0}px`}</Text>
               </div>
@@ -525,12 +582,10 @@ export function ConfigPanel({
 
           <Flex direction={'column'} className={styles.field} gap="1">
             <LabelPrimitive.Root id={visibilityLabelId}>
-              {' '}
-              {/* Changed ID to avoid clash if useId not scoped */}
               Visibility
             </LabelPrimitive.Root>
             <VisibilitySwitch
-              aria-label={'Visibility'}
+              aria-label={'Configuration visibility'} // More descriptive aria-label
               isPublic={isPublic}
               onChange={(newIsPublicValue) => {
                 setIsPublic(newIsPublicValue);
@@ -547,6 +602,7 @@ export function ConfigPanel({
             variant="outline"
             className={styles.resetButton}
             disabled={isReadOnly && typeof onReset !== 'function'}
+            data-cy="reset-btn"
           >
             {isReadOnly ? 'New Animation' : 'Reset'}
           </Button>
@@ -554,6 +610,7 @@ export function ConfigPanel({
             onClick={handleSave}
             className={styles.copyButton}
             disabled={isReadOnly && typeof onSave !== 'function'}
+            data-cy="save-btn"
           >
             {isReadOnly
               ? saveButtonText === 'Save'

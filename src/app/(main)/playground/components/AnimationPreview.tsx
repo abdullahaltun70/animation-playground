@@ -8,6 +8,14 @@ import { AnimationConfig } from '@/types/animations';
 
 import styles from '../styles/Playground.module.scss';
 
+/**
+ * @interface AnimationPreviewProps
+ * @description Defines the props for the AnimationPreview component.
+ * @property {AnimationConfig} config - The current animation configuration to be previewed.
+ * @property {string | null} configId - The ID of the current configuration, if saved. Used to determine if sharing is possible.
+ * @property {() => void} onShare - Callback function invoked when the share button is clicked.
+ * @property {() => void} onExport - Callback function invoked when the export button is clicked.
+ */
 interface AnimationPreviewProps {
   config: AnimationConfig;
   configId: string | null;
@@ -16,7 +24,10 @@ interface AnimationPreviewProps {
 }
 
 /**
- * Renders the animation preview and action buttons for sharing and exporting.
+ * @component AnimationPreview
+ * @description Displays the animation preview using the `AnimatedContainer` component
+ * and provides action buttons for sharing (if `configId` is present) and exporting the animation.
+ * @param {AnimationPreviewProps} props - The props for the component.
  */
 export function AnimationPreview({
   config,
@@ -25,17 +36,16 @@ export function AnimationPreview({
   onExport,
 }: AnimationPreviewProps) {
   return (
-    <Box className={styles.animationArea}>
-      <AnimatedContainer config={config} />
+    <Box className={styles.animationArea} data-cy="animation-preview">
+      <AnimatedContainer config={config} data-cy="animation-preview-element" />
 
-      {/* Action buttons: Share (if configId is present) and Export animation */}
       <Flex className={styles.actionButtons} gap="2">
-        {configId && (
-          <Button onClick={onShare}>
+        {configId && ( // Share button is only rendered if there's a configId (i.e., config is saved)
+          <Button onClick={onShare} data-cy="share-btn">
             <Share1Icon /> Share
           </Button>
         )}
-        <Button onClick={onExport}>
+        <Button onClick={onExport} data-cy="export-btn">
           <CodeIcon /> Export Code
         </Button>
       </Flex>

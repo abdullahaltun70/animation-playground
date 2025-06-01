@@ -1,7 +1,7 @@
 // src/components/header/Header.tsx
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 
 import { ExitIcon, PersonIcon } from '@radix-ui/react-icons';
 import {
@@ -16,56 +16,34 @@ import { usePathname } from 'next/navigation';
 
 import { SignOutButton } from '@/app/(main)/profile/components/SignOutButton';
 import { UserAvatar } from '@/app/(main)/profile/components/UserAvatar';
-import { createClient } from '@/app/utils/supabase/client';
 import { ThemeToggle } from '@/components/theme-toggle';
+import { useAuth } from '@/context/AuthProvider';
 
 import styles from './Header.module.scss';
 
+/**
+ * @component Header
+ * @description Renders the application header, including navigation links, theme toggle, and user authentication status/menu.
+ * Uses the AuthProvider context to get authentication state instead of managing its own state.
+ * This component does not accept any props.
+ */
 export const Header = () => {
   const pathname = usePathname();
-  const supabase = createClient();
-
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [userEmail, setUserEmail] = useState<string | null>(null);
-  const [isLoadingAuth, setIsLoadingAuth] = useState(true);
-
-  useEffect(() => {
-    // on change in auth, get the user metadata and update state
-    const checkAuth = async () => {
-      setIsLoadingAuth(true);
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setIsAuthenticated(!!user);
-      setUserEmail(user?.email || null);
-      setIsLoadingAuth(false);
-    };
-
-    checkAuth();
-
-    // Listen for auth state changes handled by onAuthStateChange
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      const user = session?.user;
-      setIsAuthenticated(!!user);
-      setUserEmail(user?.email || null);
-      setIsLoadingAuth(false);
-    });
-
-    // Cleanup subscription on unmount
-    return () => {
-      subscription?.unsubscribe();
-    };
-  }, [supabase.auth]); // Add supabase.auth dependency
+  const { user, isLoading: isLoadingAuth, isAuthenticated } = useAuth();
 
   return (
-    <header className={`${styles.header} fade-in`}>
+    <header
+      className={`${styles.header} fade-in`}
+      data-cy="main-nav"
+      role="banner"
+    >
       <div className={styles.headerContent}>
-        {/* Left Section: Logo & Links */}
         <Flex gap="6" align="center" className={styles.leftSection}>
-          {/* Logo */}
-          <RadixLink href="/" className={styles.logoContainer}>
+          <RadixLink
+            href="/"
+            className={styles.logoContainer}
+            data-cy="nav-home"
+          >
             <div className={styles.logo}>
               <Image
                 src="/logo.png"
@@ -76,12 +54,12 @@ export const Header = () => {
             </div>
           </RadixLink>
 
-          {/* Navigation Links */}
           <nav className={styles.nav}>
             <RadixLink
               href={'/'}
               className={pathname === '/' ? styles.active : ''}
               weight={pathname === '/' ? 'bold' : 'regular'}
+              data-cy="nav-playground"
             >
               Playground
             </RadixLink>
@@ -90,15 +68,14 @@ export const Header = () => {
               href={'/documentation'}
               className={pathname === '/documentation' ? styles.active : ''}
               weight={pathname === '/documentation' ? 'bold' : 'regular'}
+              data-cy="nav-documentation"
             >
               Documentation
             </RadixLink>
           </nav>
         </Flex>
 
-        {/* Right Section: Auth/Theme */}
         <div className={styles.rightSection}>
-          {/* Conditionally render based on loading and auth state */}
           {!isLoadingAuth && (
             <DropdownMenu.Root>
               <DropdownMenu.Trigger>
@@ -113,21 +90,20 @@ export const Header = () => {
               <DropdownMenu.Content align="end">
                 {isAuthenticated ? (
                   <>
-                    {userEmail && (
-                      <DropdownMenu.Label>
+                    {user?.email && (
+                      <DropdownMenu.Label data-cy="user-email-label">
                         <Text size="2" color="gray">
-                          {userEmail}
+                          {user.email}
                         </Text>
                       </DropdownMenu.Label>
                     )}
                     <DropdownMenu.Item asChild>
-                      <RadixLink href="/profile">
-                        {' '}
-                        {/* Use 'a' tag inside for correct rendering */}
+                      <RadixLink href="/profile" data-cy="user-profile-link">
                         <PersonIcon
                           width="16"
                           height="16"
                           style={{ marginRight: '8px' }}
+                          data-cy="user-profile"
                         />
                         Profile
                       </RadixLink>
@@ -145,11 +121,10 @@ export const Header = () => {
                         width="16"
                         height="16"
                         style={{
-                          transform: 'scaleX(-1)',
+                          transform: 'scaleX(-1)', // Visually indicates "Sign In" action
                           marginRight: '8px',
                         }}
                       />
-                      {/* Reversed icon for Sign In */}
                       Sign In
                     </RadixLink>
                   </DropdownMenu.Item>
@@ -158,9 +133,10 @@ export const Header = () => {
             </DropdownMenu.Root>
           )}
           {isLoadingAuth && (
+            // Render a placeholder or the UserAvatar directly while loading
+            // UserAvatar might have its own loading state or show a default
             <div className={styles.avatarTriggerButton}>
-              {/* Placeholder with same dimensions */}
-              <UserAvatar /> {/* Or a skeleton Avatar */}
+              <UserAvatar />
             </div>
           )}
 

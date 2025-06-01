@@ -1,0 +1,592 @@
+---
+title: Supabase Client
+description: Database and authentication utilities for Animation Playground using Supabase.
+icon: database
+---
+
+# Supabase Client
+
+The Supabase Client utility provides database operations and authentication functions for the Animation Playground application.
+
+## Import
+
+```typescript
+import {
+  supabase,
+  authHelpers,
+  databaseHelpers,
+  storageHelpers,
+  realtimeHelpers,
+} from '@/utils/supabase';
+```
+
+## Client Instance
+
+### `supabase`
+
+The main Supabase client instance configured for the application.
+
+```typescript
+import { createClient } from '@supabase/supabase-js';
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey);
+```
+
+## Authentication Helpers
+
+### `authHelpers`
+
+Collection of authentication utility functions.
+
+#### `signUp(email: string, password: string): Promise<AuthResponse>`
+
+Creates a new user account.
+
+```typescript
+import { authHelpers } from '@/utils/supabase';
+
+const handleSignUp = async () => {
+  try {
+    const { data, error } = await authHelpers.signUp(
+      'user@example.com',
+      'securepassword'
+    );
+
+    if (error) throw error;
+    console.log('User created:', data.user);
+  } catch (error) {
+    console.error('Sign up failed:', error);
+  }
+};
+```
+
+#### `signIn(email: string, password: string): Promise<AuthResponse>`
+
+Signs in an existing user.
+
+```typescript
+const handleSignIn = async () => {
+  try {
+    const { data, error } = await authHelpers.signIn(
+      'user@example.com',
+      'securepassword'
+    );
+
+    if (error) throw error;
+    console.log('User signed in:', data.user);
+  } catch (error) {
+    console.error('Sign in failed:', error);
+  }
+};
+```
+
+#### `signOut(): Promise<{ error: AuthError | null }>`
+
+Signs out the current user.
+
+```typescript
+const handleSignOut = async () => {
+  const { error } = await authHelpers.signOut();
+  if (error) {
+    console.error('Sign out failed:', error);
+  } else {
+    console.log('User signed out successfully');
+  }
+};
+```
+
+#### `getCurrentUser(): Promise<User | null>`
+
+Gets the current authenticated user.
+
+```typescript
+const checkAuth = async () => {
+  const user = await authHelpers.getCurrentUser();
+  if (user) {
+    console.log('Authenticated user:', user);
+  } else {
+    console.log('No authenticated user');
+  }
+};
+```
+
+#### `resetPassword(email: string): Promise<{ error: AuthError | null }>`
+
+Sends password reset email.
+
+```typescript
+const handlePasswordReset = async (email: string) => {
+  const { error } = await authHelpers.resetPassword(email);
+  if (error) {
+    console.error('Password reset failed:', error);
+  } else {
+    console.log('Password reset email sent');
+  }
+};
+```
+
+## Database Helpers
+
+### `databaseHelpers`
+
+Functions for database operations on animation-related data.
+
+#### Animation Configurations
+
+##### `saveAnimationConfig(config: AnimationConfig): Promise<AnimationRecord>`
+
+Saves an animation configuration to the database.
+
+```typescript
+import { databaseHelpers } from '@/utils/supabase';
+
+const saveConfig = async () => {
+  const config: AnimationConfig = {
+    type: 'fade',
+    duration: 1000,
+    easing: 'ease-in-out',
+    name: 'Smooth Fade',
+    description: 'A gentle fade animation',
+  };
+
+  try {
+    const savedConfig = await databaseHelpers.saveAnimationConfig(config);
+    console.log('Config saved:', savedConfig);
+  } catch (error) {
+    console.error('Save failed:', error);
+  }
+};
+```
+
+##### `getAnimationConfig(id: string): Promise<AnimationRecord | null>`
+
+Retrieves an animation configuration by ID.
+
+```typescript
+const loadConfig = async (configId: string) => {
+  try {
+    const config = await databaseHelpers.getAnimationConfig(configId);
+    if (config) {
+      console.log('Loaded config:', config);
+    } else {
+      console.log('Config not found');
+    }
+  } catch (error) {
+    console.error('Load failed:', error);
+  }
+};
+```
+
+##### `updateAnimationConfig(id: string, updates: Partial<AnimationConfig>): Promise<AnimationRecord>`
+
+Updates an existing animation configuration.
+
+```typescript
+const updateConfig = async (configId: string) => {
+  try {
+    const updated = await databaseHelpers.updateAnimationConfig(configId, {
+      duration: 1500,
+      description: 'Updated description',
+    });
+    console.log('Config updated:', updated);
+  } catch (error) {
+    console.error('Update failed:', error);
+  }
+};
+```
+
+##### `deleteAnimationConfig(id: string): Promise<void>`
+
+Deletes an animation configuration.
+
+```typescript
+const deleteConfig = async (configId: string) => {
+  try {
+    await databaseHelpers.deleteAnimationConfig(configId);
+    console.log('Config deleted');
+  } catch (error) {
+    console.error('Delete failed:', error);
+  }
+};
+```
+
+##### `getUserAnimations(userId: string): Promise<AnimationRecord[]>`
+
+Gets all animations created by a specific user.
+
+```typescript
+const loadUserAnimations = async (userId: string) => {
+  try {
+    const animations = await databaseHelpers.getUserAnimations(userId);
+    console.log('User animations:', animations);
+  } catch (error) {
+    console.error('Load failed:', error);
+  }
+};
+```
+
+##### `getPublicAnimations(): Promise<AnimationRecord[]>`
+
+Gets publicly shared animations.
+
+```typescript
+const loadPublicAnimations = async () => {
+  try {
+    const animations = await databaseHelpers.getPublicAnimations();
+    console.log('Public animations:', animations);
+  } catch (error) {
+    console.error('Load failed:', error);
+  }
+};
+```
+
+#### User Profiles
+
+##### `createUserProfile(user: User): Promise<Profile>`
+
+Creates a user profile after registration.
+
+```typescript
+const createProfile = async (user: User) => {
+  try {
+    const profile = await databaseHelpers.createUserProfile(user);
+    console.log('Profile created:', profile);
+  } catch (error) {
+    console.error('Profile creation failed:', error);
+  }
+};
+```
+
+##### `getUserProfile(userId: string): Promise<Profile | null>`
+
+Gets a user's profile information.
+
+```typescript
+const loadProfile = async (userId: string) => {
+  try {
+    const profile = await databaseHelpers.getUserProfile(userId);
+    if (profile) {
+      console.log('User profile:', profile);
+    }
+  } catch (error) {
+    console.error('Profile load failed:', error);
+  }
+};
+```
+
+## Storage Helpers
+
+### `storageHelpers`
+
+Functions for file storage operations.
+
+#### `uploadAnimationExport(file: File, fileName: string): Promise<string>`
+
+Uploads an exported animation file.
+
+```typescript
+import { storageHelpers } from '@/utils/supabase';
+
+const uploadExport = async (animationFile: File) => {
+  try {
+    const url = await storageHelpers.uploadAnimationExport(
+      animationFile,
+      'my-animation.gif'
+    );
+    console.log('File uploaded:', url);
+  } catch (error) {
+    console.error('Upload failed:', error);
+  }
+};
+```
+
+#### `getPublicUrl(path: string): string`
+
+Gets a public URL for a stored file.
+
+```typescript
+const getFileUrl = (filePath: string) => {
+  const url = storageHelpers.getPublicUrl(filePath);
+  console.log('Public URL:', url);
+  return url;
+};
+```
+
+#### `deleteFile(path: string): Promise<void>`
+
+Deletes a file from storage.
+
+```typescript
+const deleteFile = async (filePath: string) => {
+  try {
+    await storageHelpers.deleteFile(filePath);
+    console.log('File deleted');
+  } catch (error) {
+    console.error('Delete failed:', error);
+  }
+};
+```
+
+## Realtime Helpers
+
+### `realtimeHelpers`
+
+Functions for real-time subscriptions and updates.
+
+#### `subscribeToAnimationUpdates(callback: (payload: any) => void): RealtimeChannel`
+
+Subscribes to real-time animation updates.
+
+```typescript
+import { realtimeHelpers } from '@/utils/supabase';
+
+const subscribeToUpdates = () => {
+  const channel = realtimeHelpers.subscribeToAnimationUpdates((payload) => {
+    console.log('Animation updated:', payload);
+    // Handle real-time update
+  });
+
+  // Cleanup on component unmount
+  return () => {
+    channel.unsubscribe();
+  };
+};
+```
+
+#### `subscribeToUserActivity(userId: string, callback: (payload: any) => void): RealtimeChannel`
+
+Subscribes to a specific user's activity.
+
+```typescript
+const subscribeToUser = (userId: string) => {
+  const channel = realtimeHelpers.subscribeToUserActivity(userId, (payload) => {
+    console.log('User activity:', payload);
+  });
+
+  return channel;
+};
+```
+
+## Database Schema Types
+
+### Animation Record
+
+```typescript
+interface AnimationRecord {
+  id: string;
+  user_id: string;
+  name: string;
+  description?: string;
+  config: AnimationConfig;
+  is_public: boolean;
+  tags: string[];
+  created_at: string;
+  updated_at: string;
+  view_count: number;
+  like_count: number;
+}
+```
+
+### Profile
+
+```typescript
+interface Profile {
+  id: string;
+  user_id: string;
+  username: string;
+  display_name?: string;
+  avatar_url?: string;
+  bio?: string;
+  website?: string;
+  created_at: string;
+  updated_at: string;
+}
+```
+
+## Advanced Usage Examples
+
+### Animation Sharing Service
+
+```typescript
+import { databaseHelpers, authHelpers } from '@/utils/supabase';
+
+class AnimationSharingService {
+  async shareAnimation(config: AnimationConfig, isPublic = false) {
+    const user = await authHelpers.getCurrentUser();
+    if (!user) throw new Error('User not authenticated');
+
+    const animationRecord = await databaseHelpers.saveAnimationConfig({
+      ...config,
+      user_id: user.id,
+      is_public: isPublic,
+    });
+
+    return animationRecord;
+  }
+
+  async likeAnimation(animationId: string) {
+    const user = await authHelpers.getCurrentUser();
+    if (!user) throw new Error('User not authenticated');
+
+    // Implementation for liking an animation
+    // (would involve updating like_count and tracking user likes)
+  }
+
+  async getPopularAnimations(limit = 10) {
+    return databaseHelpers
+      .getPublicAnimations()
+      .then((animations) =>
+        animations.sort((a, b) => b.like_count - a.like_count).slice(0, limit)
+      );
+  }
+}
+```
+
+### Real-time Collaboration
+
+```typescript
+import { realtimeHelpers, databaseHelpers } from '@/utils/supabase';
+
+class CollaborationManager {
+  private channel: RealtimeChannel | null = null;
+
+  startCollaboration(animationId: string) {
+    this.channel = realtimeHelpers.subscribeToAnimationUpdates((payload) => {
+      if (payload.eventType === 'UPDATE' && payload.new.id === animationId) {
+        this.handleRemoteUpdate(payload.new);
+      }
+    });
+  }
+
+  async updateAnimation(animationId: string, config: Partial<AnimationConfig>) {
+    await databaseHelpers.updateAnimationConfig(animationId, config);
+    // Real-time update will be automatically sent to other collaborators
+  }
+
+  stopCollaboration() {
+    if (this.channel) {
+      this.channel.unsubscribe();
+      this.channel = null;
+    }
+  }
+
+  private handleRemoteUpdate(updatedAnimation: AnimationRecord) {
+    // Handle updates from other collaborators
+    console.log('Remote update received:', updatedAnimation);
+  }
+}
+```
+
+### Batch Operations
+
+```typescript
+import { databaseHelpers } from '@/utils/supabase';
+
+class BatchOperations {
+  async importAnimations(configs: AnimationConfig[]) {
+    const results = await Promise.allSettled(
+      configs.map((config) => databaseHelpers.saveAnimationConfig(config))
+    );
+
+    const successful = results
+      .filter((result) => result.status === 'fulfilled')
+      .map(
+        (result) => (result as PromiseFulfilledResult<AnimationRecord>).value
+      );
+
+    const failed = results
+      .filter((result) => result.status === 'rejected')
+      .map((result) => (result as PromiseRejectedResult).reason);
+
+    return { successful, failed };
+  }
+
+  async bulkDelete(animationIds: string[]) {
+    const results = await Promise.allSettled(
+      animationIds.map((id) => databaseHelpers.deleteAnimationConfig(id))
+    );
+
+    return results;
+  }
+}
+```
+
+## Error Handling
+
+```typescript
+import { AuthError, PostgrestError } from '@supabase/supabase-js';
+
+function handleSupabaseError(error: AuthError | PostgrestError | Error) {
+  if ('code' in error) {
+    // Supabase-specific error
+    switch (error.code) {
+      case 'email_already_exists':
+        return 'An account with this email already exists';
+      case 'invalid_credentials':
+        return 'Invalid email or password';
+      case 'PGRST116':
+        return 'Record not found';
+      default:
+        return error.message;
+    }
+  }
+
+  return error.message;
+}
+
+// Usage
+try {
+  await authHelpers.signUp(email, password);
+} catch (error) {
+  const userMessage = handleSupabaseError(error);
+  console.error(userMessage);
+}
+```
+
+## Environment Configuration
+
+```typescript
+// Required environment variables
+const requiredEnvVars = {
+  NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL,
+  NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
+  SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY, // Server-side only
+};
+
+// Validate environment variables
+Object.entries(requiredEnvVars).forEach(([key, value]) => {
+  if (!value) {
+    throw new Error(`Missing required environment variable: ${key}`);
+  }
+});
+```
+
+## Security Best Practices
+
+1. **Row Level Security (RLS)** - Enable RLS on all tables
+2. **User Isolation** - Ensure users can only access their own data
+3. **Input Validation** - Validate all data before database operations
+4. **Rate Limiting** - Implement rate limiting for API calls
+5. **Secure Storage** - Use proper file permissions and access controls
+
+## Performance Optimization
+
+1. **Connection Pooling** - Reuse database connections
+2. **Caching** - Cache frequently accessed data
+3. **Batch Operations** - Combine multiple operations when possible
+4. **Indexing** - Ensure proper database indexes
+5. **Real-time Subscriptions** - Use sparingly and clean up properly
+
+## Related Components
+
+- [`useAuth`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-auth) - Authentication hook using Supabase
+- [`useShareExport`](https://docs.page/abdullahaltun70/animation-playground/api/hooks/use-share-export) - Uses Supabase for sharing
+
+## Related Documentation
+
+- [Supabase Documentation](https://supabase.com/docs)
+- [Supabase JavaScript Client](https://supabase.com/docs/reference/javascript/)
+- [Row Level Security](https://supabase.com/docs/guides/auth/row-level-security)

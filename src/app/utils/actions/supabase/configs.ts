@@ -7,13 +7,77 @@ import { createClient } from '@/app/utils/supabase/server';
 import { createConfig } from '@/db/queries/create';
 import { deleteConfig } from '@/db/queries/delete';
 import {
-  getAllConfigs,
   getConfigById,
   getConfigsByUserId,
   getConfigsByUserIdAndConfigId,
 } from '@/db/queries/read';
 import { updateConfig } from '@/db/queries/update';
 import { Config } from '@/db/schema';
+
+/**
+ * **Server action that fetches all public configurations from the database.**
+ * This action does not require authentication.
+ *
+ * @returns Promise<{
+ *   success: boolean;
+ *   message: string;
+ *   data?: Config[]; // Array of configuration objects
+ * }>
+ */
+// This action fetches all public configurations, excluding the user's own configurations.
+// It uses Supabase to query the database and returns the results (respecting RLS).
+export async function getAllConfigsAction(): Promise<{
+  success: boolean;
+  message: string;
+  data?: Config[];
+}> {
+  const supabase = createClient();
+
+  const {
+    data: { user },
+  } = await (await supabase).auth.getUser();
+
+  try {
+    let query = (await supabase)
+      .from('configs_table')
+      .select(
+        `
+        *,
+        isPublic: is_public
+      `
+      )
+      .eq('is_public', true); // Start by selecting only public configs
+
+    // If a user is logged in, add a condition to exclude their own configs
+    if (user) {
+      query = query.neq('user_id', user.id);
+    }
+
+    const { data: configsData, error } = await query.order('updated_at', {
+      ascending: false,
+    });
+
+    if (error) {
+      console.error('[Server Action] Supabase error fetching configs:', error);
+      throw error;
+    }
+
+    return {
+      success: true,
+      message: 'All Public Configurations (excluding own) fetched successfully',
+      data: (configsData as Config[]) || [],
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message:
+        error instanceof Error
+          ? error.message
+          : 'Failed to fetch configurations',
+      data: [],
+    };
+  }
+}
 
 /**
  * **Server action that fetches a specific configuration by its ID.**
@@ -83,30 +147,32 @@ export async function getConfigByIdAction(configId: string): Promise<{
  *   data?: Config[]; // Array of configuration objects
  * }>
  */
-export async function getAllConfigsAction(): Promise<{
-  success: boolean;
-  message: string;
-  data?: Config[];
-}> {
-  try {
-    const configs = await getAllConfigs();
 
-    return {
-      success: true,
-      message: 'All Configurations fetched successfully',
-      data: configs,
-    };
-  } catch (error) {
-    console.error('[Server Action] Error fetching configs:', error);
-    return {
-      success: false,
-      message:
-        error instanceof Error
-          ? error.message
-          : 'Failed to fetch configurations',
-    };
-  }
-}
+// Uses Drizzle to fetch all configs, but does not respect RLS
+// export async function getAllConfigsAction(): Promise<{
+//   success: boolean;
+//   message: string;
+//   data?: Config[];
+// }> {
+//   try {
+//     const configs = await getAllConfigs();
+
+//     return {
+//       success: true,
+//       message: 'All Configurations fetched successfully',
+//       data: configs,
+//     };
+//   } catch (error) {
+//     console.error('[Server Action] Error fetching configs:', error);
+//     return {
+//       success: false,
+//       message:
+//         error instanceof Error
+//           ? error.message
+//           : 'Failed to fetch configurations',
+//     };
+//   }
+// }
 
 /**
  * Server action to fetch configurations associated with a specific user ID.

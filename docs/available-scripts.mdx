@@ -1,0 +1,98 @@
+---
+title: Available Scripts
+description: Learn about the scripts available in the Animation Playground project.
+icon: terminal
+---
+
+# Available Scripts
+
+<Info>
+  The Animation Playground project includes a comprehensive set of scripts for
+  development, testing, and production deployment.
+</Info>
+
+## Development Scripts
+
+<CardGroup cols={2}>
+<Card title="yarn dev" icon="play">
+**Development Server**
+
+Runs the app in development mode with Turbopack for fast refresh and optimal development experience.
+
+</Card>
+<Card title="yarn build" icon="hammer">
+**Production Build**
+
+Builds the app for production with optimizations, minification, and static generation.
+
+</Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+<Card title="yarn start" icon="rocket">
+**Production Server**
+
+Starts the production server after building the application.
+
+</Card>
+<Card title="yarn test:watch" icon="eye">
+**Watch Mode Testing**
+
+Runs Vitest tests in watch mode for continuous testing during development.
+
+</Card>
+</CardGroup>
+
+## Code Quality Scripts
+
+<CardGroup cols={2}>
+<Card title="Linting" icon="check-circle">
+**ESLint Commands**
+
+- `yarn lint`: Lints the codebase using Next.js's built-in ESLint configuration
+- `yarn lint:fix`: Lints and automatically fixes issues
+
+</Card>
+<Card title="Formatting" icon="code">
+**Prettier Commands**
+
+- `yarn prettier`: Checks for Prettier formatting issues
+- `yarn prettier:fix`: Formats files with Prettier
+</Card>
+</CardGroup>
+
+## Testing Scripts
+
+<CardGroup cols={3}>
+<Card title="yarn test" icon="test-tube">
+**Unit Testing**
+
+Runs Vitest tests with comprehensive test coverage
+
+</Card>
+<Card title="yarn test:coverage" icon="chart-bar">
+**Coverage Report**
+
+Runs tests and generates detailed coverage report
+
+</Card>
+<Card title="yarn typecheck" icon="typescript">
+**Type Checking**
+
+Runs TypeScript type checking across the project
+
+</Card>
+</CardGroup>
+
+## Automation Scripts
+
+<Card title="Batch Operations" icon="cogs">
+**Combined Commands**
+
+- `yarn checks`: Runs all checks (typecheck, lint, prettier, test)
+- `yarn checks:fix`: Runs all checks and attempts to fix issues automatically
+
+<Success>
+Use `yarn checks` before committing to ensure code quality and prevent CI failures.
+</Success>
+</Card>

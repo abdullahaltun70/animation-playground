@@ -1,0 +1,357 @@
+---
+title: Project Structure
+description: Understand the codebase architecture and organization of the Animation Playground project.
+icon: folder
+---
+
+# Project Structure
+
+Animation Playground is built with modern web development practices and follows a well-organized structure that makes it easy to navigate, understand, and contribute to the codebase.
+
+## Overview
+
+The project is a Next.js application using the App Router with TypeScript, Supabase for backend services, and a comprehensive testing setup.
+
+```
+animation-playground/
+├── docs/                    # Documentation (this site)
+├── public/                  # Static assets
+├── src/                     # Application source code
+├── supabase/                # Database migrations
+├── coverage/                # Test coverage reports
+└── Configuration files
+```
+
+## Source Code Structure (`src/`)
+
+### Application Directory (`app/`)
+
+The `app/` directory follows Next.js 13+ App Router conventions:
+
+```
+src/app/
+├── layout.tsx              # Root layout component
+├── page.tsx                # Homepage
+├── globals.scss            # Global styles
+├── (auth)/                 # Authentication routes
+│   ├── signin/
+│   ├── signup/
+│   └── layout.tsx
+├── (main)/                 # Main application routes
+│   ├── playground/         # Animation creation interface
+│   ├── profile/            # User profile and library
+│   └── docs/               # Documentation routes
+├── api/                    # API routes
+└── utils/                  # Utility functions
+```
+
+**Route Groups**
+
+- `(auth)`: Authentication-related pages with shared layout
+- `(main)`: Main application pages with navigation
+
+**Key Files**
+
+- `layout.tsx`: Defines the overall application layout and providers
+- `globals.scss`: Global CSS styles and design tokens
+- `middleware.ts`: Authentication and route protection
+
+### Components Directory (`components/`)
+
+Reusable UI components organized by functionality:
+
+```
+src/components/
+├── config-panel/          # Animation configuration interface
+│   ├── ConfigPanel.tsx
+│   ├── PropertyControls.tsx
+│   └── PresetSelector.tsx
+├── header/                # Navigation and site header
+├── footer/                # Site footer
+├── theme-toggle/          # Dark/light mode switcher
+├── animated-container/    # Animation wrapper components
+├── config-card/           # Animation library card component
+└── profile/               # User profile components
+```
+
+**Component Organization**
+
+- Each component has its own directory when it includes multiple files
+- Shared components are at the root level
+- Feature-specific components are grouped together
+
+### Database Layer (`db/`)
+
+Database schema, queries, and ORM configuration:
+
+```
+src/db/
+├── index.ts              # Database connection and client
+├── schema.ts             # Drizzle ORM schema definitions
+├── relations.ts          # Database relationships
+└── queries/              # Reusable database queries
+    ├── animations.ts
+    ├── users.ts
+    └── auth.ts
+```
+
+**Database Technologies**
+
+- **Drizzle ORM**: Type-safe database operations
+- **PostgreSQL**: Database backend via Supabase
+- **Migrations**: Version-controlled schema changes
+
+### Context Providers (`context/`)
+
+React Context for global state management:
+
+```
+src/context/
+├── AuthProvider.tsx      # Authentication state
+├── ToastContext.tsx      # Notification system
+└── ThemeProvider.tsx     # Theme and dark mode
+```
+
+### Testing (`tests/`)
+
+Comprehensive test suite organized by feature:
+
+```
+src/tests/
+├── components/           # Component unit tests
+├── hooks/               # Custom hook tests
+├── pages/               # Page integration tests
+├── auth/                # Authentication tests
+└── utils/               # Utility function tests
+```
+
+**Testing Technologies**
+
+- **Vitest**: Fast unit testing framework
+- **Testing Library**: Component testing utilities
+- **Mock Service Worker**: API mocking for tests
+
+> 💡 **Tip:**
+> Tests are co-located with the code they test and follow the same directory
+> structure for easy navigation.
+
+## Configuration Files
+
+### Core Configuration
+
+**Next.js Configuration (`next.config.ts`)**
+
+```typescript
+// Build and runtime configuration
+export default {
+  experimental: {
+    serverActions: true,
+  },
+  images: {
+    domains: ['example.com'],
+  },
+};
+```
+
+**TypeScript Configuration (`tsconfig.json`)**
+
+- Strict type checking enabled
+- Path aliases for clean imports
+- Modern ES target for optimal performance
+
+**ESLint Configuration (`eslint.config.mjs`)**
+
+- Next.js recommended rules
+- TypeScript-specific linting
+- Custom rules for code consistency
+
+### Development Tools
+
+**Vitest Configuration (`vitest.config.ts`)**
+
+```typescript
+// Testing framework configuration
+export default defineConfig({
+  test: {
+    environment: 'jsdom',
+    setupFiles: ['./vitest.setup.ts'],
+    coverage: {
+      reporter: ['text', 'html'],
+    },
+  },
+});
+```
+
+**Prettier Configuration**
+
+- Consistent code formatting
+- Integrated with ESLint
+- Automatic formatting on save
+
+**Drizzle Configuration (`drizzle.config.ts`)**
+
+```typescript
+// Database ORM configuration
+export default {
+  schema: './src/db/schema.ts',
+  out: './supabase/migrations',
+  driver: 'pg',
+};
+```
+
+## Public Assets (`public/`)
+
+Static files served directly by Next.js:
+
+```
+public/
+├── logo.png              # Application logo
+├── favicon.ico           # Browser icon
+├── docs/                 # TypeDoc generated documentation
+└── images/               # Static images and assets
+```
+
+**TypeDoc Documentation**
+
+- Generated API documentation
+- Available at `/docs` route
+- Includes all TypeScript interfaces and functions
+
+## Build & Scripts
+
+### Available Scripts
+
+Development and build scripts defined in `package.json`:
+
+```json
+{
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "lint": "next lint",
+    "db:generate": "drizzle-kit generate",
+    "db:migrate": "drizzle-kit migrate"
+  }
+}
+```
+
+### Build Process
+
+1. **Type Checking**: Ensures all TypeScript is valid
+2. **Linting**: Checks code quality and style
+3. **Testing**: Runs the full test suite
+4. **Building**: Creates optimized production bundle
+5. **Documentation**: Generates API docs with TypeDoc
+
+## Architecture Patterns
+
+### State Management
+
+**Client State**
+
+- React Context for global state
+- Local component state for UI interactions
+- Custom hooks for complex logic
+
+**Server State**
+
+- Supabase for user data and animations
+- React Query patterns for data fetching
+- Optimistic updates for better UX
+
+### Component Architecture
+
+**Design Patterns**
+
+- **Compound Components**: Complex UI with multiple sub-components
+- **Render Props**: Flexible component composition
+- **Custom Hooks**: Reusable stateful logic
+
+**Styling Approach**
+
+- **SCSS Modules**: Scoped component styles
+- **Global Styles**: Design system tokens
+- **Responsive Design**: Mobile-first approach
+
+### Data Flow
+
+```
+User Input → Component → Custom Hook → Database
+                ↓           ↓
+            UI Update ← State Update ← Response
+```
+
+## Dependencies
+
+### Core Dependencies
+
+**Framework & UI**
+
+- `next`: React framework with App Router
+- `react`: UI library
+- `@radix-ui/themes`: Accessible component library
+
+**Backend & Database**
+
+- `@supabase/supabase-js`: Backend client
+- `drizzle-orm`: Type-safe database ORM
+- `pg`: PostgreSQL driver
+
+**Animation**
+
+- `animation-library-test-abdullah-altun`: Core animation library
+- `framer-motion`: Additional animation utilities
+
+### Development Dependencies
+
+**Testing**
+
+- `vitest`: Test runner
+- `@testing-library/react`: Component testing
+- `@testing-library/user-event`: User interaction testing
+
+**Code Quality**
+
+- `typescript`: Type safety
+- `eslint`: Code linting
+- `prettier`: Code formatting
+
+> ℹ️ **Info:**
+> All dependencies are kept up to date and regularly audited for security
+> vulnerabilities.
+
+## Development Workflow
+
+### Getting Started
+
+1. **Clone Repository**: Get the latest code
+2. **Install Dependencies**: Run `yarn install`
+3. **Environment Setup**: Configure `.env.local`
+4. **Database Setup**: Run migrations if needed
+5. **Start Development**: Run `yarn dev`
+
+### Code Organization Principles
+
+**File Naming**
+
+- PascalCase for React components
+- camelCase for utilities and hooks
+- kebab-case for non-component files
+
+**Import Organization**
+
+- External libraries first
+- Internal modules second
+- Relative imports last
+- Type-only imports separated
+
+**Directory Structure**
+
+- Features grouped together
+- Shared code in common directories
+- Tests co-located with source code
+
+Ready to contribute? Check out our [Contributing Guide](https://docs.page/abdullahaltun70/animation-playground/development/contributing) to learn how to get involved with the project.

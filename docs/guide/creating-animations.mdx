@@ -1,0 +1,249 @@
+---
+title: Creating Animations
+description: Learn how to create stunning animations using the Animation Playground interface.
+icon: play
+---
+
+# Creating Animations
+
+<Info>
+  Animation Playground makes it easy to create beautiful web animations through
+  an intuitive interface. This guide will walk you through the process step by
+  step.
+</Info>
+
+## Getting Started
+
+<Steps>
+<Step title="Access the Playground">
+Navigate to the main application at `http://localhost:3000` and click on the **"Playground"** link in the navigation
+</Step>
+
+<Step title="Understand the Interface">
+You'll see the animation creation interface with two main panels:
+
+<CardGroup cols={2}>
+<Card title="Configuration Panel" icon="sliders">
+**Left Side**
+
+Where you set up your animation properties, timing, and effects
+
+</Card>
+<Card title="Preview Panel" icon="eye">
+**Right Side**
+
+Where you see your animation in action with real-time updates
+
+</Card>
+</CardGroup>
+</Step>
+</Steps>
+
+## Animation Types
+
+<Warning>
+  Understanding the different animation types will help you choose the right
+  effect for your use case.
+</Warning>
+
+<CardGroup cols={3}>
+<Card title="Fade" icon="eye">
+**Opacity Effects**
+
+- **In**: Element appears by fading from transparent to opaque
+- **Out**: Element disappears by fading from opaque to transparent
+- **InOut**: Combines fade in and fade out
+
+</Card>
+<Card title="Slide" icon="arrows-alt">
+**Movement Effects**
+
+- **Up/Down**: Element moves vertically
+- **Left/Right**: Element moves horizontally
+- **Diagonal**: Element moves in diagonal directions
+
+</Card>
+<Card title="Scale" icon="expand">
+**Size Effects**
+
+- **Up**: Element grows from small to normal size
+- **Down**: Element shrinks from normal to small size
+- **Bounce**: Element scales with a bouncing effect
+</Card>
+</CardGroup>
+
+<CardGroup cols={2}>
+<Card title="Rotate" icon="sync">
+**Rotation Effects**
+
+- **Clockwise**: Element rotates clockwise
+- **Counter-clockwise**: Element rotates counter-clockwise
+- **Full rotation**: 360-degree rotation
+
+</Card>
+<Card title="Bounce" icon="arrow-up">
+**Spring Effects**
+
+- **Up/Down**: Element bounces vertically
+- **Left/Right**: Element bounces horizontally
+- **Elastic**: Spring-like bouncing effects
+</Card>
+</CardGroup>
+- **Left/Right**: Element bounces horizontally
+- **Spring**: Spring-like bouncing effect
+
+> 💡 **Tip:**
+> Each animation type has its own set of configurable properties. Experiment
+> with different combinations to create unique effects!
+
+## Configuration Options
+
+### Basic Settings
+
+**Animation Type**
+
+- Select from the dropdown menu
+- Each type reveals specific configuration options
+
+**Duration**
+
+- Control how long the animation takes to complete
+- Range: 0.1s to 5.0s
+- Use shorter durations for snappy effects, longer for smooth transitions
+
+**Delay**
+
+- Set when the animation should start after being triggered
+- Useful for creating sequences of animations
+
+### Advanced Settings
+
+**Easing Function**
+
+- **Linear**: Constant speed throughout
+- **Ease**: Slow start, fast middle, slow end
+- **Ease-in**: Slow start, speeds up
+- **Ease-out**: Fast start, slows down
+- **Ease-in-out**: Slow start and end, fast middle
+- **Custom**: Define your own cubic-bezier curve
+
+**Iteration Count**
+
+- **Once**: Animation plays once
+- **Infinite**: Animation loops continuously
+- **Custom**: Specify exact number of repetitions
+
+**Direction**
+
+- **Normal**: Animation plays forward
+- **Reverse**: Animation plays backward
+- **Alternate**: Animation alternates between forward and reverse
+
+## Creating Your First Animation
+
+Let's create a simple fade-in animation:
+
+### Step 1: Choose Animation Type
+
+1. In the Configuration Panel, click the "Animation Type" dropdown
+2. Select **"Fade In"**
+
+### Step 2: Set Duration
+
+1. Use the duration slider or input field
+2. Set it to **0.5 seconds** for a quick fade
+
+### Step 3: Preview
+
+- The preview panel will automatically show your animation
+- Click the play button to replay it
+- You'll see the element fade in smoothly
+
+### Step 4: Fine-tune
+
+1. Adjust the easing to **"ease-out"** for a more natural feel
+2. Add a **0.2s delay** if you want the animation to start later
+3. Watch the preview update in real-time
+
+> ✅ **Success:** > **Congratulations!** You've created your first animation. The preview shows
+> exactly how it will look in your application.
+
+## Advanced Techniques
+
+### Combining Animations
+
+While the playground focuses on individual animations, you can create complex effects by:
+
+1. **Sequencing**: Use delays to chain animations
+2. **Layering**: Apply different animations to nested elements
+3. **Timing**: Synchronize multiple animations with matching durations
+
+### Responsive Animations
+
+Consider how your animations will look on different screen sizes:
+
+- **Mobile**: Shorter durations and distances work better
+- **Desktop**: More elaborate animations are acceptable
+- **Reduced Motion**: Always respect user preferences for reduced motion
+
+### Performance Considerations
+
+- **Transform vs Position**: Use transform properties for better performance
+- **Duration**: Very long animations (>2s) can feel sluggish
+- **Frequency**: Don't animate too many elements simultaneously
+
+## Testing Your Animation
+
+### Preview Controls
+
+- **Play Button**: Restart the animation from the beginning
+- **Pause Button**: Stop the animation at its current state
+- **Reset Button**: Return to the initial state
+
+### Different States
+
+Test your animation in various scenarios:
+
+- **Initial Load**: How does it look when the page first loads?
+- **User Interaction**: If triggered by user actions, test those interactions
+- **Repeat Views**: How does it behave when triggered multiple times?
+
+## Saving Your Work
+
+Once you're happy with your animation:
+
+1. **Name Your Animation**: Give it a descriptive name
+2. **Save Configuration**: Click the save button (requires account)
+3. **Generate Code**: Export as React component or CSS
+
+> ℹ️ **Info:**
+> Saved animations are stored in your personal library and can be accessed from
+> any device when you're logged in.
+
+## Next Steps
+
+- Learn about [Sharing & Exporting](https://docs.page/abdullahaltun70/animation-playground/guide/sharing-exporting) your animations
+- Explore [User Accounts](https://docs.page/abdullahaltun70/animation-playground/guide/user-accounts) to save and manage your work
+- Check out the [Available Scripts](https://docs.page/abdullahaltun70/animation-playground/available-scripts) for development workflows
+
+## Common Patterns
+
+### Loading Animations
+
+- Use fade-in with scale up for elements appearing
+- Duration: 0.3-0.5s works well
+- Easing: ease-out feels natural
+
+### Hover Effects
+
+- Subtle scale (1.05x) or slight movement
+- Duration: 0.2s for responsiveness
+- Use transform properties for performance
+
+### Page Transitions
+
+- Slide animations work well for navigation
+- Consider the direction of user flow
+- Duration: 0.4-0.6s for page-level changes
+
+Ready to share your creations? Learn about [Sharing & Exporting](https://docs.page/abdullahaltun70/animation-playground/guide/sharing-exporting) in the next section.

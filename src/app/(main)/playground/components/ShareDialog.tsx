@@ -19,7 +19,10 @@ interface ShareDialogProps {
 }
 
 /**
- * Dialog for sharing the animation configuration URL.
+ * @component ShareDialog
+ * @description A dialog component that displays a shareable URL for the current
+ * animation configuration and allows the user to copy it to the clipboard.
+ * @param {ShareDialogProps} props - The props for the component.
  */
 export function ShareDialog({
   open,
@@ -29,29 +32,41 @@ export function ShareDialog({
   copySuccess,
 }: ShareDialogProps) {
   return (
-    <Dialog.Root open={open} onOpenChange={onOpenChange}>
-      <Dialog.Content>
+    <Dialog.Root open={open} onOpenChange={onOpenChange} data-cy="share-dialog">
+      <Dialog.Content data-cy="share-dialog">
         <Dialog.Title>Share Animation Configuration</Dialog.Title>
         <Dialog.Description>
           Anyone with this link can view and edit this animation configuration.
         </Dialog.Description>
 
         <Flex gap="3" mt="4">
-          <TextField.Root value={shareUrl} readOnly style={{ flexGrow: 1 }} />
-          <IconButton onClick={onCopyUrl} aria-label="Copy URL">
+          <TextField.Root
+            value={shareUrl || ''}
+            readOnly
+            style={{ flexGrow: 1 }}
+            aria-label="Share URL"
+            data-cy="share-url"
+          />
+          <IconButton
+            onClick={onCopyUrl}
+            aria-label="Copy URL"
+            data-cy="copy-url-btn"
+          >
             <CopyIcon />
           </IconButton>
         </Flex>
 
         {copySuccess && (
-          <Text color="green" mt="2">
+          <Text mt="2" className="text-green-600">
             URL copied to clipboard!
           </Text>
         )}
 
         <Flex gap="3" mt="4" justify="end">
           <Dialog.Close>
-            <Button variant="soft">Close</Button>
+            <Button variant="soft" data-cy="close-share-dialog">
+              Close
+            </Button>
           </Dialog.Close>
         </Flex>
       </Dialog.Content>

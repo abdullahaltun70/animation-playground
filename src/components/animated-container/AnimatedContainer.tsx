@@ -11,16 +11,32 @@ import {
 
 import styles from './AnimatedContainer.module.scss';
 
+/**
+ * @interface AnimatedContainerProps
+ * @description Defines the props for the AnimatedContainer component.
+ * @property {React.ReactNode} [children] - Optional children to render inside the animated area. If not provided, a default "Animate Me!" text is shown.
+ * @property {AnimationConfig} config - The animation configuration object from `animation-library-test-abdullah-altun`.
+ * @property {string} [data-cy] - Optional Cypress test selector attribute.
+ */
 interface AnimatedContainerProps {
   children?: React.ReactNode;
   config: AnimationConfig;
+  'data-cy'?: string;
 }
 
+/**
+ * @component AnimatedContainer
+ * @description A presentational component that provides a container for animations
+ * managed by the `useAnimation` hook from `animation-library-test-abdullah-altun`.
+ * It displays an animation preview area and a "Replay Animation" button.
+ * The actual animated element should receive the `ref` and `key` provided by the `useAnimation` hook.
+ * @param {AnimatedContainerProps} props - The props for the component.
+ */
 export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
   children,
   config,
+  'data-cy': dataCy,
 }) => {
-  // Using the animation hook from the library
   const { ref, key, replay } = useAnimation<HTMLDivElement>(config);
 
   return (
@@ -28,21 +44,26 @@ export const AnimatedContainer: React.FC<AnimatedContainerProps> = ({
       <Heading className={styles.title}>Animation Preview</Heading>
       <div className={styles.container}>
         <div className={styles.animationBox}>
-          {/*
-            Apply the ref and key directly to the element you want to animate.
-            The hook handles adding/removing the necessary 'animate-*' class.
-          */}
+          {/* If children are provided, they are rendered directly.
+              Otherwise, a default div is rendered and animated.
+              The key from useAnimation is crucial for re-triggering the animation on replay.
+              The ref from useAnimation must be attached to the element intended to be animated. */}
           {children || (
             <div
-              key={key}
-              ref={ref} // Ref from the hook attaches to the DOM element
+              key={key} // Ensures animation replays
+              ref={ref} // Attaches animation controls to this element
               className={styles.animatableElement}
+              data-cy={dataCy}
             >
               <Text>Animate Me!</Text>
             </div>
           )}
         </div>
-        <Button className={styles.replayButton} onClick={replay}>
+        <Button
+          className={styles.replayButton}
+          onClick={replay}
+          data-cy="play-animation-btn"
+        >
           <ResetIcon /> Replay Animation
         </Button>
       </div>

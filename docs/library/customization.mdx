@@ -1,0 +1,1036 @@
+---
+title: Customization Guide
+description: Learn how to customize and extend the Animation Library
+icon: palette
+---
+
+# Customization Guide
+
+The Animation Library provides multiple ways to customize animations to fit your design needs. From simple property modifications to complex custom animations.
+
+## Basic Property Customization
+
+### Duration Control
+
+Adjust animation timing in seconds:
+
+```jsx
+// Fast micro-interactions
+<Animate type="fade" duration={0.2}>
+  <button>Quick fade</button>
+</Animate>
+
+// Standard UI transitions
+<Animate type="slide" duration={0.6} distance={100} axis="x">
+  <div>Medium slide</div>
+</Animate>
+
+// Dramatic entrance animations
+<Animate type="bounce" duration={2}>
+  <div>Slow bounce</div>
+</Animate>
+```
+
+### Easing Functions
+
+Control animation timing curves:
+
+```jsx
+// Built-in easing options
+<Animate type="scale" easing="ease-in" scale={{ start: 0, end: 1 }}>
+  <div>Ease in scaling</div>
+</Animate>
+
+<Animate type="slide" easing="ease-out" distance={-50} axis="y">
+  <div>Ease out slide</div>
+</Animate>
+
+<Animate type="rotate" easing="ease-in-out" degrees={180}>
+  <div>Ease in-out rotation</div>
+</Animate>
+
+// Custom cubic bezier curves
+<Animate
+  type="bounce"
+  easing="cubic-bezier(0.68, -0.55, 0.265, 1.55)"
+  duration={1.2}
+>
+  <div>Custom bouncy easing</div>
+</Animate>
+```
+
+### Direction and Distance
+
+Fine-tune movement with sign-based direction control:
+
+```jsx
+// Horizontal movements
+<Animate type="slide" distance={150} axis="x">
+  <div>Slide from left (positive)</div>
+</Animate>
+
+<Animate type="slide" distance={-150} axis="x">
+  <div>Slide from right (negative)</div>
+</Animate>
+
+// Vertical movements
+<Animate type="slide" distance={100} axis="y">
+  <div>Slide from top (positive)</div>
+</Animate>
+
+<Animate type="slide" distance={-100} axis="y">
+  <div>Slide from bottom (negative)</div>
+</Animate>
+
+// Combined with other properties
+<Animate
+  type="slide"
+  distance={-80}
+  axis="x"
+  opacity={{ start: 0, end: 1 }}
+  scale={{ start: 0.8, end: 1 }}
+>
+  <div>Complex slide with fade and scale</div>
+</Animate>
+```
+
+### Custom Opacity Ranges
+
+Control transparency transitions precisely:
+
+```jsx
+// Partial fade effects
+<Animate
+  type="fade"
+  opacity={{ start: 0.1, end: 0.9 }}
+  duration={1}
+>
+  <div>Subtle fade</div>
+</Animate>
+
+// Inverted fade (fade out)
+<Animate
+  type="fade"
+  opacity={{ start: 1, end: 0 }}
+  duration={0.5}
+>
+  <div>Fade out effect</div>
+</Animate>
+
+// Combined with other animations
+<Animate
+  type="rotate"
+  degrees={180}
+  opacity={{ start: 0, end: 1 }}
+  duration={1.5}
+>
+  <div>Rotate with fade</div>
+</Animate>
+```
+
+### Custom Scale Ranges
+
+Precise size control for scaling animations:
+
+```jsx
+// Scale from tiny to normal
+<Animate
+  type="scale"
+  scale={{ start: 0.1, end: 1 }}
+  duration={0.8}
+>
+  <div>Dramatic scale in</div>
+</Animate>
+
+// Scale beyond normal size
+<Animate
+  type="scale"
+  scale={{ start: 1, end: 1.3 }}
+  duration={0.4}
+>
+  <div>Scale up effect</div>
+</Animate>
+
+// Axis-specific scaling
+<Animate
+  type="scale"
+  scale={{ start: 0, end: 1 }}
+  axis="x"
+  duration={1}
+>
+  <div>Horizontal stretch</div>
+</Animate>
+```
+
+## Advanced Animation Combinations
+
+### Multi-Property Animations
+
+Combine multiple animation properties for complex effects:
+
+```jsx
+// Complex entrance animation
+<Animate
+  type="slide"
+  distance={200}
+  axis="x"
+  duration={1.8}
+  delay={0.5}
+  easing="cubic-bezier(0.175, 0.885, 0.32, 1.275)"
+  opacity={{ start: 0, end: 1 }}
+  scale={{ start: 0.6, end: 1 }}
+  degrees={45}
+>
+  <div>Complex multi-property animation</div>
+</Animate>
+
+// Bouncy slide with rotation
+<Animate
+  type="bounce"
+  distance={-120}
+  axis="y"
+  duration={2}
+  degrees={360}
+  opacity={{ start: 0, end: 1 }}
+>
+  <div>Bouncy rotating entrance</div>
+</Animate>
+```
+
+### Dynamic Animation Configuration
+
+Change animation properties based on state or props:
+
+```jsx
+function DynamicAnimations({ isLarge, direction, intensity }) {
+  const animationConfig = {
+    type: 'slide',
+    duration: intensity === 'high' ? 1.2 : 0.6,
+    distance: isLarge ? 200 : 100,
+    axis: direction === 'horizontal' ? 'x' : 'y',
+    easing:
+      intensity === 'high'
+        ? 'cubic-bezier(0.68, -0.55, 0.265, 1.55)'
+        : 'ease-out',
+    scale: isLarge ? { start: 0.5, end: 1.2 } : { start: 0.8, end: 1 },
+    opacity: { start: 0, end: 1 },
+  };
+
+  return (
+    <Animate {...animationConfig}>
+      <div>Dynamic animation based on props</div>
+    </Animate>
+  );
+}
+
+// Usage
+<DynamicAnimations isLarge={true} direction="horizontal" intensity="high" />;
+```
+
+### Conditional Animation Types
+
+Switch between different animation types:
+
+```jsx
+function AdaptiveAnimation({ userPreference, deviceType }) {
+  const getAnimationType = () => {
+    if (deviceType === 'mobile') return 'fade'; // Subtle on mobile
+    if (userPreference === 'minimal') return 'slide';
+    return 'bounce'; // Full effect on desktop
+  };
+
+  const getDuration = () => {
+    if (deviceType === 'mobile') return 0.3;
+    if (userPreference === 'minimal') return 0.5;
+    return 1.2;
+  };
+
+  return (
+    <Animate
+      type={getAnimationType()}
+      duration={getDuration()}
+      distance={deviceType === 'mobile' ? 20 : 50}
+      axis="y"
+    >
+      <div>Adaptive animation</div>
+    </Animate>
+  );
+}
+```
+
+## Custom Animation Sequences
+
+### Sequential Animations with useAnimation
+
+Create complex sequences using the hook:
+
+```jsx
+function AnimationSequence() {
+  const [phase, setPhase] = useState(0);
+
+  // Define different animation configurations
+  const phases = [
+    { type: 'fade', opacity: { start: 0, end: 1 }, duration: 0.8 },
+    { type: 'slide', distance: -100, axis: 'x', duration: 1 },
+    { type: 'scale', scale: { start: 1, end: 1.2 }, duration: 0.6 },
+    { type: 'rotate', degrees: 360, duration: 1.5 },
+    { type: 'bounce', distance: 50, axis: 'y', duration: 1.8 },
+  ];
+
+  const [animateRef, triggerAnimation] = useAnimation(phases[phase]);
+
+  const nextPhase = () => {
+    setPhase((prev) => (prev + 1) % phases.length);
+  };
+
+  useEffect(() => {
+    triggerAnimation();
+  }, [phase, triggerAnimation]);
+
+  return (
+    <div>
+      <div
+        ref={animateRef}
+        style={{ padding: '20px', background: 'lightblue' }}
+      >
+        Animation Phase: {phase + 1}
+      </div>
+      <button onClick={nextPhase}>Next Animation</button>
+    </div>
+  );
+}
+```
+
+### Staggered Group Animations
+
+Create coordinated group effects:
+
+```jsx
+function StaggeredGroup({ items, staggerDelay = 0.1 }) {
+  return (
+    <div className="staggered-container">
+      {items.map((item, index) => (
+        <Animate
+          key={item.id}
+          type="slide"
+          distance={-30}
+          axis="y"
+          opacity={{ start: 0, end: 1 }}
+          duration={0.6}
+          delay={index * staggerDelay}
+          easing="ease-out"
+        >
+          <div className="staggered-item">{item.content}</div>
+        </Animate>
+      ))}
+    </div>
+  );
+}
+
+// Usage with different stagger timings
+<StaggeredGroup items={cardData} staggerDelay={0.15} />;
+```
+
+## Performance Optimization
+
+### Efficient Animation Patterns
+
+```jsx
+// ✅ Good: Minimal, purposeful animations
+<Animate type="fade" duration={0.3}>
+  <button>Quick feedback</button>
+</Animate>;
+
+// ✅ Good: Staggered with reasonable delays
+{
+  items.slice(0, 5).map((item, index) => (
+    <Animate
+      key={item.id}
+      type="slide"
+      distance={-20}
+      axis="y"
+      delay={index * 0.05}
+      duration={0.4}
+    >
+      <div>{item.title}</div>
+    </Animate>
+  ));
+}
+
+// ❌ Avoid: Too many concurrent complex animations
+{
+  items.map((item) => (
+    <Animate
+      type="bounce"
+      duration={2}
+      degrees={360}
+      distance={100}
+      // This creates too much visual noise and performance issues
+    >
+      <div>{item.title}</div>
+    </Animate>
+  ));
+}
+```
+
+### Memory Management
+
+```jsx
+// Cleanup is handled automatically, but you can optimize with useMemo
+function OptimizedAnimations({ data, animationType }) {
+  const animationConfig = useMemo(
+    () => ({
+      type: animationType,
+      duration: animationType === 'bounce' ? 1.2 : 0.6,
+      distance: 50,
+      axis: 'y',
+    }),
+    [animationType]
+  );
+
+  return (
+    <Animate {...animationConfig}>
+      <div>Optimized animation</div>
+    </Animate>
+  );
+}
+```
+
+## Accessibility Customization
+
+### Reduced Motion Support
+
+Automatically adapt animations for accessibility:
+
+```jsx
+function AccessibleAnimation({ children, fallbackType = 'fade' }) {
+  const prefersReducedMotion = window.matchMedia(
+    '(prefers-reduced-motion: reduce)'
+  ).matches;
+
+  const animationProps = prefersReducedMotion
+    ? { type: fallbackType, duration: 0.1 }
+    : { type: 'bounce', duration: 1.2, distance: 50 };
+
+  return <Animate {...animationProps}>{children}</Animate>;
+}
+```
+
+### Alternative Animation Modes
+
+```jsx
+function InclusiveAnimation({ mode = 'normal', children }) {
+  const configs = {
+    minimal: { type: 'fade', duration: 0.2 },
+    normal: { type: 'slide', duration: 0.6, distance: 30 },
+    enhanced: { type: 'bounce', duration: 1.2, distance: 50 },
+  };
+
+  return <Animate {...configs[mode]}>{children}</Animate>;
+}
+```
+
+## Custom Styling Integration
+
+### CSS Custom Properties
+
+Use CSS variables for consistent theming:
+
+```css
+:root {
+  /* Animation timing */
+  --animation-speed-fast: 0.2s;
+  --animation-speed-normal: 0.6s;
+  --animation-speed-slow: 1.2s;
+
+  /* Animation distances */
+  --animation-distance-small: 20px;
+  --animation-distance-medium: 50px;
+  --animation-distance-large: 100px;
+
+  /* Custom easing */
+  --animation-easing-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --animation-easing-smooth: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* Theme-based customization */
+.theme-playful {
+  --default-animation-type: bounce;
+  --default-duration: var(--animation-speed-slow);
+}
+
+.theme-professional {
+  --default-animation-type: fade;
+  --default-duration: var(--animation-speed-fast);
+}
+```
+
+### Component Integration
+
+```jsx
+// Integrate with your design system
+function ThemedAnimation({ variant = 'default', children, ...props }) {
+  const variants = {
+    default: { type: 'fade', duration: 0.3 },
+    playful: { type: 'bounce', duration: 1.2, distance: 30 },
+    elegant: { type: 'slide', duration: 0.8, distance: -20, axis: 'y' },
+    dramatic: {
+      type: 'scale',
+      scale: { start: 0, end: 1 },
+      duration: 1,
+      opacity: { start: 0, end: 1 },
+    },
+  };
+
+  return (
+    <Animate {...variants[variant]} {...props}>
+      {children}
+    </Animate>
+  );
+}
+
+// Usage
+<ThemedAnimation variant="playful">
+  <div>Playful themed animation</div>
+</ThemedAnimation>;
+```
+
+## Best Practices
+
+### Animation Hierarchy
+
+```jsx
+// Primary actions: Prominent animations
+<Animate type="bounce" duration={1} distance={40}>
+  <button className="primary-button">Primary Action</button>
+</Animate>
+
+// Secondary actions: Subtle animations
+<Animate type="fade" duration={0.3}>
+  <button className="secondary-button">Secondary Action</button>
+</Animate>
+
+// Micro-interactions: Minimal animations
+<Animate type="scale" scale={{ start: 1, end: 1.05 }} duration={0.15}>
+  <div className="hover-card">Micro-interaction</div>
+</Animate>
+```
+
+### Responsive Animation
+
+```jsx
+function ResponsiveAnimation({ children }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => setIsMobile(window.innerWidth < 768);
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  const config = isMobile
+    ? { type: 'fade', duration: 0.2 } // Simple on mobile
+    : { type: 'slide', duration: 0.6, distance: 50, axis: 'y' }; // Rich on desktop
+
+  return <Animate {...config}>{children}</Animate>;
+}
+```
+
+### Performance Guidelines
+
+1. **Duration recommendations:**
+
+   - Micro-interactions: 0.1-0.3 seconds
+   - UI transitions: 0.3-0.6 seconds
+   - Decorative animations: 0.6-1.2 seconds
+   - Attention-seeking: 1.2-2.0 seconds
+
+2. **Concurrent animation limits:**
+
+   - Mobile: Maximum 3 simultaneous animations
+   - Desktop: Maximum 6 simultaneous animations
+
+3. **Complex animation usage:**
+   - Use sparingly for hero sections or key interactions
+   - Prefer simple animations for frequent UI changes
+   - Test on lower-end devices
+
+This customization system allows you to create cohesive, performant animations that align with your brand and user experience goals.
+
+```scss
+// custom-animations.scss
+
+// Override default values
+$animation-duration-normal: 800ms;
+$animation-distance-md: 30px;
+$animation-easing-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94);
+
+// Import the library
+@use 'animation-library-test-abdullah-altun/dist/styles' with (
+  $animation-duration-normal: 800ms,
+  $animation-distance-md: 30px,
+  $animation-easing-ease-out: cubic-bezier(0.25, 0.46, 0.45, 0.94)
+);
+```
+
+### Theme-Specific Variables
+
+```scss
+// Light theme customizations
+$animation-shadow-light: 0 4px 6px rgba(0, 0, 0, 0.1) !default;
+$animation-background-light: rgba(255, 255, 255, 0.9) !default;
+
+// Dark theme customizations
+$animation-shadow-dark: 0 4px 6px rgba(0, 0, 0, 0.3) !default;
+$animation-background-dark: rgba(0, 0, 0, 0.9) !default;
+
+// Create theme-aware animations
+@mixin themed-animation {
+  @media (prefers-color-scheme: light) {
+    box-shadow: $animation-shadow-light;
+    background: $animation-background-light;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    box-shadow: $animation-shadow-dark;
+    background: $animation-background-dark;
+  }
+}
+```
+
+## CSS Custom Properties
+
+For runtime customization, the library uses CSS custom properties that you can override in your stylesheets.
+
+### Available Custom Properties
+
+```css
+:root {
+  /* Duration properties */
+  --animation-duration: 600ms;
+  --animation-delay: 0ms;
+
+  /* Transform properties */
+  --animation-distance: 20px;
+  --animation-scale: 0.8;
+  --animation-rotation: 90deg;
+
+  /* Easing properties */
+  --animation-easing: ease-out;
+
+  /* Opacity properties */
+  --animation-opacity-start: 0;
+  --animation-opacity-end: 1;
+}
+```
+
+### Runtime Customization
+
+You can change these properties dynamically using JavaScript:
+
+```jsx
+// Component that allows runtime animation customization
+function CustomizableAnimation() {
+  const [duration, setDuration] = useState(600);
+  const [distance, setDistance] = useState(20);
+  const [easing, setEasing] = useState('ease-out');
+
+  const customStyle = {
+    '--animation-duration': `${duration}ms`,
+    '--animation-distance': `${distance}px`,
+    '--animation-easing': easing,
+  };
+
+  return (
+    <div style={customStyle}>
+      <div className="controls">
+        <label>
+          Duration: {duration}ms
+          <input
+            type="range"
+            min="100"
+            max="2000"
+            value={duration}
+            onChange={(e) => setDuration(Number(e.target.value))}
+          />
+        </label>
+
+        <label>
+          Distance: {distance}px
+          <input
+            type="range"
+            min="0"
+            max="100"
+            value={distance}
+            onChange={(e) => setDistance(Number(e.target.value))}
+          />
+        </label>
+
+        <label>
+          Easing:
+          <select value={easing} onChange={(e) => setEasing(e.target.value)}>
+            <option value="ease">ease</option>
+            <option value="ease-in">ease-in</option>
+            <option value="ease-out">ease-out</option>
+            <option value="ease-in-out">ease-in-out</option>
+            <option value="linear">linear</option>
+          </select>
+        </label>
+      </div>
+
+      <Animate type="fadeInUp">
+        <div className="animated-content">Customizable animation</div>
+      </Animate>
+    </div>
+  );
+}
+```
+
+### CSS-in-JS Integration
+
+For CSS-in-JS libraries like styled-components or emotion:
+
+```jsx
+import styled from 'styled-components';
+
+const CustomAnimatedDiv = styled.div`
+  --animation-duration: ${(props) => props.duration || 600}ms;
+  --animation-distance: ${(props) => props.distance || 20}px;
+  --animation-easing: ${(props) => props.easing || 'ease-out'};
+`;
+
+// Usage
+<CustomAnimatedDiv
+  duration={800}
+  distance={40}
+  easing="cubic-bezier(0.25, 0.46, 0.45, 0.94)"
+>
+  <Animate type="slideUp">
+    <div>Styled animation</div>
+  </Animate>
+</CustomAnimatedDiv>;
+```
+
+## Creating Custom Animations
+
+You can create your own animations by extending the library's SCSS mixins.
+
+### Animation Mixin
+
+The library provides a base mixin for creating animations:
+
+```scss
+@use 'animation-library-test-abdullah-altun/dist/mixins' as *;
+
+// Create a custom animation
+@include create-animation('customFade') {
+  from {
+    opacity: 0;
+    transform: scale(0.5) rotate(45deg);
+    filter: blur(4px);
+  }
+
+  50% {
+    opacity: 0.8;
+    transform: scale(1.1) rotate(22.5deg);
+    filter: blur(2px);
+  }
+
+  to {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    filter: blur(0);
+  }
+}
+```
+
+### Advanced Custom Animation
+
+```scss
+// Complex animation with multiple stages
+@include create-animation('complexEntrance') {
+  0% {
+    opacity: 0;
+    transform: translateY(var(--animation-distance, 30px))
+      scale(var(--animation-scale, 0.8)) rotateX(90deg);
+    filter: blur(5px);
+  }
+
+  25% {
+    opacity: 0.3;
+    transform: translateY(calc(var(--animation-distance, 30px) * 0.5))
+      scale(0.9) rotateX(45deg);
+    filter: blur(3px);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: translateY(calc(var(--animation-distance, 30px) * 0.2))
+      scale(1.05) rotateX(-5deg);
+    filter: blur(1px);
+  }
+
+  75% {
+    opacity: 0.9;
+    transform: translateY(calc(var(--animation-distance, 30px) * -0.1))
+      scale(1.02) rotateX(2deg);
+    filter: blur(0);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1) rotateX(0deg);
+    filter: blur(0);
+  }
+}
+```
+
+### Using Custom Animations
+
+Once you've created custom animations, you can use them with the library:
+
+```jsx
+// Register the custom animation type
+const customAnimations = {
+  customFade: 'customFade',
+  complexEntrance: 'complexEntrance'
+};
+
+// Use with the Animate component
+<Animate type="customFade" duration={1000}>
+  <div>Custom animation</div>
+</Animate>
+
+// Or apply the CSS class directly
+<div className="animate-custom-fade">
+  Direct CSS usage
+</div>
+```
+
+## Responsive Animations
+
+Create animations that adapt to different screen sizes:
+
+```scss
+// Responsive animation distances
+:root {
+  --animation-distance: 10px;
+
+  @media (min-width: 768px) {
+    --animation-distance: 20px;
+  }
+
+  @media (min-width: 1024px) {
+    --animation-distance: 30px;
+  }
+}
+
+// Responsive durations (slower on mobile for battery savings)
+:root {
+  --animation-duration: 400ms;
+
+  @media (min-width: 768px) {
+    --animation-duration: 600ms;
+  }
+
+  @media (min-width: 1024px) {
+    --animation-duration: 800ms;
+  }
+}
+```
+
+### React Implementation
+
+```jsx
+function ResponsiveAnimation({ children }) {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
+
+  return (
+    <Animate
+      type="fadeInUp"
+      duration={isMobile ? 400 : 600}
+      distance={isMobile ? 10 : 20}
+    >
+      {children}
+    </Animate>
+  );
+}
+```
+
+## Theme Integration
+
+### Tailwind CSS Integration
+
+```css
+/* tailwind.config.js */
+module.exports = {
+  theme: {
+    extend: {
+      animation: {
+        'fade-in':'fadeInvar(--animation-duration,600ms)var(--animation-easing,ease-out)','slide-up': 'slideUp var(--animation-duration, 600ms) var(--animation-easing, ease-out)';
+      }
+      ,
+      transitionDuration: {
+        'animation':'var(--animation-duration,600ms)',;
+      }
+    }
+  }
+}
+```
+
+### Material-UI Integration
+
+```jsx
+import { createTheme } from '@mui/material/styles';
+
+const theme = createTheme({
+  transitions: {
+    duration: {
+      animation: 'var(--animation-duration, 600ms)',
+    },
+    easing: {
+      animation: 'var(--animation-easing, ease-out)',
+    },
+  },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          transition: `all ${theme.transitions.duration.animation} ${theme.transitions.easing.animation}`,
+        },
+      },
+    },
+  },
+});
+```
+
+## Performance Optimization
+
+### Lazy Loading Animations
+
+Only load animations when they're needed:
+
+```jsx
+import { lazy, Suspense } from 'react';
+
+const HeavyAnimation = lazy(() => import('./HeavyAnimation'));
+
+function OptimizedComponent() {
+  const [showAnimation, setShowAnimation] = useState(false);
+
+  return (
+    <div>
+      <button onClick={() => setShowAnimation(true)}>Load Animation</button>
+
+      {showAnimation && (
+        <Suspense fallback={<div>Loading animation...</div>}>
+          <HeavyAnimation />
+        </Suspense>
+      )}
+    </div>
+  );
+}
+```
+
+### CSS Optimization
+
+```scss
+// Optimize for performance
+.animate-optimized {
+  // Force hardware acceleration
+  will-change: transform, opacity;
+  transform: translateZ(0);
+
+  // Reduce paint operations
+  backface-visibility: hidden;
+  perspective: 1000px;
+
+  // Optimize for specific properties
+  animation-fill-mode: both;
+  animation-play-state: running;
+}
+```
+
+### Bundle Size Optimization
+
+Import only the animations you need:
+
+```scss
+// Instead of importing everything
+@use 'animation-library-test-abdullah-altun/dist/styles';
+
+// Import specific animations
+@use 'animation-library-test-abdullah-altun/dist/animations/fade';
+@use 'animation-library-test-abdullah-altun/dist/animations/slide';
+```
+
+## Debugging Animations
+
+### Development Helpers
+
+```scss
+// Debug mode for development
+$debug-animations: true !default;
+
+@if $debug-animations {
+  .animate-debug {
+    outline: 2px dashed red;
+    background: rgba(255, 0, 0, 0.1);
+
+    &::before {
+      content: attr(data-animation-type);
+      position: absolute;
+      top: 0;
+      left: 0;
+      background: red;
+      color: white;
+      padding: 2px 4px;
+      font-size: 10px;
+      z-index: 1000;
+    }
+  }
+}
+```
+
+### Animation Inspector
+
+```jsx
+function AnimationInspector({ children, type, ...props }) {
+  const [debugInfo, setDebugInfo] = useState({});
+
+  const handleAnimationStart = (e) => {
+    setDebugInfo({
+      type,
+      duration: e.target.style.animationDuration,
+      delay: e.target.style.animationDelay,
+      easing: e.target.style.animationTimingFunction,
+    });
+    console.log('Animation started:', debugInfo);
+  };
+
+  return (
+    <Animate
+      type={type}
+      {...props}
+      onAnimationStart={handleAnimationStart}
+      className={`${props.className || ''} ${process.env.NODE_ENV === 'development' ? 'animate-debug' : ''}`}
+      data-animation-type={type}
+    >
+      {children}
+    </Animate>
+  );
+}
+```
+
+This comprehensive customization guide gives you full control over the animation library's behavior, appearance, and performance characteristics.

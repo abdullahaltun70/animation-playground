@@ -83,7 +83,7 @@ const AuthComponent: React.FC = () => {
     forgotPasswordForm.reset();
   }, [view, setError, signInForm, signUpForm, forgotPasswordForm]);
 
-  // ASYNCHRONE WRAPPERS FOR HANDLERS (to switch view)
+  // Async handlers for form submissions
 
   const onSignUpSubmit = async (data: SignUpFormData) => {
     const success = await handleSignUp(data);
@@ -159,7 +159,7 @@ const AuthComponent: React.FC = () => {
         )}
 
         <Form.Submit asChild>
-          <AuthButton type="submit" loading={loading}>
+          <AuthButton type="submit" loading={loading} data-cy="sign-in-button">
             Sign in
           </AuthButton>
         </Form.Submit>
@@ -168,7 +168,10 @@ const AuthComponent: React.FC = () => {
         <AuthLink onClick={() => setView(AuthView.FORGOT_PASSWORD)}>
           Forgot your password?
         </AuthLink>
-        <AuthLink onClick={() => setView(AuthView.SIGN_UP)}>
+        <AuthLink
+          onClick={() => setView(AuthView.SIGN_UP)}
+          data-cy="sign-up-link"
+        >
           Don&#39;t have an account? Sign up
         </AuthLink>
       </Flex>

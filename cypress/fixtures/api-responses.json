@@ -1,0 +1,79 @@
+{
+  "apiResponses": {
+    "userProfile": {
+      "id": "user-123",
+      "name": "Test User",
+      "email": "test@example.com",
+      "avatar": "https://example.com/avatar.jpg",
+      "createdAt": "2024-01-01T00:00:00Z",
+      "settings": {
+        "emailNotifications": true,
+        "pushNotifications": false,
+        "theme": "light"
+      }
+    },
+    "animationsList": [
+      {
+        "id": "anim-1",
+        "name": "Fade In",
+        "type": "fade",
+        "duration": 500,
+        "createdAt": "2024-01-15T10:30:00Z",
+        "updatedAt": "2024-01-15T10:30:00Z",
+        "isPublic": false
+      },
+      {
+        "id": "anim-2",
+        "name": "Slide Left",
+        "type": "slide",
+        "duration": 800,
+        "createdAt": "2024-01-16T14:20:00Z",
+        "updatedAt": "2024-01-16T14:20:00Z",
+        "isPublic": true
+      }
+    ],
+    "sharedAnimation": {
+      "id": "shared-123",
+      "name": "Shared Bounce",
+      "type": "bounce",
+      "config": {
+        "duration": 1000,
+        "delay": 200,
+        "easing": "ease-out"
+      },
+      "author": {
+        "name": "Original Creator",
+        "avatar": "https://example.com/creator-avatar.jpg"
+      },
+      "isPublic": true,
+      "allowEditing": true,
+      "createdAt": "2024-01-10T09:15:00Z"
+    }
+  },
+  "errorResponses": {
+    "unauthorized": {
+      "error": "Unauthorized",
+      "message": "You must be logged in to access this resource",
+      "code": 401
+    },
+    "notFound": {
+      "error": "Not Found",
+      "message": "The requested resource was not found",
+      "code": 404
+    },
+    "validationError": {
+      "error": "Validation Error",
+      "message": "The provided data is invalid",
+      "code": 422,
+      "fields": {
+        "name": "Name is required",
+        "duration": "Duration must be a positive number"
+      }
+    },
+    "serverError": {
+      "error": "Internal Server Error",
+      "message": "An unexpected error occurred",
+      "code": 500
+    }
+  }
+}
