@@ -176,7 +176,10 @@ describe('Complete End-to-End User Journeys', () => {
 
   describe('Accessibility Complete Journey', () => {
     it('should complete full journey using keyboard navigation', () => {
-      // Navigate directly to playground since get-started-btn doesn't exist
+      // First login as test user
+      cy.loginAsTestUser();
+
+      // Then visit playground
       cy.visit('/playground');
       cy.waitForPageLoad();
 
