@@ -271,6 +271,9 @@ describe('Complete Animation Workflows', () => {
     });
 
     it('should edit a config from profile', () => {
+      // login as test user
+      cy.loginAsTestUser();
+
       cy.visit('/profile');
       cy.waitForPageLoad();
 
@@ -316,7 +319,7 @@ describe('Complete Animation Workflows', () => {
       cy.get('[role="tab"]')
         .contains('My Configurations')
         .click({ force: true });
-      cy.wait(500);
+      cy.wait(2000);
 
       // Verify the changes are reflected in the profile
       cy.get('@firstConfig').should('contain.text', 'Edited Test Animation');
