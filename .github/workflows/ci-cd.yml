@@ -49,7 +49,6 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
           slug: abdullahaltun70/animation-playground
 
-
   build-app:
     name: Build Next.js App
     runs-on: ubuntu-latest
